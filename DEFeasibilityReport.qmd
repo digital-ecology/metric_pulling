@@ -1,0 +1,476 @@
+---
+format: odt
+reference-doc: feasibilityreference.odt
+output-file: "DEFeasibilityReport.odt"
+toc: true
+fig-cap: true
+tbl-cap: true
+lof: true
+lot: true
+params:
+  client: "CLIENT"
+  sitename: "Chamberlayne Farm"
+  county: "COUNTY"
+  cgrf: "GRIDREF"
+  address: "ADDRESS"
+  spatialcontext: "SPATIAL CONTEXT"
+  landuse: "LANDUSE"
+  siteowner: "SITEOWNER"
+---
+
+```{r set-up, include=FALSE}
+#| echo: false
+library(DBI)
+library(sf)
+library(htmlwidgets)
+library(xml2)
+library(webshot)
+library(RPostgreSQL)
+library(dplyr)
+library(openxlsx)
+library(tinytex)
+library(tidyr)
+library(arcpullr)
+library(defeas)
+
+con<-dbconnect("maddie", "")
+
+site_name <- params$sitename
+
+lpa_names<-getlpa(con, site_name)
+
+```
+
+```{r mapping-set-up, include=FALSE}
+#| echo: false
+
+#site boundary set up
+
+#define query to retrieve site_boundary data for site_name
+query <- paste("SELECT ST_AsText(geom) AS geom FROM postgis.site_boundary WHERE site_name = '", site_name, "'", sep = "")
+site_boundary_data <- dbGetQuery(conn = con, statement = query)
+
+```
+
+```{r metric-set-up,include=FALSE}
+#| echo: false
+ 
+#excel set up
+ 
+#load metric and pull necessary data
+#metric <- "BNGFMetric_Both.xlsx"
+#metric <- "BNGFMetric_Create.xlsx"
+metric <- "BNGFMetric_Enhance.xlsx"
+
+
+baselinedata<-pulloffsitebaseline(metric = metric)
+
+creationdata<-pulloffsitecreation(metric = metric)
+
+enhancedata<-pulloffsiteenhancement(metric = metric)
+
+```
+
+::: {layout-ncol2}
+![](delogo.png){width="325" height="200"} ![](clientlogo.png){width="325" height="200"}
+:::
+
+```{r title, results='asis', echo=FALSE}
+
+cat(paste(
+ "###### ", site_name," - BNG Feasibility Study\n\n"))
+
+```
+
+Author: Madison Lucas, MBiol, Digital Ecologist
+
+2nd Author:
+
+Approved by:
+
+Issued to Client:
+
+##### .
+
+```{r get-execsum-data, include=FALSE}
+
+#get strings for summary
+baselinestring<-exsum_baselinestring(baselinedata$BaselineHabitatType)
+creationstring<-exsum_creationstring(creationdata$CreationHabitatType)
+enhancestring<- exsum_enhancestring(enhancedata$EnhanceHabitatType)
+
+#get info regarding net units and percentage
+sumdata<-pulloffsitesumdata(metric)
+
+```
+
+# Executive Summary
+
+This report sets out a feasibility study for the creation of a habitat bank at `r params$sitename`, `r params$county` (the site) for `r params$siteowner`. The key points are:
+
+-   The baseline habitats are `r paste(baselinestring)`.
+
+-   The proposals are to `r if (creationstring != "nothing") paste('create', (creationstring)) else ""` `r if (creationstring != "nothing" && enhancestring != "nothing") paste('and')` `r if (enhancestring != "nothing") paste('enhance', (enhancestring)) else ""`.
+
+-   The proposals would generate a net `r paste(sumdata$BNGUnits)` BNG units.
+
+-   The report sets out the next steps for the project.
+
+##### .
+
+```{r get-lpa-string, echo=FALSE}
+
+lpastring<-lpastring(lpa_names)
+
+```
+
+# 1. Introduction
+
+`r params$client` have commissioned Digital Ecology to carry out a Biodiversity Net Gain (BNG) feasibility assessment of `r params$sitename`, `r params$county` on behalf of `r params$siteowner`. This is with the aim of developing existing landholdings at `r params$sitename` to act as a habitat bank, and thus generate BNG units for sale to developers that need to meet BNG obligations for their own development site.
+
+`r params$sitename` (central grid ref: `r params$cgrf`) is located in `r params$address` and shall hereafter be referred to as 'the site'. The site is within `r paste(lpastring)` planning area. The location of the site is shown in Figure 1 below. It lies `r params$spatialcontext`. The site is approximately `r paste(sumdata$Hectares)` hectares, consisting of the following habitats:
+
+```{r print-baseline-list, results='asis'}
+#| echo: false
+
+baselinehabitatlist<-intro_baselinelist(baselinedata)
+
+cat(paste("* ", (baselinehabitatlist), sep = ""))
+
+```
+
+The current land use is `r params$landuse`.
+
+![Figure 1: Site Location Map of `r site_name` and Surrounding Areas](location.png){width="467.5," height="467.5"}
+
+##### .
+
+# 2. Relevant Policy & Legislation
+
+## 2.1 National Planning Policy Framework
+
+The National Planning Policy Framework (NPPF) sets out planning policy for England.
+
+Paragraph 174 of the NPPF states: “Planning policies and decisions should contribute to and enhance the natural and local environment by:…
+
+d)  minimising impacts on and providing net gains for biodiversity, including by establishing coherent ecological networks that are more resilient to current and future pressures;…”
+
+Paragraph 179 states: “To protect and enhance biodiversity and geodiversity, plans should:…
+
+b)  promote the conservation, restoration and enhancement of priority habitats, ecological networks and the protection and recovery of priority species; and identify and pursue opportunities for securing measurable net gains for biodiversity.”
+
+Paragraph 180 states: “…
+
+d)  development whose primary objective is to conserve or enhance biodiversity should be supported; while opportunities to improve biodiversity in and around developments should be integrated as part of their design, especially where this can secure measurable net gains for biodiversity or enhance public access to nature where this is appropriate.”
+
+## 2.2 Environment Act 2021
+
+The Environment Act 2021 includes provision for biodiversity net gain to be applied to every planning permission. Schedule 14 of the Environment Act 2021 sets out amendments to the Town and Country Planning Act 1990 for the inclusion of biodiversity net gain as follows:
+
+“Biodiversity gain objective
+
+(1) The biodiversity gain objective is met in relation to development for which planning permission is granted if the biodiversity value attributable to the development exceeds the pre-development biodiversity value of the on-site habitat by at least the relevant percentage.
+
+(2) The biodiversity value attributable to the development is the total of—
+
+    (a) the post-development biodiversity value of the on-site habitat,
+
+    (b) the biodiversity value, in relation to the development, of any registered off-site biodiversity gain allocated to the development, and
+
+    (c) the biodiversity value of any biodiversity credits purchased for the development.
+
+(3) The relevant percentage is 10%.”
+
+The Environment Act received Royal Assent in November 2021, meaning that by November 2023 the expectation is that for all planning permissions to include a biodiversity net gain of at least 10% will become a legal requirement.
+
+## 2.3 Local Planning Policy
+
+```{r renderpolicy, results='asis', echo=FALSE}
+
+#initialise a counter to count how many sections to render
+#may need new separate function to update counter if thing exists 
+sectioncounter <- 0
+
+sectioncounter<-renderlocalpolicy(lpa_names, "ALP", sectioncounter)
+
+sectioncounter<-renderlocalpolicy(lpa_names, "BNGG", sectioncounter)
+
+sectioncounter<-renderlocalpolicy(lpa_names, "BAP", sectioncounter)
+
+sectioncounter<-renderlocalpolicy(lpa_names, "BOA", sectioncounter)
+
+sectioncounter<-renderlocalpolicy(lpa_names, "LBAF", sectioncounter)
+
+sectioncounter<-renderlocalpolicy(lpa_names, "LNR", sectioncounter)
+
+sectioncounter<-renderlocalpolicy(lpa_names, "NRN", sectioncounter)
+
+```
+
+##### .
+
+# 3. Methods
+
+## 3.1 Strategic Significance
+
+Strategic significance relates to the spatial location of a habitat parcel at a landscape scale. It is based on the habitat type and its location, depending on their status in a local plan, strategy or policy related to biodiversity. Strategic significance is assigned as either high, medium, or low.
+
+Digital Ecology examined the local strategic context of the site to identify any biodiversity plans or strategies to which a habitat bank at the site could contribute. Existing information was analysed to create a baseline of the habitats on site. Statutory designated wildlife sites were identified along with records of protected and notable species and notable habitats.
+
+### 3.1.1 Nature Recovery Network
+
+```{r desk-study-pull-data, include=FALSE}
+
+#format site boundary
+siteboundary<-getsiteboundary(site_boundary_data)
+
+#get buffers
+buffers<-getbuffers(siteboundary)
+internationalbuffer<-buffers$internationalbuffer
+nationalbuffer<-buffers$nationalbuffer
+localbuffer<-buffers$localbuffer
+
+#get designated sites
+  #intnl
+sac<-fetch_sac(internationalbuffer)
+spa<-fetch_spa(internationalbuffer)
+ramsar<-fetch_ramsar(internationalbuffer)
+
+  #ntnl
+sssi<-fetch_sssi(nationalbuffer)
+aonb<-fetch_aonb(nationalbuffer)
+nnr<-fetch_nnr(nationalbuffer)
+
+  #lcl
+lnr<-fetch_lnr(localbuffer)
+
+```
+
+```{r format-pulled-sites, include=FALSE}
+
+#format all pulled data to get necessary columns 
+sacdf<-formatdsdataframe(sac, siteboundary, name_col = "SAC_NAME", designation = "SAC", grid_ref_col = "GRID_REF")
+
+spadf<-formatdsdataframe(spa, siteboundary, name_col = "SPA_NAME", designation = "SPA", grid_ref_col = "GRID_REF")
+
+ramsardf<-formatdsdataframe(ramsar, siteboundary, name_col = "NAME", designation = "Ramsar", grid_ref_col = "GRID_REF")
+
+sssidf<-formatdsdataframe(sssi, siteboundary, name_col = "SSSI_NAME", designation = "SSSI")
+
+aonbdf<-formatdsdataframe(aonb, siteboundary, name_col = "NAME", designation = "AONB")
+
+nnrdf<-formatdsdataframe(nnr, siteboundary, name_col = "NNR_NAME", designation = "NNR", grid_ref_col = "REFERENCE")
+
+lnrdf<-formatdsdataframe(lnr, siteboundary, name_col = "LNR_NAME", designation = "LNR", grid_ref_col = "REFERENCE")
+
+```
+
+```{r format-desk-study-tables, include=FALSE}
+
+#make into lists, and format tables from lists
+intnlsitelist<-list(sacdf, spadf, ramsardf)
+ntnlsitelist<-list(sssidf, aonbdf, nnrdf)
+localsitelist<-list(lnrdf)
+
+#get formatted tables
+intnldf<-formatdeskstudytables(intnlsitelist)
+ntnldf<-formatdeskstudytables(ntnlsitelist)
+lcldf<-formatdeskstudytables(localsitelist)
+
+```
+
+## 3.2 Results
+
+The results of the strategic assessment for the site are set out below.
+
+```{r get-number-of-sites-string, include=FALSE}
+
+if (is.null(intnldf)) {
+  nointnl <- 0
+} else {
+  nointnl <- as.numeric(nrow(intnldf[grepl("SAC|SPA|Ramsar", intnldf$Designation), ]))}
+
+if (is.null(ntnldf)) {
+  nontnl <- 0
+} else {
+  nontnl <- as.numeric(nrow(ntnldf[grepl("AONB|SSSI|NNR", ntnldf$Designation), ]))}
+
+if (is.null(lcldf)) {
+  nolcl <- 0
+} else {
+  nolcl <- as.numeric(nrow(lcldf[grepl("LNR", lcldf$Designation), ]))}
+```
+
+A search using the EcoDS package returned `r paste(nointnl)` internationally designated wildlife sites within 10km, `r paste(nontnl)` nationally designated wildlife sites within 5km, and `r paste(nolcl)` locally designated wildlife sites within 2km of the site. These are detailed in the tables below.
+
+```{r print-intnl-tbl, echo=FALSE}
+ if (!is.null(intnldf)){
+   knitr::kable(intnldf, caption = "Table 1: Internationally Designated Wildlife Sites within 10km of the site.")} else {
+  intnldf <- data.frame("No international sites found.")
+  colnames(intnldf) <- NULL
+  knitr::kable(intnldf, caption = "Table 1: Internationally Designated Wildlife Sites within 10km of the site.")
+   }
+
+```
+
+```{r print-ntnl-tbl, echo=FALSE}
+
+if (!is.null(ntnldf)){
+  knitr::kable(ntnldf, caption = "Table 2: Nationally Designated Wildlife Sites within 5km of the site.")} else {
+  ntnldf <- data.frame("No national sites found.")
+  colnames(ntnldf) <- NULL
+  knitr::kable(ntnldf, caption = "Table 2: Nationally Designated Wildlife Sites within 5km of the site.")
+}
+ 
+```
+
+```{r print-lcl-tbl, echo=FALSE}
+
+if (!is.null(lcldf)){
+  knitr::kable(lcldf, caption = "Table 3: Locally Designated Wildlife Sites within 2km of the site.")} else {
+  lcldf <- data.frame("No local sites found.")
+  colnames(lcldf) <- NULL
+  knitr::kable(lcldf, caption = "Table 3: Locally Designated Wildlife Sites within 2km of the site.")
+}
+```
+
+## 3.3 Desk Study Methods
+
+The desk study used existing information, including aerial photography interpretation, to map and identify baseline habitats on site. No field work was undertaken in preparing this feasibility study. Habitat condition was assumed to be moderate for those habitats that require condition assessment. Strategic significance for the existing habitats was set to Low.
+
+Proposals were based on an assessment of the strategic context, as well as the topography of the site. Any proposed habitats are indicative. For the proposals, strategic significance was set to medium as the design responds to the local context, aiming to increase the habitat resources and improve connectivity between core habitats.
+
+The *Statutory Biodiversity Metric 4.0*[^1] was used to calculate the uplift in biodiversity units as a result of the proposals.
+
+[^1]: Natural England. (2023). *The Biodiversity Metric 4.0: Technical Supplement.* Natural England Publishing.
+
+## 3.4 Limitations
+
+This is a desk-based study, using data available to Digital Ecology from a wide variety of sources. No field work has taken place to inform this study, so the conclusions of the report should not be relied upon for use in supporting a planning application, or the sale of BNG units to developers.
+
+-   Existing habitats have been mapped using aerial photography interpretation and other sources of habitat data.
+
+-   Habitat condition has been set to moderate for all habitats that require a condition assessment.
+
+-   Proposed habitats are based on landscape context, locally important species, habitats and designated sites and represent the author’s view of the most appropriate interventions in this location.
+
+-   No account has been taken of existing land use or management, soils types, hydrology or other environmental factors.
+
+##### .
+
+# 4. Baseline Conditions
+
+The feasibility report focuses on a small number of parcels within the wider farm estate. The baseline habitats are:
+
+```{r baseline-condition-list, results='asis'}
+#| echo: false
+
+cat(paste("* ", (baselinehabitatlist), sep = ""))
+
+```
+
+There are also hedgerows, many with mature trees, on the boundaries of the fields. These have not been included in the current assessment. The baseline biodiversity map showing existing habitats is shown in Figure 2 below.
+
+![Figure 2: Baseline Habitat Map of `r site_name`, Illustrating Existing Habitats on Site](baseline.png){width="467.5," height="467.5"}
+
+The baseline BNG units for the site are set out in Table 4 below.
+
+```{r calculate-baseline-bng-table, include=FALSE}
+#| echo: false
+
+FormattedBaselineTable<-createbaselinetable(baselinedata)
+
+```
+
+```{r print-baseline-table, echo=FALSE}
+
+knitr::kable(FormattedBaselineTable, caption = "Table 4: Existing Habitats and Baseline BNG Units on Site.")
+
+```
+
+##### .
+
+# 5. Feasibility of Biodiversity Net Gain
+
+The proposals reflect the local landscape context. Proposed habitats contribute to improving connectivity by creating both corridors and stepping stones. The proposed habitats are:
+
+```{r proposed-habitat-list, results='asis'}
+#| echo: false
+proposedlist<-feas_proposedlist(enhancedata, creationdata)
+
+cat(paste("* ", proposedlist, sep = ""))
+
+```
+
+The proposed BNG units for the site are set out in Table 5 below.
+
+```{r proposed-bng-table-retain, include=FALSE}
+
+retaintable<-createretaintable(baselinedata)
+
+```
+
+```{r proposed-bng-table-created, include=FALSE}
+
+creationtable<-createcreationtable(baselinedata, creationdata)
+
+```
+
+```{r proposed-bng-table-enhance, include=FALSE}
+
+enhancementtable<-createenhancementtable(baselinedata, enhancedata)
+
+```
+
+```{r proposed-bng-table-totalformat, include=FALSE}
+
+proposedtables<-createproposaltable(retaintable, creationtable, enhancementtable)
+
+```
+
+```{r proposed-table, echo=FALSE}
+
+knitr::kable(proposedtables$FormattedProposalTable, caption = "Table 5: Proposed Habitats, Associated BNG Units, and Potential Net Gain on Site.") 
+
+```
+
+A map of the proposed habitats is set out in Figure 3 below.
+
+![Figure 3: Proposed Habitat Map of `r site_name`, Illustrating Potential Habitat Bank on Site](proposed.png){width="467.5," height="467.5"}
+
+As a result of these proposals, the site would generate a net gain of `r paste(sumdata$BNGUnits)` units. These units would be available for sale to developers in `r paste(lpastring)`.
+
+##### .
+
+# 6. Next Steps
+
+The next steps are:
+
+-   Agree the area of the site to be put forward as a habitat bank.
+
+-   Agree the types of habitats to be delivered on the habitat bank.
+
+-   Agree in outline the proposed management of these habitats.
+
+-   Carry out a baseline survey and condition assessment of the habitats on site in Spring / Summer 2025.
+
+-   Complete a BNG assessment using Statutory Biodiversity Metric 4.0.
+
+-   Write a 30-year habitat management and monitoring plan for the proposed habitat bank.
+
+##### .
+
+# 7. Conclusion
+
+The feasibility report sets out how a habitat bank could be established on the site. The proposals include `r if (creationstring!= "nothing") paste('the creation of', (creationstring)) else ""` `r if (creationstring  != "nothing" && enhancestring != "nothing") paste('and')` `r if (enhancestring != "nothing") paste('the enhancement of', (enhancestring)) else ""`. These proposals would generate a net gain of `r paste(sumdata$BNGUnits)` BNG units, available to developers in `r paste(lpastring)`:
+
+```{r netunitslist, results='asis', echo=FALSE}
+
+netstrings<-conclusion_netstring(enhancedata, creationdata, proposedtables$ProposalTable)
+
+#this is the list of proposed habitats
+cat(paste("* ", netstrings, sep = ""))
+
+```
+
+To achieve the proposed outcomes, the client will need to carefully consider the deliverability of the proposed habitats for a 30-year agreement. This means ensuring that the landowner has the knowledge, skills, and equipment to both create and manage these habitats according to a management plan, or can contract appropriate expertise.

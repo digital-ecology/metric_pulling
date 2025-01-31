@@ -1,0 +1,774 @@
+---
+output-file: "BiodiversityNetGainObjectiveReport.odt"
+format: odt
+reference-doc: ethosreference.odt
+fig-cap: true
+tbl-cap: true
+params:
+  sitename: "Snarlton"
+  client: "Planning Matters (Albion) Limited"
+  habsurveydate: "10th November 2022"
+  developmentpurpose: "residential dwellings with associated access roads, gardens and openspace"
+---
+
+```{r set-up, include=FALSE, echo=FALSE}
+library(ReportPackage)
+
+#metric <- "OnSiteCreation.xlsx"
+#metric <- "OnSiteBoth.xlsx"
+#metric <- "OnSiteTradingSummary.xlsx"
+metric <-"OnSiteHedgeEnhance.xlsx"
+
+site_name <- params$sitename
+
+#pull net data
+netdata<-pullonsitenetdata(metric)
+
+#pull summary data
+habitatsumdata<-pullonsitehabitatsumdata(metric)
+hedgesumdata<-pullonsitehedgesumdata(metric)
+watersumdata<-pullonsitewatersumdata(metric)
+
+#water will be done when have data
+
+#pull habitat data 
+habitatbaselinedata<-pullonsitehabitatbaseline(metric)
+habitatcreationdata<-pullonsitehabitatcreation(metric)
+habitatenhancedata<-pullonsitehabitatenhancement(metric) #crashes if hab enhance present in baseline column for areas enhanced, but no data on enhance sheet
+habitatretaindata<-pullonsitehabitatretain(metric)
+habitatlossdata<-pullonsitehabitatloss(metric)
+
+#pull hedge data
+hedgebaselinedata<-pullonsitehedgebaseline(metric) #if they dont put hedgenumbers in metric, or miss something out, will crash with Warning: No data found on worksheet.Error in `colnames<-`(`*tmp*`, value = "baseid") : attempt to set 'colnames' on an object with less than two dimensions. 
+hedgecreationdata<-pullonsitehedgecreation(metric)
+hedgeenhancedata <- pullonsitehedgeenhancement(metric) # FAILS - NEEDS A CATCH
+hedgeretaindata<-pullonsitehedgeretain(metric)
+hedgelossdata<-pullonsitehedgeloss(metric)
+
+#pull water data
+waterbaselinedata<-pullonsitewaterbaseline(metric)
+watercreationdata <- pullonsitewatercreation(metric)
+waterenhancedata<-pullonsitewaterenhancement(metric)
+waterretaindata<-pullonsitewaterretain(metric)
+waterlossdata<-pullonsitewaterloss(metric)
+
+```
+
+```{r set-evals, include=FALSE}
+
+#do baseline hedges exist?
+hedge_exist <- NULL
+if("No Existing Hedgerows" %in% hedgebaselinedata$hedgebaselinedata$habitattype){hedge_exist <- FALSE}else{hedge_exist <- TRUE}
+
+#do baseline watercourses exist?
+water_exist <- NULL
+if("No Existing Watercourses" %in% waterbaselinedata$waterbaselinedata$habitattype){water_exist <- FALSE}else{water_exist <- TRUE}
+
+#if either ONE of them is true, assign lbu_exist as true
+lbu_exist <- NULL
+lbu_exist <- hedge_exist || water_exist
+
+#for the survey section:
+grass_exist<-NULL
+if("Grassland" %in% habitatbaselinedata$habitatbaselinedata$broadhabitat){grass_exist <- TRUE}else{grass_exist <-FALSE}
+
+
+```
+::: {layout-ncol2}
+![](delogo.png){width="325" height="200"} ![](clientlogo.png){width="325" height="200"}
+:::
+
+```{r title, results='asis', echo=FALSE}
+
+cat(paste(
+ "###### Biodiversity Net Gain Objective Report\n\n", 
+ site_name, "\n\n",
+ (format(Sys.Date(), "%B %Y"))
+  ))
+
+
+```
+
+##### .
+
+Report Produced for `r params$client`
+
+Written by: Digital Ecology's ReportPackage
+
+Checked by: 
+
+Approved by:
+
+Issue:
+
+Date: `r paste(format(Sys.Date(), "%d/%m/%y"))`
+
+##### .
+
+```{r get-execsum-data, include=FALSE}
+
+#get baseline strings for summary
+baselinehabitatstring <- exsum_baselinestring(habitatbaselinedata$habitatbaselinedata$habitattype)
+baselinehedgestring <- exsum_baselinestring(hedgebaselinedata$hedgebaselinedata$habitattype)
+baselinewaterstring <- exsum_baselinestring(waterbaselinedata$waterbaselinedata$habitattype)
+
+#get creation strings for summary
+creationhabitatstring<-exsum_creationstring(habitatcreationdata$habitatcreationdata$habitattype)
+creationhedgestring<-exsum_creationstring(hedgecreationdata$hedgecreationdata$habitattype)
+creationwaterstring<-exsum_creationstring(watercreationdata$watercreationdata$habitattype)
+#creationwaterstring<-"nothing"
+
+#get enhancement strings for summary
+enhancehabitatstring<-exsum_enhancestring(habitatenhancedata$habitatenhancementdata$habitattype)
+enhancewaterstring<-exsum_enhancestring(waterenhancedata$waterenhancementdata$habitattype)
+enhancehedgestring<-exsum_enhancestring(hedgeenhancedata$hedgeenhancementdata$habitattype)
+#enhancehedgestring<-"nothing"
+
+#get loss strings for summary
+losthabitatstring <- exsum_loststring(habitatlossdata$habitatlostdata$habitattype)
+losthedgestring<-exsum_loststring(hedgelossdata$hedgelostdata$habitattype)
+lostwaterstring<-exsum_loststring(waterlossdata$waterlostdata$habitattype)
+
+#get string of whether or not it passed the standards
+
+passstring<-exsum_passstring(netdata)
+
+```
+
+# EXECUTIVE SUMMARY
+
+1.1   This report provides an assessment of the biodiversity change at `r params$sitename`.
+
+1.2   The existing area-based habitats include `r paste(baselinehabitatstring)`. Proposals include `r if (creationhabitatstring != "nothing") paste('the creation of', (creationhabitatstring)) else ""``r if (creationhabitatstring != "nothing" && enhancehabitatstring != "nothing") paste(', and ')``r if (enhancehabitatstring != "nothing") paste('the enhancement of', (enhancehabitatstring)) else ""`. `r if (losthabitatstring != "nothing") paste('To facilitate development,', (losthabitatstring), 'will be lost.') else ""`
+
+1.3   Based on the DEFRA Statutory Metric, area based habitats will generate a net `r if (netdata$NetHabitatPercent >= 0) paste('gain') else paste('loss')` of `r paste(netdata$NetHabitatPercent)`%.
+
+```{r lbu-exec-sum-proposals, echo=FALSE, eval=lbu_exist, results='asis'}
+
+#possibly functionise the below as its quite complex!
+
+#if eval met, paste intro bullet point
+cat(paste('1.4 The existing linear habitats include '))
+
+#paste info RE baselines as long as there is a baseline habitat present
+if (!("nothing" %in% baselinehedgestring)) cat(paste(baselinehedgestring))
+if (!("nothing" %in% baselinehedgestring) && !("nothing" %in% baselinewaterstring)) cat(paste(', alongside ')) 
+if (!("nothing" %in% baselinewaterstring)) cat(paste(baselinewaterstring))
+if (!("nothing" %in% baselinehedgestring) || !("nothing" %in% baselinewaterstring)) cat(".")
+if (!("nothing" %in% creationhedgestring) || !("nothing" %in% creationwaterstring) || !("nothing" %in% enhancehedgestring) || !("nothing" %in% enhancewaterstring)) cat(paste(' Proposals include ')) else cat(" There are no proposals for the creation or enhancement of linear habitats.")
+
+#NO EXISTING WATERCOURSES IS WRONG CATCH
+
+if (!("nothing" %in% creationhedgestring) || !("nothing" %in% creationwaterstring)) cat(paste('the creation of '))
+if (!("nothing" %in% creationhedgestring)) cat(paste(creationhedgestring))
+if (!("nothing" %in% creationhedgestring) && !("nothing" %in% creationwaterstring)) cat(paste(', and '))
+if (!("nothing" %in% creationwaterstring)) cat(paste(creationwaterstring))
+
+#add an 'alongside the enhancement of 
+if (!("nothing" %in% enhancehedgestring) || !("nothing" %in% enhancewaterstring)) cat(paste(', alongside the enhancement of '))
+if (!("nothing" %in% enhancehedgestring)) cat(paste(enhancehedgestring))
+if (!("nothing" %in% enhancehedgestring) && !("nothing" %in% enhancewaterstring)) cat(paste(', and '))
+if (!("nothing" %in% enhancewaterstring)) cat(paste(enhancewaterstring))
+if (!("nothing" %in% creationhedgestring) || !("nothing" %in% creationwaterstring) || !("nothing" %in% enhancehedgestring) || !("nothing" %in% enhancewaterstring)) cat(paste('.'))
+
+#mention if any lost
+if (!("nothing" %in% losthedgestring) || !("nothing" %in% lostwaterstring)) cat(paste(' To facilitate development, '))
+if (!("nothing" %in% losthedgestring)) cat(paste(losthedgestring))
+if (!("nothing" %in% losthedgestring) && !("nothing" %in% lostwaterstring)) cat(paste(', and '))
+if (!("nothing" %in% lostwaterstring)) cat(paste(lostwaterstring))
+if (!("nothing" %in% losthedgestring) || !("nothing" %in% lostwaterstring)) cat(paste(' will be lost.'))
+if (("nothing" %in% losthedgestring) && ("nothing" %in% lostwaterstring)) cat(paste(' No linear habitats will be lost to the development.'))
+
+
+cat(paste('\n\n 1.5 Based on the DEFRA Statutory Metric, '))
+if (netdata$NetHedgerowPercent >= 0) {
+  cat(paste('hedgerows will generate a net gain of ', netdata$NetHedgerowPercent,"%, and ", sep=''))
+} else {
+  cat(paste('hedgerows will generate a net loss of ', netdata$NetHedgerowPercent,"%, and ", sep=''))
+}
+if (netdata$NetWaterPercent >= 0) {
+  cat(paste('watercourses will generate a net gain of ', netdata$NetWaterPercent,"%.", sep=''))
+} else {
+  cat(paste('watercourses will generate a net loss of ', netdata$NetWaterPercent,"%.", sep=''))
+}
+
+```
+As a result, the project `r paste(passstring)` 
+
+##### .
+
+# CONTENTS
+
+add TOC here
+
+##### .
+
+# 1 INTRODUCTION
+
+1.1 This report provides an assessment of the biodiversity change following the proposals for the site at `r params$sitename`, as shown in Figure 1, henceforth referred to as the ‘site’.
+
+1.2 The site is located within (LPA) and the National Character Area (NCA).
+
+1.3 This report is submitted alongside the Statutory BNG Metric and detailed plans of the baseline and proposed habitats. This is used to inform the planning process in terms of the BNG objective for this project. A Biodiversity Net Gain Plan and Habitat Management and Monitoring Plan (HMMP) will be delivered to secure the BNG planning condition for this project within the reserved matter stage of the planning process.
+
+![Figure 1: Site Location Map of `r site_name` and Surrounding Areas](location.png){width="467.5," height="467.5"}
+
+##### .
+
+# 2 SCOPE OF REPORT
+
+-   Establishes the total number of baseline Area Habitat Units (AHU) and Linear Biodiversity Units (LBU) within the site
+
+-   Establishes the total number of AHU and LBU which will be retained, enhanced, and created under the current design of the proposed development’s landscape plan
+
+-   Determine whether the proposed development will result in a quantitative net loss, no net loss or a net gain for biodiversity on site
+
+-   Determines whether the proposed development achieves a scheme-wide net gain for biodiversity by evidencing compliance with the good practice principles
+
+## 2.1 Biodiversity Net Gain (BNG) Assessment
+
+2.1.1 This BNG assessment uses the following industry recognised best practice methods:
+
+-   CIEEM, IEMA & CIRIA (2016). Biodiversity Net Gain: Good Practice Principles for Development.
+-   DEFRA (2023) The Statutory Biodiversity Metric.
+-   CIEEM (2021). Biodiversity Net Gain Report & Audit Templates.
+
+2.1.2 The quantitative outcomes of the calculations are one component of the BNG assessment and associated good practice principles. A BNG assessment also requires the collation of qualitative evidence on the application of the mitigation hierarchy, stakeholder engagement and post-development habitat management. Collectively, these quantitative outcomes and qualitative evidence are used to inform the outcomes of the project wide BNG assessment.
+
+## 2.2 Legislation
+
+2.2.1 The relevant primary legislation for the statutory framework for biodiversity net gain is principally set out under Section 90A and Schedule 7A (Biodiversity Gain in England) of the Town and Country Planning Act 1990. This legislation was inserted into the Act by Schedule 14 of the Environment Act 2021 and includes amendments made by the Levelling Up and Regeneration Act 2023 and the Biodiversity Gain (Town and Country Planning) (Consequential Amendments) Regulations (2024). The relevant biodiversity net gain regulations most directly relevant to planning are:
+
+-   The Environment Act 2021 (Commencement No. 8 and Transitional Provisions) Regulations (2024) which commence biodiversity net gain for most types of new planning applications and provides transitional arrangements for section 73 permissions.
+
+-   The Biodiversity Gain Requirements (Exemptions) Regulations (2024) which prescribe exemptions for categories of development to which biodiversity net gain does not apply.
+
+-   The Biodiversity Gain (Town and Country Planning) (Modifications and Amendments) (England) Regulations (2024) which amend the Town and Country Planning (Development Management Procedure) (England) Order 2015 and the Town and Country Planning (Section 62A Applications) (Procedure and Consequential Amendments) Order 2013 to include provisions related to planning applications and the Biodiversity Gain Plan, as well as modifications for phased development.
+
+-   The Biodiversity Gain Requirements (Irreplaceable Habitat) Regulations (2024) which set out the modifications for irreplaceable habitat.
+
+## 2.3 BNG Hierarchy
+
+2.3.1 The biodiversity gain hierarchy for the purpose of the statutory framework for biodiversity net gain is set out in Article 30A of the Development Management Procedure Order. This hierarchy is separate to the general mitigation hierarchy set out within the NPFF.
+
+-   Avoiding adverse effects of the development on onsite habitat with a habitat distinctiveness score, applied in the biodiversity metric, equal to or higher than six;
+
+-   So far as those adverse effects cannot be avoided, mitigating those effects;
+
+-   So far as those adverse effects cannot be mitigated, habitat enhancement of onsite habitat;
+
+-   So far as there cannot be that enhancement, creation of onsite habitat;
+
+-   So far as there cannot be that creation, the availability of registered offsite biodiversity gain;
+
+-   So far as that offsite habitat enhancement cannot be secured, purchasing biodiversity credits.
+
+##### .
+
+# 3 METHODOLOGY
+
+## 3.1 Desktop Survey
+
+```{r desktop-survey, include=FALSE}
+
+#inbuild LPA shapefile into package
+#figure out what format ethos shapefiles come in 
+#write function to compare them based on intersection to get lpa name
+#possibly same for NCA, or do in EcoDS package
+
+```
+
+3.1.1 The LPA and NCA have been identified within this assessment. This is displayed within the desktop survey section of this report in Figure 2.
+
+3.1.2 A search was undertaken using publicly available information for priority using the Natural England Priority Habitat Inventory.
+
+3.1.3 A search using publicly available information has been used to identify any irreplaceable habitats which are within or in proximity to the site. This included a search for Ancient Semi Natural Woodland (ASNW) and Ancient Trees using the Ancient Tree Inventory (ATI) online layer.
+
+3.1.4 The desktop survey included a search for local plans, wildlife strategies, or local policy which may inform strategic significance of the habitats within this assessment. If habitats within the project are identified within a plan and are in the correct spatial location, they will be entered as being of high significance within this assessment. Habitats which are identified within a plan but fall outside spatial location or which are well suited to the area will be assigned as being of moderate strategic significance. Other habitats will be entered as being of low strategic significance. The following strategies were used to inform the strategic significance of the habitats within this project:
+
+-   POLICY NAMES
+
+-   STRATEGY NAMES
+
+## 3.2 UK Habitat Classification Survey
+
+3.2.1 The habitat survey was carried out on the `r params$habsurveydate` according to the UKHab Classification system. The survey included a detailed assessment of the land within the development boundary, including a description and mapping of all key features and habitat types. The survey was carried out to identify the range of habitats within the site and the predominant and notable species of flora.
+
+3.2.2 Full results of the UKHab including species lists are provided within the corresponding ES Chapter technical appendix.
+
+## 3.3 Condition Assessments
+
+3.3.1 Condition assessments were undertaken for each habitat which require condition assessment sheets. Following the methodology and criteria provided within The Statutory Biodiversity Metric – Technical Annex 1: Condition Assessments Sheets and Methodology (2023).
+
+```{r rendersurvey, results='asis', echo=FALSE}
+
+#initialise a counter to count how many sections to render
+#may need new separate function to update counter if thing exists 
+sectioncounter <- 3
+
+if (grass_exist){sectioncounter<-rendersurveymethodology("Grass", sectioncounter)}
+
+if (hedge_exist){sectioncounter<-rendersurveymethodology("Hedge", sectioncounter)}
+
+if (water_exist){sectioncounter<-rendersurveymethodology("Water", sectioncounter)}
+
+sectioncounter<-rendersurveymethodology("Limits", sectioncounter)
+
+```
+##### .
+
+# 4 DESKTOP SURVEY
+
+## 4.1 Site Context
+
+4.1.1 The site is located within \[LPA\] Local Planning Authority (LPA) and the \[NCA\] National Character Area (NCA), as shown in Figure 2 below.
+
+![Figure 2: The LPA and NCA surrounding `r site_name`](lpanca.png){width="467.5," height="467.5"}
+
+## 4.2 Strategic Areas and Priority/Irreplaceable Habitats
+
+```{r report-ds-results, include=FALSE}
+
+#Get list of srategic areas, priority, and irreplacable habitats 
+#Write string for if or if not located within / close to 
+#Possibly leave out the unique bit at the end, e.g. low strategic significance, for who
+#fills metric?
+
+```
+
+4.2.1 This site is not located within any strategic area and as such, all of the habitats within this assessment have been input as being of a low strategic significance.
+
+4.2.2 There are no priority habitats within the site boundary. It is considered that the site proposals will not result in an impact on the nearby priority woodlands and as such, priority habitats will not be impacted by the development.
+
+4.2.3 A desktop search using publicly available information did not identify any irreplaceable habitats onsite. This was confirmed during the UKHab survey.
+
+![Figure 3: Priority Habitats Surrounding `r site_name`](priority.png){width="467.5," height="467.5"}
+
+##### .
+
+```{r baselinehabs-formatting, include=FALSE, echo=FALSE}
+
+hectares<-round(habitatbaselinedata$totalarea, 2)
+
+totallbu <- round(((hedgebaselinedata$totalunits) + (waterbaselinedata$totalunits)), 2)
+
+```
+
+# 5 BASELINE HABITATS
+
+5.1.1 The site encompasses `r paste(hectares)` hectares. The existing habitats (Figure 4) generate `r paste(round(habitatbaselinedata$totalunits, 2))` ABUs and `r paste(totallbu)` LBUs, and are listed below: 
+
+```{r get-baseline-area-data, echo=FALSE, results='asis'}
+
+baselinehabitatlist<-intro_habbaselinelist(habitatbaselinedata$habitatbaselinedata)
+cat(paste("* ", (baselinehabitatlist), sep = ""))
+
+```
+```{r get-baseline-linear-data, echo=FALSE, results='asis', eval=lbu_exist}
+
+cat(paste('Linear habitats recorded on site comprise:', "\n\n"))
+
+if (!"No Existing Hedgerows" %in% hedgebaselinedata$hedgebaselinedata$habitattype) {
+  
+  baselinehedgelist<-intro_linearbaselinelist(hedgebaselinedata$hedgebaselinedata)
+  cat("* Hedgerow\n")
+  cat(paste("\t- ", (baselinehedgelist), sep = ""))
+  
+}
+
+if (!"No Existing Watercourses" %in% waterbaselinedata$waterbaselinedata$habitattype) {
+  
+  baselinewaterlist<-intro_linearbaselinelist(waterbaselinedata$waterbaselinedata)
+  cat("* Rivers and Streams\n")
+  cat(paste("\t- ", (baselinewaterlist), sep = ""))
+  
+}
+
+```
+
+5.1.2 Condition sheets for the baseline habitats are provided within Appendix 2 of this report. 
+
+![Figure 4: Baseline Habitat Map of `r site_name`](baselinehabitats.png){width="467.5," height="467.5"}
+
+
+## 5.2 Area Biodiversity Units
+
+```{r ABUsummary, results='asis', echo=FALSE}
+
+sectioncounter<-0
+abusummary(habitatbaselinedata$habitatbaselinedata, sectioncounter)
+
+```
+
+```{r LBUSummaryTitle, eval=lbu_exist, results='asis', echo=FALSE}
+
+cat(paste("## 5.3 Linear Biodiversity Units \n\n"))
+
+```
+
+```{r HedgeSummary, eval=hedge_exist, results='asis', echo=FALSE}
+
+numbernative<-sum(grepl("native", hedgebaselinedata$hedgebaselinedata$habitattype, ignore.case = TRUE))
+
+basehedgeconds<-unique(hedgebaselinedata$hedgebaselinedata$baselinecondition)
+
+if (length(basehedgeconds) == 1) {
+ 
+  basehedgecondsstring <- basehedgeconds
+  
+} else if (length(basehedgeconds) == 2) {
+  
+  basehedgecondsstring <- paste(basehedgeconds, collapse = " and ")
+} else {
+  
+  basehedgecondsstring <- paste(
+    paste(basehedgeconds[-length(basehedgeconds)], collapse = ", "),
+    "and",
+    basehedgeconds[length(basehedgeconds)]
+  )
+}
+
+basehedgestrats<-unique(hedgebaselinedata$hedgebaselinedata$baseliness)
+
+if (length(basehedgestrats) == 1) {
+ 
+  basehedgestratsstring <- basehedgestrats
+  
+} else if (length(basehedgestrats) == 2) {
+  
+  basehedgestratsstring <- paste(basehedgestrats, collapse = " and ")
+} else {
+  
+  basehedgestratsstring <- paste(
+    paste(basehedgestrats[-length(basehedgestrats)], collapse = ", "),
+    "and",
+    basehedgestrats[length(basehedgestrats)]
+  )
+}
+
+cat(paste("5.3.1 There are ",numbernative," native hedgerow(s) present on site.\n\n"))
+
+cat(paste("5.3.2 The existing hedgerow-type linear habitats were in ",tolower(basehedgecondsstring)," condition, and were of ",tolower(basehedgestratsstring)," strategic significance.\n\n"))
+
+cat(paste("5.3.3 The hedgerow-type linear habitats are summarised in Table 1 below.\n\n"))
+
+```
+
+```{r HedgeSummaryTable, eval=hedge_exist, results='asis', echo=FALSE}
+
+baselinehedgesummary<-hedgebaselinedata$hedgebaselinedata
+hedgesummarytable<-data.frame(hedgeno = baselinehedgesummary$baseid,
+                              hedgetype = baselinehedgesummary$habitattype,
+                              description = rep(NA, nrow(baselinehedgesummary)),
+                              photo = rep(NA, nrow(baselinehedgesummary))) #left photo as blank
+
+#create description strings as best as you can
+
+for (i in 1:nrow(baselinehedgesummary)){
+  
+hedgesummarytable$description[i] <- paste("A ",(round(baselinehedgesummary$baselinelength[i], 2)),"km, ",(tolower(baselinehedgesummary$baselinecondition[i]))," condition ",(tolower(baselinehedgesummary$habitattype[i])),", providing ",(round(baselinehedgesummary$baselinelbu[i], 2))," baseline LBUs.", sep='')
+  
+}
+
+colnames(hedgesummarytable) <- c("Hedge Number", "Hedgerow Type", "Description", "Photo")
+
+knitr::kable(hedgesummarytable, caption = "Table 1: Hedgerows on Site")
+
+```
+```{r WaterSummary, eval=water_exist, results='asis', echo=FALSE}
+
+sectioncounter<-0
+waterlbusummary(waterbaselinedata$waterbaselinedata, sectioncounter)
+# single line / group by hab - should summarise by stratsig - try on ditch
+```
+
+##### .
+
+```{r proposalsection, include=FALSE}
+
+netabu<-round(netdata$NetHabitatUnits, 2)
+
+netlbu<-round(((netdata$NetHedgerowUnits) + (netdata$NetWaterUnits)), 2)
+
+developmentstring<-developmentstring(habitatlossdata$habitatlostdata$habitattype, hedgelossdata$hedgelostdata$habitattype, waterlossdata$waterlostdata$habitattype)
+```
+
+# 6 DEVELOPMENT PROPOSALS
+
+6.1.1 The development proposals for the site comprise the removal of `r paste(developmentstring)`. These proposals will accommodate `r params$developmentpurpose`.
+
+6.1.2 The proposed development generates `r paste(netabu)` ABUs and `r paste(netlbu)` LBUs.
+
+6.1.3 The layout of the development has been developed to minimise impacts on important ecological features as follows...
+
+![Figure 5: Illustrative Masterplan for `r site_name`](masterplan.png){width="467.5," height="467.5"}
+
+##### .
+
+# 7 POST-INTERVENTION HABITATS
+
+7.1.1 Condition assessment sheets for which created and enhanced habitats will be provided within the HMMP report. The proposed condition assessments include justification for how the habitats will meet their target conditions.
+
+![Figure 6: Proposed Habitats Map of `r site_name`](proposedhabitats.png){width="467.5," height="467.5"}
+```{r PIABU, echo=FALSE, results='asis'}
+sectioncounter <- 1
+if (!"No Habitats Lost" %in% habitatlossdata$habitatlostdata$broadhabitat){
+  
+sectioncounter<-abupilost(habitatlossdata$habitatlostdata, sectioncounter)
+
+}
+
+if (!"No Habitats Retained" %in% habitatretaindata$habitatretaindata$broadhabitat){
+
+sectioncounter<-abupiretain(habitatretaindata$habitatretaindata, sectioncounter)
+
+}
+
+if (!"No Habitats Enhanced" %in% habitatenhancedata$habitatenhancementdata$broadhabitat){
+
+sectioncounter<- abupienhance(habitatenhancedata$habitatenhancementdata, sectioncounter)
+
+}
+
+subsectioncounter<-0
+
+if (!"No Habitats Created" %in% habitatcreationdata$habitatcreationdata$broadhabitat){
+  
+sectioncounter<-abupicreate(habitatcreationdata$habitatcreationdata, sectioncounter)
+
+}
+```
+
+```{r PILBU, echo=FALSE, results='asis'}
+sectioncounter <- 0
+
+if (!"No Hedgerows Lost" %in% hedgelossdata$hedgelostdata$habitattype) {
+  sectioncounter <- hedgelbupilost(hedgelossdata$hedgelostdata, sectioncounter)
+}
+
+if (!"No Watercourses Lost" %in% waterlossdata$waterlostdata$habitattype) {
+  sectioncounter <- waterlbupilost(waterlossdata$waterlostdata, sectioncounter)
+}
+
+if (!"No Hedgerows Retained" %in% hedgeretaindata$hedgeretaindata$habitattype) {
+  sectioncounter <- hedgelbupiretain(hedgeretaindata$hedgeretaindata, sectioncounter)
+}
+
+if (!"No Watercourses Retained" %in% waterretaindata$waterretaindata$habitattype) {
+  sectioncounter <- waterlbupiretain(waterretaindata$waterretaindata, sectioncounter)
+  
+}
+
+if (!"No Hedgerows Created" %in% hedgecreationdata$hedgecreationdata$habitattype) {
+  sectioncounter <- hedgelbupicreate(hedgecreationdata$hedgecreationdata, sectioncounter)
+}
+
+if (!"No Watercourses Created" %in% watercreationdata$watercreationdata$habitattype) {
+  sectioncounter <- waterlbupicreate(watercreationdata$watercreationdata, sectioncounter)
+}
+
+if (!"No Hedgerows Enhanced" %in% hedgeenhancedata$hedgeenhancementdata$habitattype) {
+  sectioncounter<-hedgelbupienhance(hedgeenhancedata$hedgeenhancementdata, sectioncounter)
+}
+
+if (!"No Watercourses Enhanced" %in% waterenhancedata$waterenhancementdata$habitattype) {
+  sectioncounter<-waterlbupienhance(waterenhancedata$waterenhancementdata, sectioncounter)
+  }
+```
+##### .
+
+# 8 SUMMARY OF ONSITE BIODIVERSITY CHANGE
+
+8.1 The habitat trading standards `r if (netdata$TradeSatisfied == "Yes") paste('are met') else paste('are not met')` within this project, and the proposals would result in a percentage net `r if (netdata$NetHabitatPercent >= 0) paste('gain') else paste('loss')` of `r paste(netdata$NetHabitatPercent)`% for area based habitats, a net `r if (netdata$NetHedgerowPercent >= 0) paste('gain') else paste('loss')` of `r paste(netdata$NetHedgerowPercent)`% for hedgerow habitats, and a net `r if (netdata$NetWaterPercent >= 0) paste('gain') else paste('loss')` of `r paste(netdata$NetWaterPercent)`% for watercourse habitats. 
+
+##### .
+
+# 9 BIODIVERSITY NET GAIN PRINCIPLES
+
+9.1 The ten BNG principles and how they have been considered in relation to this project are set out below in Table 2.
+
+| Principle                                                                       | Application to Project |
+|-----------------------|-------------------------------------------------|
+| Principle 1: Apply the mitigation hierarchy                                     | X habitats on site were assessed to be of importance for nature conservation (see EcIA for further details). Therefore, avoiding impacts on the majority of habitats on site is not considered necessary. The project achieves a net gain overall for all metrics, going above and beyond the minimum requirements. The development is assessed to be compliant with the mitigation hierarchy.|
+| Principle 2: Avoid losing biodiversity that cannot be offset by gains elsewhere |There ARE/ARENOT no irreplaceable habitats on site and therefore, impacts on habitats can be compensated.  |
+| Principle 3: Be inclusive and equitable                                         |Ethos have engaged with the landscape architects for the project in order to identify the most suitable habitats for both biodiversity and aesthetic.|
+| Principle 4: Address risk                                                       |Habitats to be created are RISKLEVEL risk. Management and monitoring of habitats will be set out within a HMMP, with remedial measures identified if habitats are not meeting their target conditions.|
+| Principle 5: Make a measurable net gain contribution                            |The project overall ACHIEVES/DOESNT ACHIEVE a net gain across all metrics beyond the minimum requirements.|
+| Principle 6: Achieve the best outcomes for biodiversity                         |The project overall ACHIEVES/DOESNT ACHIEVE a net gain across all metrics beyond the minimum requirements.|
+| Principle 7: Be additional                                                      |The development proposals project a net GAIN/LOSS for biodiversity beyond the statutory requirements.|
+| Principle 8: Create a net gain legacy                                           |The HMMP will set out management actions, monitoring plan and remedial measures which therefore plans for adaptive management and will secure dedicated funding for the 30-year management period.|
+| Principle 9: Optimise sustainability                                            |THESE HABITATS will be created on site; this prioritises BNG as well as providing wider environmental benefits for local residents.|
+| Principle 10: Be transparent                                                    |Draft BNG information has been provided throughout the project to the project team. This BNG report will be provided to the LPA as part of the planning application and will be available on the planning portal for comment. Therefore, it is considered transparent.|
+
+##### .
+
+# 10 CONCLUSIONS
+
+10.1 This project proposes `r if (developmentstring != "nothing") paste('the removal of ', (developmentstring), ' to accomodate ', (params$developmentpurpose),'.', sep="")`
+
+10.2 Proposals for area-based habitats include `r if (creationhabitatstring != "nothing") paste('the creation of', (creationhabitatstring)) else ""``r if (creationhabitatstring != "nothing" && enhancehabitatstring != "nothing") paste(', and ')``r if (enhancehabitatstring != "nothing") paste('the enhancement of', (enhancehabitatstring)) else ""`.
+
+```{r linearconclusions, echo=FALSE, eval=lbu_exist, results='asis'}
+
+#originally used paste, but paste prints it as an index if its not in an inside `r` thing, so was printing with a [1]. once its in a ``` chunk like this, you use cat, so that it doesnt paste the annoying index 
+
+if (hedge_exist) {
+  if (creationhedgestring != "nothing" || enhancehedgestring != "nothing") cat("10.3a Proposals for hedgerow habitats include",
+    if (creationhedgestring != "nothing") paste("the creation of the following:", creationhedgestring),
+    if (creationhedgestring != "nothing" && enhancehedgestring != "nothing") cat("and"),
+    if (enhancehedgestring != "nothing") paste("the enhancement of the following:", enhancehedgestring))
+  if (creationhedgestring == "nothing" && enhancehedgestring == "nothing") cat("10.3a There are no proposals for the enhancement or creation of hedgerows")
+  cat(".") #cat will insert a space between any argument, so to avoid spaces between final full stop which is necessary, cat the full stop separately!
+  
+} else {
+    
+  cat("10.3a There are no proposals for the enhancement or creation of hedgerows.") #should this technically only say creation, as this only runs if there are no existing hedgerows, so the only opportunity would be to create?
+  
+}
+#these will print directly after each other unless you separate them by a linebreak
+
+cat("\n\n")
+
+if (water_exist) {
+  if (creationwaterstring != "nothing" || enhancewaterstring != "nothing") cat("10.3b Proposals for watercourse habitats include",
+    if (creationwaterstring != "nothing") paste('the creation of the following:', creationwaterstring),
+    if (creationwaterstring != "nothing" && enhancewaterstring != "nothing") "and",
+    if (enhancewaterstring != "nothing") paste('the enhancement of the following:', enhancewaterstring))
+    if (creationwaterstring == "nothing" && enhancewaterstring == "nothing") cat("10.3a There are no proposals for the enhancement or creation of watercourses")
+     cat(".")
+} else {
+  
+  cat("10.3b There are no proposals for the enhancement or creation of watercourses.") #should this technically only say creation, as this only runs if there are no existing watercourses, so the only opportunity would be to create?
+}
+
+```
+
+10.4 The proposals `r if (netdata$TradeSatisfied == "Yes") paste('meet') else paste('do not meet')` trading requirements, and provide an overall net `r if (netdata$NetHabitatPercent >= 0) paste('gain') else paste('loss')` in biodiversity for area based habitats (`r paste(round(netdata$NetHabitatUnits, 2))` units, `r paste(netdata$NetHabitatPercent)`%), a net `r if (netdata$NetHedgerowPercent >= 0) paste('gain') else paste('loss')` for hedgerow habitats (`r paste(round(netdata$NetHedgerowUnits, 2))` units, `r paste(netdata$NetHedgerowPercent)`%), and a net `r if (netdata$NetWaterPercent >= 0) paste('gain') else paste('loss')` for watercourse habitats (`r paste(round(netdata$NetWaterUnits, 2))` units, `r paste(netdata$NetWaterPercent)`%).
+
+10.5 In order to achieve \>10% net gain a further 14.73 ABU are required, these must be medium distinctiveness grassland in order to also satisfy the trading requirements. A further 0.24 LBU are required which will also satisfy the trading requirements.
+
+10.6 With the above offsite credits secured. This project aligns with the BNG principles, and is in accordance with local and national policy, and emerging national legislation.
+
+10.7 The project meets the BNG objective and can form the BNG condition which can be discharged within the reserved matters of this application. A Biodiversity Net Gain Plain and HMMP will be submitted to the appropriate Local Authority within the reserved matters stage of this planning application.
+
+10.8 Paragraph 9 of Schedule 7A of the Town and Country Planning Act 1990 requires ‘significant’ on-site habitat enhancement to be secured under a planning condition, section 106 agreement, or conservation covenant.
+
+##### .
+
+# 11 REFERENCES
+
+CIEEM (2021). Biodiversity Net Gain Report and Audit Templates. Chartered Institute of Ecology and Environmental Management, Winchester, UK.
+
+CIEEM, IEMA & CIRIA (2016). Biodiversity Net Gain: Good Practice Principles for Development.
+
+DEFRA (2007). Hedgerow Survey Handbook: A standard procedure for local surveys in the UK.
+
+DEFRA (2023). The Statutory Biodiversity Metric.
+
+DEFRA (2018). 25 Year Environment Plan. His majesty’s stationary office
+
+Gov (2023) guidance/draft-biodiversity-net-gain-planning-practice-guidance \[online\] Available from: [ ](https://www.gov.uk/guidance/draft-biodiversity-net-gain-planning-practice-guidance)
+
+Department for Levelling Up, Housing & Communities (2023) National Planning Policy Framework.
+
+UKHab (2023). UK Habitat Classification Version 2.0. Available from: [ ](https://www.ukhab.org)
+
+Wildlife and Countryside Act (1981). As amended.
+
+##### .
+
+# APPENDIX 1 POLICY AND LEGISLATION
+
+## 11.1 Statutory Framework
+
+11.1.1 Biodiversity net gain is a way of creating and improving biodiversity by requiring development to have a positive impact (‘net gain’) on biodiversity.
+
+11.1.2 In England, biodiversity net gain is required under a statutory framework introduced by Schedule 7A of the Town and Country Planning Act 1990 (inserted by the Environment Act 2021). This is referred to as biodiversity net gain in Planning Practice Guidance to distinguish it from other or more general biodiversity gains.
+
+11.1.3 Under the statutory framework for biodiversity net gain, every grant of planning permission is deemed to have been granted subject to a general biodiversity gain condition to secure the biodiversity gain objective. This objective is to deliver at least a 10% increase in relation to the pre-development biodiversity value of the development granted permission. This increase can be achieved through onsite biodiversity gains, registered offsite biodiversity gains or statutory biodiversity credits.
+
+11.1.4 The general biodiversity gain condition is a pre-commencement condition: once planning permission has been granted, a Biodiversity Gain Plan must be submitted and approved by the planning authority before commencement of the development. There are exemptions and transitional arrangements which disapply the condition from certain planning permissions, as well as special modifications for planning permissions for phased development and the treatment of irreplaceable habitats.
+
+11.1.5 The statutory framework for biodiversity net gain also includes provisions about information requirements for planning applications and the treatment of the condition on planning decision notices.
+
+## 11.2 Environment Act 2021
+
+11.2.1 The Act requires a minimum of 10% net gain for biodiversity as a condition of planning permission.
+
+11.2.2 Net gain is to be measured by the biodiversity metric published by the Secretary of State. The Act requires that gains must be secured for a minimum of 30 years post completion of development. Also, under Section 40 the NERC Act 2006, as amended by the Environment Act 2021, “A public authority which has any functions exercisable in relation to England must from time-to-time consider what action the authority can properly take, consistently with the proper exercise of its functions, to further the general biodiversity objective.”…the biodiversity objective is, “…the conservation and enhancement of biodiversity in England through the exercise of functions in relation to England”. This is referred to as the Biodiversity Duty.
+
+11.2.3 The Environment Act received Royal Assent in November 2021, meaning that by February 2024 the expectation for all planning permissions to include a biodiversity net gain of at least 10% will become a legal requirement.
+
+## 11.3 BNG Exemptions
+
+Small sites (exempt until April 2024)
+
+-   residential development where the number of dwellings is between 1 and 9, or if this is unknown, the site area is less than 0.5 hectares
+-   commercial development where floor space created is less than 1,000 square metres or total site area is less than 1 hectare
+-   development that is not the winning and working of minerals or the use of land for mineral-working deposits
+-   development that is not waste development
+
+Developments below Threshold
+
+11.3.1 A development that’s below the threshold means that it does not impact a priority habitat and impacts less than:
+
+-   25 square metres (5m by 5m) of habitat
+-   5 metres of linear habitats such as hedgerows
+
+Householder Applications
+
+11.3.2 These are applications made by householders as defined within article 2(1) of the Town and Country Planning (Development Management Procedure) (England) Order 2015. It includes, for example, small projects like home extensions, conservatories or loft conversions
+
+Self-build and Custom Applications
+
+11.3.3 An exemption applies to this type of development when all the following conditions apply:
+
+-   it consists of no more than 9 dwellings
+-   it’s on a site that has an area no larger than 0.5 hectares
+-   it consists exclusively of dwellings that are self-build or custom housebuilding as defined in section 1(A1) of the Self-build and Custom Housebuilding Act 2015
+
+Biodiversity Gain Site
+
+11.3.4 Developments undertaken for the purpose of fulfilling the BNG planning condition for another development are exempt.
+
+High Speed Railway Network
+
+11.3.5 An exemption applies to any development forming part of, or ancillary to, the high-speed railway transport network, comprising connections between all or any of the places or parts of the transport network specified in section 1(2) of the High Speed Rail (Preparation) Act 2013
+
+## 11.4 National Planning Policy Framework
+
+11.4.1 The National Planning Policy Framework (NPPF) sets out planning policy for England. Paragraphs of particular relevance from the NPPF are listed below:
+
+11.4.2 Paragraph 180 states “Planning policies and decisions should contribute to and enhance the natural and local environment by minimising impacts on and providing net gains for biodiversity, including by establishing coherent ecological networks that are more resilient to current and future pressures”.
+
+11.4.3 Paragraph 185 states “To protect and enhance biodiversity and geodiversity, plans should promote the conservation, restoration and enhancement of priority habitats, ecological networks and the protection and recovery of priority species; and identify and pursue opportunities for securing measurable net gains for biodiversity.”
+
+11.4.4 Paragraph 186 states “When determining planning applications, local planning authorities should apply the following principles development whose primary objective is to conserve or enhance biodiversity should be supported; while opportunities to improve biodiversity in and around developments should be integrated as part of their design, especially where this can secure measurable net gains for biodiversity or enhance public access to nature where this is appropriate.”
+
+## 11.5 UK Governments 25 Year Environment Plan
+
+11.5.1 The UK Government’s 25 Year Environment Plan (DEFRA, 2018) states a desire to ‘embed a ‘net environmental gain’ principle for development to deliver environmental improvements locally and nationally’ and plans to consult on making Biodiversity Net Gain a mandatory requirement.
+
+11.5.2 On 14th March 2019, Her Majesty’s Treasury confirmed that following consultation, the government will use the forthcoming Environment Bill to mandate BNG for development in England, ensuring that the delivery of much-needed infrastructure and housing is not at the expense of vital biodiversity.
+
+## 11.6 Biodiversity 2020: A Strategy for England’s Wildlife and Ecosystem
+
+11.6.1 A strategy for England’s wildlife and ecosystem services (DEFRA, 2011) is the national strategy for biodiversity. This sets out an ambition to halt the loss of biodiversity and see an increase in the area of priority habitats by 200,000 ha by 2020. Biodiversity 2020 sets in policy the objectives to improve our wildlife Sites, make them bigger, develop more of them and join them up (summarised as ‘Bigger, Better, More and Joined’).
+
+## 11.7 NERC Act
+
+11.7.1 The Natural Environment and Rural Countryside (NERC) Act (HMSO, 2006) requires public bodies, including local authorities, ‘to have regard to the conservation of biodiversity in England when carrying out their normal functions’. Section 40 sets out that:
+
+-   Paragraph 1. “Every public authority must, in exercising its functions, have regard, so far as is consistent with the proper exercise of those functions, to the purpose of conserving biodiversity”;
+-   Paragraph 3. “Conserving biodiversity includes, in relation to a living organism or type of habitat, restoring or enhancing a population or habitat”.
+-   Section 41 sets out that: Paragraph 1. “The Secretary of State must… publish a list of the living organisms and types of habitat … of principal importance for the purpose of conserving biodiversity” based on consultation with Natural England; and that Every planning authority must “a) take such steps… to further the conservation of the living organisms and types of habitat included in any list published under this section, or (b) promote the taking by others of such steps”.
+
+## 11.8 Local Policy
+
+\[ to be filled in automatically\]
+
+##### .
+
+# APPENDIX 2 CONDITION ASSESSMENT SHEETS
+
+\[to be filled in automatically\]
