@@ -1,9 +1,0 @@
----
-format: odt
-reference-doc: feasibilityreference.odt
-editor: visual
----
-
-3.sectionNumber.1 Habitat surveys were carried out at a suitable time of year, but surveys were not exhaustive and may not have recorded all species present on site.
-
-3.sectionNumber.2 Habitat areas (ha) and lengths (km) produced in GIS were rounded to two and three decimal places (respectively) for inputting into the metric. Due to rounding of values there are discrepancies in the total area of lost and created habitats within the metric. This is not considered a limitation to this BNG assessment because all habitats are considered to be captured accurately in GIS for representation in the BNG assessment.
