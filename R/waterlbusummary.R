@@ -19,7 +19,7 @@ waterlbusummary<-function(waterbaselinedata, sectioncounter){
     
     #render paragraph number
     cat(sprintf("5.2.%s", sectioncounter))
-    cat(paste(" The watercourse consists of a ",(round(waterbaselinedata$baselinelength[i], 2)), "km length of ", tolower(waterbaselinedata$habitattype[i]),", a ", tolower(waterbaselinedata$distinctiveness[i]), " distinctiveness, ",tolower(waterbaselinedata$baseliness[i])," strategic significance habitat.\n\n", sep=''))
+    cat(paste(" The watercourse consists of a ",(round(waterbaselinedata$baselinelength[i], 2)), " km length of ", tolower(waterbaselinedata$habitattype[i]),", a ", tolower(waterbaselinedata$distinctiveness[i]), " distinctiveness, ",tolower(waterbaselinedata$baseliness[i])," strategic significance habitat.\n\n", sep=''))
     
     sectioncounter <- sectioncounter + 1
     

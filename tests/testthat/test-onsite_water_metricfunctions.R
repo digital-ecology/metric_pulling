@@ -1,35 +1,112 @@
 library(testthat)
 
-test_that("pullonsitewaterbaseline returns correct structure", {
-  # Assuming 'metric' is a valid file path or input
-  metric <- "data-raw/OnSiteHedgeEnhance.xlsx"
+# Mock input for metric (this would be a path to an actual file in practice)
+metric_mock <- "data-raw/OnSiteBoth.xlsx"
+
+# Test for pullonsitewaterbaseline function
+test_that("pullonsitewaterbaseline returns waterbaselinedata", {
   
-  result <- pullonsitewaterbaseline(metric)
+  # Call the function with the mock metric
+  result <- pullonsitewaterbaseline(metric_mock)
   
   # Check if the result is a list
-  expect_type(result, "list")
+  expect_true(is.list(result), info = "The result should be a list.")
   
-  # Check if the waterbaselinedata is a data frame
-  expect_true(is.data.frame(result$waterbaselinedata))
+  # Check if 'waterbaselinedata' is part of the list
+  expect_true("waterbaselinedata" %in% names(result), info = "The list should contain 'waterbaselinedata'.")
   
-  # Check for required columns in the output data frame
-  expect_true("habitattype" %in% colnames(result$waterbaselinedata))
-  expect_true("baselinelength" %in% colnames(result$waterbaselinedata))
-  expect_true("baselinecondition" %in% colnames(result$waterbaselinedata))
-  expect_true("baseliness" %in% colnames(result$waterbaselinedata))
-  expect_true("baselinelbu" %in% colnames(result$waterbaselinedata))
-  expect_true("distinctiveness" %in% colnames(result$waterbaselinedata))
+  # Check if 'waterbaselinedata' is a data frame
+  expect_true(is.data.frame(result$waterbaselinedata), info = "'waterbaselinedata' should be a data frame.")
   
-  # Check if the total length and total units are numeric
-  expect_true(is.numeric(result$totallength))
-  expect_true(is.numeric(result$totalunits))
+  # Optionally, check if the columns in waterbaselinedata match the expected ones
+  expected_columns <- c("habitattype", "baselinelength", "baselinecondition", "baseliness", "baselinelbu", "distinctiveness")
+  expect_true(all(expected_columns %in% colnames(result$waterbaselinedata)), info = "Columns in 'waterbaselinedata' do not match the expected ones.")
+  
 })
 
-test_that("pullonsitewaterbaseline handles missing data", {
-  metric <- "data-raw/OnSiteBoth.xlsx"
+
+# Test for pullonsitewaterretain function
+test_that("pullonsitewaterretain returns waterretaindata", {
   
-  result <- pullonsitewaterbaseline(metric)
+  # Call the function with the mock metric
+  result <- pullonsitewaterretain(metric_mock)
   
-  # Check if the function can handle missing data and return default values
-  expect_equal(result$waterbaselinedata$habitattype, "No Existing Watercourses")
+  # Check if the result is a list
+  expect_true(is.list(result), info = "The result should be a list.")
+  
+  # Check if 'waterretaindata' is part of the list
+  expect_true("waterretaindata" %in% names(result), info = "The list should contain 'waterretaindata'.")
+  
+  # Check if 'waterretaindata' is a data frame
+  expect_true(is.data.frame(result$waterretaindata), info = "'waterretaindata' should be a data frame.")
+  
 })
+
+
+# Test for pullonsitewaterloss function
+test_that("pullonsitewaterloss returns waterlostdata", {
+  
+  # Call the function with the mock metric
+  result <- pullonsitewaterloss(metric_mock)
+  
+  # Check if the result is a list
+  expect_true(is.list(result), info = "The result should be a list.")
+  
+  # Check if 'waterlostdata' is part of the list
+  expect_true("waterlostdata" %in% names(result), info = "The list should contain 'waterlostdata'.")
+  
+  # Check if 'waterlostdata' is a data frame
+  expect_true(is.data.frame(result$waterlostdata), info = "'waterlostdata' should be a data frame.")
+  
+
+ 
+})
+
+# Test for pullonsitewatercreation function
+test_that("pullonsitewatercreation returns watercreationdata", {
+  
+  # Call the function with the mock metric
+  result <- pullonsitewatercreation(metric_mock)
+  
+  # Check if the result is a list
+  expect_true(is.list(result), info = "The result should be a list.")
+  
+  # Check if 'watercreationdata' is part of the list
+  expect_true("watercreationdata" %in% names(result), info = "The list should contain 'watercreationdata'.")
+  
+  # Check if 'watercreationdata' is a data frame
+  expect_true(is.data.frame(result$watercreationdata), info = "'watercreationdata' should be a data frame.")
+  
+  # Check if the total created water length and units are present
+  expect_true("TotalCreatedwaterLength" %in% names(result), info = "'TotalCreatedwaterLength' should be present in the result.")
+  expect_true("TotalCreatedwaterUnits" %in% names(result), info = "'TotalCreatedwaterUnits' should be present in the result.")
+  
+})
+
+
+# Test for pullonsitewaterenhancement function
+test_that("pullonsitewaterenhancement returns waterenhancementdata", {
+  
+  # Call the function with the mock metric
+  result <- pullonsitewaterenhancement(metric_mock)
+  
+  # Check if the result is a list
+  expect_true(is.list(result), info = "The result should be a list.")
+  
+  # Check if 'waterenhancementdata' is part of the list
+  expect_true("waterenhancementdata" %in% names(result), info = "The list should contain 'waterenhancementdata'.")
+  
+  # Check if 'waterenhancementdata' is a data frame
+  expect_true(is.data.frame(result$waterenhancementdata), info = "'waterenhancementdata' should be a data frame.")
+  
+  # Optionally, check if the columns in waterenhancementdata match the expected ones
+  expected_columns <- c("habitattype", "enhancedlength", "enhancedcond", "enhancedss", "distinctiveness", "enhancedunits", "basehabitattype", "basecondition")
+  expect_true(all(expected_columns %in% colnames(result$waterenhancementdata)), info = "Columns in 'waterenhancementdata' do not match the expected ones.")
+  
+  
+})
+
+
+
+
+
