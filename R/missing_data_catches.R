@@ -1,8 +1,3 @@
-
-
-  
-  
-  
   clean_C1_dataset <- function(metric) {
     # Read the dataset
     df <- openxlsx::read.xlsx(metric, "C-1 On-Site WaterC' Baseline", colNames = FALSE, startRow = 10)
