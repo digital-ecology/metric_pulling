@@ -8,67 +8,73 @@
 #'
 #' @examples \dontrun{baselinedata<-pullonsitehabitatbaseline(metric)}
 pullonsitehabitatbaseline<-function(metric){
-
-  #baselinesheet
-  baselinesheet <- "A-1 On-Site Habitat Baseline"
-
-  #Broad Habitat
-  broadbaseline<- openxlsx::read.xlsx(metric, baselinesheet, cols = 5, colNames = FALSE, startRow = 11)
-  colnames(broadbaseline) <- "broadhabitat"
-
-  #Specific Habitat
-  baselinehabitattype<- openxlsx::read.xlsx(metric, baselinesheet, cols = 6, colNames = FALSE, startRow = 11)
-  #remove last three rows from habtiattype as they are rows abt area/hectares etc
-  baselinehabitattype <- baselinehabitattype[1:(nrow(baselinehabitattype) - 3), , drop = FALSE]
-  colnames(baselinehabitattype) <- "habitattype"
-
-  #Baseline Area
-  baselinearea<-openxlsx::read.xlsx(metric, sheet = baselinesheet, cols = 8, colNames = FALSE, startRow = 11)
-  baselinearea <- baselinearea[1:(nrow(baselinearea) - 3), , drop = FALSE] #remove last cols with writing in
-  baselinearea$X1<-as.numeric(baselinearea$X1)
-  colnames(baselinearea) <- "baselinearea"
+  clean_onsitehab_baseline <- clean_onsitehab_baseline(metric)
   
-  #baselinedistinctiveness
-  baselinedistinctiveness<-openxlsx::read.xlsx(metric, sheet = baselinesheet, cols = 9, colNames = FALSE, startRow = 11)
-  baselinedistinctiveness<- baselinedistinctiveness[baselinedistinctiveness$X1!= "", , drop = FALSE]
-  baselinedistinctiveness<- baselinedistinctiveness[-nrow(baselinedistinctiveness), , drop = FALSE]
-  baselinedistinctiveness$X1 <- ifelse(baselinedistinctiveness$X1 == "V.low", "Very Low", baselinedistinctiveness$X1)
-  baselinedistinctiveness$X1 <- ifelse(baselinedistinctiveness$X1 == "V.Low", "Very Low", baselinedistinctiveness$X1)
-  baselinedistinctiveness$X1 <- ifelse(baselinedistinctiveness$X1 == "V.high", "Very High", baselinedistinctiveness$X1)
-  colnames(baselinedistinctiveness) <- "distinctiveness"
+  if (is.data.frame(clean_onsitehab_baseline)) {
+    
+    #baselinesheet
+    baselinesheet <- "A-1 On-Site Habitat Baseline"
   
-  #BaselineCondition
-  baselinecondition <-openxlsx::read.xlsx(metric, sheet = baselinesheet, cols = 11, colNames = FALSE, startRow = 11)
-  colnames(baselinecondition) <- "baselinecondition"
-
-  #BaselineStrategicSignificance
-  baseliness <-openxlsx::read.xlsx(metric, sheet = baselinesheet, cols = 13, colNames = FALSE, startRow = 11)
-  #this pulls all 200, think cus yellow cells, so maybe do based on prev col and assign low/med/high?
-  baseliness$X1 <- ifelse(baseliness$X1 == "Area/compensation not in local strategy/ no local strategy", "Low", baseliness$X1)
-  baseliness$X1 <- ifelse(baseliness$X1 == "Location ecologically desirable but not in local strategy", "Medium", baseliness$X1)
-  baseliness$X1 <- ifelse(baseliness$X1 == "Formally identified in local strategy", "High", baseliness$X1)
-  colnames(baseliness) <- "baseliness"
-
-  #BaselineBNGUnits
-  baselinebngu<-openxlsx::read.xlsx(metric, sheet = baselinesheet, cols = 17, colNames = FALSE, startRow = 11)
-  baselinebngu <- baselinebngu[baselinebngu$X1 != "", , drop = FALSE]
-  baselinebngu <- baselinebngu[-nrow(baselinebngu), , drop = FALSE] #remove final line as total
-  baselinebngu$X1<-as.numeric(baselinebngu$X1)
-  colnames(baselinebngu) <- "baselineabu"
+    #Broad Habitat
+    broadbaseline<- openxlsx::read.xlsx(metric, baselinesheet, cols = 5, colNames = FALSE, startRow = 11)
+    colnames(broadbaseline) <- "broadhabitat"
   
-  habitatbaselinedata<-data.frame(broadbaseline, baselinehabitattype, baselinearea, baselinedistinctiveness, baselinecondition, baseliness, baselinebngu)
+    #Specific Habitat
+    baselinehabitattype<- openxlsx::read.xlsx(metric, baselinesheet, cols = 6, colNames = FALSE, startRow = 11)
+    #remove last three rows from habtiattype as they are rows abt area/hectares etc
+    baselinehabitattype <- baselinehabitattype[1:(nrow(baselinehabitattype) - 3), , drop = FALSE]
+    colnames(baselinehabitattype) <- "habitattype"
   
-  #get total areas, and total baseline units
-  totalarea<-openxlsx::read.xlsx(metric, sheet = baselinesheet, cols = 8, rows = 259, colNames = FALSE)
-  colnames(totalarea) <- "totalarea"
-  totalunits<-openxlsx::read.xlsx(metric, sheet = baselinesheet, cols = 17, rows = 259, colNames = FALSE)
-  colnames(totalunits) <- "totalbaselineabu"
-
-  habitatbaselinedata<-list(habitatbaselinedata = habitatbaselinedata,
-                            totalarea = totalarea,
-                            totalunits = totalunits)
-
-  return(habitatbaselinedata)
+    #Baseline Area
+    baselinearea<-openxlsx::read.xlsx(metric, sheet = baselinesheet, cols = 8, colNames = FALSE, startRow = 11)
+    baselinearea <- baselinearea[1:(nrow(baselinearea) - 3), , drop = FALSE] #remove last cols with writing in
+    baselinearea$X1<-as.numeric(baselinearea$X1)
+    colnames(baselinearea) <- "baselinearea"
+    
+    #baselinedistinctiveness
+    baselinedistinctiveness<-openxlsx::read.xlsx(metric, sheet = baselinesheet, cols = 9, colNames = FALSE, startRow = 11)
+    baselinedistinctiveness<- baselinedistinctiveness[baselinedistinctiveness$X1!= "", , drop = FALSE]
+    baselinedistinctiveness<- baselinedistinctiveness[-nrow(baselinedistinctiveness), , drop = FALSE]
+    baselinedistinctiveness$X1 <- ifelse(baselinedistinctiveness$X1 == "V.low", "Very Low", baselinedistinctiveness$X1)
+    baselinedistinctiveness$X1 <- ifelse(baselinedistinctiveness$X1 == "V.Low", "Very Low", baselinedistinctiveness$X1)
+    baselinedistinctiveness$X1 <- ifelse(baselinedistinctiveness$X1 == "V.high", "Very High", baselinedistinctiveness$X1)
+    colnames(baselinedistinctiveness) <- "distinctiveness"
+    
+    #BaselineCondition
+    baselinecondition <-openxlsx::read.xlsx(metric, sheet = baselinesheet, cols = 11, colNames = FALSE, startRow = 11)
+    colnames(baselinecondition) <- "baselinecondition"
+  
+    #BaselineStrategicSignificance
+    baseliness <-openxlsx::read.xlsx(metric, sheet = baselinesheet, cols = 13, colNames = FALSE, startRow = 11)
+    #this pulls all 200, think cus yellow cells, so maybe do based on prev col and assign low/med/high?
+    baseliness$X1 <- ifelse(baseliness$X1 == "Area/compensation not in local strategy/ no local strategy", "Low", baseliness$X1)
+    baseliness$X1 <- ifelse(baseliness$X1 == "Location ecologically desirable but not in local strategy", "Medium", baseliness$X1)
+    baseliness$X1 <- ifelse(baseliness$X1 == "Formally identified in local strategy", "High", baseliness$X1)
+    colnames(baseliness) <- "baseliness"
+  
+    #BaselineBNGUnits
+    baselinebngu<-openxlsx::read.xlsx(metric, sheet = baselinesheet, cols = 17, colNames = FALSE, startRow = 11)
+    baselinebngu <- baselinebngu[baselinebngu$X1 != "", , drop = FALSE]
+    baselinebngu <- baselinebngu[-nrow(baselinebngu), , drop = FALSE] #remove final line as total
+    baselinebngu$X1<-as.numeric(baselinebngu$X1)
+    colnames(baselinebngu) <- "baselineabu"
+    
+    habitatbaselinedata<-data.frame(broadbaseline, baselinehabitattype, baselinearea, baselinedistinctiveness, baselinecondition, baseliness, baselinebngu)
+    
+    #get total areas, and total baseline units
+    totalarea<-openxlsx::read.xlsx(metric, sheet = baselinesheet, cols = 8, rows = 259, colNames = FALSE)
+    colnames(totalarea) <- "totalarea"
+    totalunits<-openxlsx::read.xlsx(metric, sheet = baselinesheet, cols = 17, rows = 259, colNames = FALSE)
+    colnames(totalunits) <- "totalbaselineabu"
+  
+    habitatbaselinedata<-list(habitatbaselinedata = habitatbaselinedata,
+                              totalarea = totalarea,
+                              totalunits = totalunits)
+  
+    return(habitatbaselinedata)}
+  else {
+    return(clean_onsitehab_baseline)
+  }
 
 }
 
