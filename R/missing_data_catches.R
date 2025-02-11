@@ -16,6 +16,7 @@ clean_C1_dataset <- function(metric) {
     df <- df[,-31]
     df <- df[,-28]
     df <- df[,-26]
+    df <- df[,-25]
     df <- df[, -1]
     
     
