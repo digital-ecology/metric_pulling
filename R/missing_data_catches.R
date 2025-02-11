@@ -348,8 +348,26 @@ clean_onsitehab_baseline <- function(metric) {
     df <- df[,-3]
     df <- df[-1,]
     
+    # Identify rows that are completely empty
+    na_rows <- apply(df, 1, function(row) all(is.na(row) | row == ""))
+    
+    # Detect large NA blocks (adjust threshold if needed)
+    na_threshold <- 3  # Define what counts as "many NAs in a row"
+    na_streaks <- rle(na_rows)
+    
+    # Find the first large NA block
+    na_lengths <- cumsum(na_streaks$lengths)
+    first_large_na <- which(na_streaks$values & na_streaks$lengths >= na_threshold)
+    
+    if (length(first_large_na) > 0) {
+      cut_off_index <- na_lengths[first_large_na[1]]  # Find where to cut
+      df <- df[1:cut_off_index, , drop = FALSE]  # Keep only data before the NA block
+    }
+    
+    
     # Keep only rows where there is data
     df <- df[apply(df, 1, function(row) any(row != "" & !is.na(row))), , drop = FALSE]
+    
     
     # Remove the last row if it's a duplicate of the previous one
     if (nrow(df) > 1 && identical(df[nrow(df), ], df[nrow(df) - 1, ])) {
@@ -399,6 +417,23 @@ clean_onsitehab_retain <- function(metric) {
     # Keep only rows where there is data
     df <- df[apply(df, 1, function(row) any(row != "" & !is.na(row))), , drop = FALSE]
     
+    # Identify rows that are completely empty
+    na_rows <- apply(df, 1, function(row) all(is.na(row) | row == ""))
+    
+    # Detect large NA blocks (adjust threshold if needed)
+    na_threshold <- 3  # Define what counts as "many NAs in a row"
+    na_streaks <- rle(na_rows)
+    
+    # Find the first large NA block
+    na_lengths <- cumsum(na_streaks$lengths)
+    first_large_na <- which(na_streaks$values & na_streaks$lengths >= na_threshold)
+    
+    if (length(first_large_na) > 0) {
+      cut_off_index <- na_lengths[first_large_na[1]]  # Find where to cut
+      df <- df[1:cut_off_index, , drop = FALSE]  # Keep only data before the NA block
+    }
+    
+    
     # Remove the last row if it's a duplicate of the previous one
     if (nrow(df) > 1 && identical(df[nrow(df), ], df[nrow(df) - 1, ])) {
       df <- df[-nrow(df), , drop = FALSE]
@@ -443,6 +478,23 @@ clean_onsitehab_loss <- function(metric) {
     df <- df[,-23:-25]
     df <- df[,-3]
     df <- df[-1,]
+    
+    # Identify rows that are completely empty
+    na_rows <- apply(df, 1, function(row) all(is.na(row) | row == ""))
+    
+    # Detect large NA blocks (adjust threshold if needed)
+    na_threshold <- 3  # Define what counts as "many NAs in a row"
+    na_streaks <- rle(na_rows)
+    
+    # Find the first large NA block
+    na_lengths <- cumsum(na_streaks$lengths)
+    first_large_na <- which(na_streaks$values & na_streaks$lengths >= na_threshold)
+    
+    if (length(first_large_na) > 0) {
+      cut_off_index <- na_lengths[first_large_na[1]]  # Find where to cut
+      df <- df[1:cut_off_index, , drop = FALSE]  # Keep only data before the NA block
+    }
+    
     
     # Keep only rows where there is data
     df <- df[apply(df, 1, function(row) any(row != "" & !is.na(row))), , drop = FALSE]
@@ -489,6 +541,23 @@ clean_onsitehab_creation <- function(metric) {
     df <- df[,-2]
     df <- df[-1,]
     
+    # Identify rows that are completely empty
+    na_rows <- apply(df, 1, function(row) all(is.na(row) | row == ""))
+    
+    # Detect large NA blocks (adjust threshold if needed)
+    na_threshold <- 3  # Define what counts as "many NAs in a row"
+    na_streaks <- rle(na_rows)
+    
+    # Find the first large NA block
+    na_lengths <- cumsum(na_streaks$lengths)
+    first_large_na <- which(na_streaks$values & na_streaks$lengths >= na_threshold)
+    
+    if (length(first_large_na) > 0) {
+      cut_off_index <- na_lengths[first_large_na[1]]  # Find where to cut
+      df <- df[1:cut_off_index, , drop = FALSE]  # Keep only data before the NA block
+    }
+    
+    
     # Keep only rows where there is data
     df <- df[apply(df, 1, function(row) any(row != "" & !is.na(row))), , drop = FALSE]
     
@@ -533,6 +602,23 @@ clean_onsitehab_enhancement <- function(metric) {
     df <- df[,-30:-31]
     #df <- df[,-2]
     df <- df[-1:-2,]
+    
+    # Identify rows that are completely empty
+    na_rows <- apply(df, 1, function(row) all(is.na(row) | row == ""))
+    
+    # Detect large NA blocks (adjust threshold if needed)
+    na_threshold <- 3  # Define what counts as "many NAs in a row"
+    na_streaks <- rle(na_rows)
+    
+    # Find the first large NA block
+    na_lengths <- cumsum(na_streaks$lengths)
+    first_large_na <- which(na_streaks$values & na_streaks$lengths >= na_threshold)
+    
+    if (length(first_large_na) > 0) {
+      cut_off_index <- na_lengths[first_large_na[1]]  # Find where to cut
+      df <- df[1:cut_off_index, , drop = FALSE]  # Keep only data before the NA block
+    }
+    
     
     # Keep only rows where there is data
     df <- df[apply(df, 1, function(row) any(row != "" & !is.na(row))), , drop = FALSE]
@@ -581,6 +667,24 @@ clean_onsitehedge_baseline <- function(metric) {
     df <- df[,-1]
     df <- df[-1:-2,]
     
+    # Identify rows that are completely empty
+    na_rows <- apply(df, 1, function(row) all(is.na(row) | row == ""))
+    
+    # Detect large NA blocks (adjust threshold if needed)
+    na_threshold <- 3  # Define what counts as "many NAs in a row"
+    na_streaks <- rle(na_rows)
+    
+    # Find the first large NA block
+    na_lengths <- cumsum(na_streaks$lengths)
+    first_large_na <- which(na_streaks$values & na_streaks$lengths >= na_threshold)
+    
+    if (length(first_large_na) > 0) {
+      cut_off_index <- na_lengths[first_large_na[1]]  # Find where to cut
+      df <- df[1:cut_off_index, , drop = FALSE]  # Keep only data before the NA block
+    }
+    
+    
+    
     # Keep only rows where there is data
     df <- df[apply(df, 1, function(row) any(row != "" & !is.na(row))), , drop = FALSE]
     
@@ -627,6 +731,25 @@ clean_onsitehedge_retain <- function(metric) {
     df <- df[,-14]
     df <- df[,-1]
     df <- df[-1:-2,]
+    
+    # Identify rows that are completely empty
+    na_rows <- apply(df, 1, function(row) all(is.na(row) | row == ""))
+    
+    # Detect large NA blocks (adjust threshold if needed)
+    na_threshold <- 3  # Define what counts as "many NAs in a row"
+    na_streaks <- rle(na_rows)
+    
+    # Find the first large NA block
+    na_lengths <- cumsum(na_streaks$lengths)
+    first_large_na <- which(na_streaks$values & na_streaks$lengths >= na_threshold)
+    
+    if (length(first_large_na) > 0) {
+      cut_off_index <- na_lengths[first_large_na[1]]  # Find where to cut
+      df <- df[1:cut_off_index, , drop = FALSE]  # Keep only data before the NA block
+    }
+    
+    
+    
     
     # Keep only rows where there is data
     df <- df[apply(df, 1, function(row) any(row != "" & !is.na(row))), , drop = FALSE]
@@ -675,6 +798,25 @@ clean_onsitehedge_loss <- function(metric) {
     df <- df[,-1]
     df <- df[-1:-2,]
     
+    # Identify rows that are completely empty
+    na_rows <- apply(df, 1, function(row) all(is.na(row) | row == ""))
+    
+    # Detect large NA blocks (adjust threshold if needed)
+    na_threshold <- 3  # Define what counts as "many NAs in a row"
+    na_streaks <- rle(na_rows)
+    
+    # Find the first large NA block
+    na_lengths <- cumsum(na_streaks$lengths)
+    first_large_na <- which(na_streaks$values & na_streaks$lengths >= na_threshold)
+    
+    if (length(first_large_na) > 0) {
+      cut_off_index <- na_lengths[first_large_na[1]]  # Find where to cut
+      df <- df[1:cut_off_index, , drop = FALSE]  # Keep only data before the NA block
+    }
+    
+    
+    
+    
     # Keep only rows where there is data
     df <- df[apply(df, 1, function(row) any(row != "" & !is.na(row))), , drop = FALSE]
     
@@ -719,6 +861,23 @@ clean_onsitehedge_creation <- function(metric) {
     df <- df[,-14]
     df <- df[,-1]
     df <- df[-1:-2,]
+    
+    # Identify rows that are completely empty
+    na_rows <- apply(df, 1, function(row) all(is.na(row) | row == ""))
+    
+    # Detect large NA blocks (adjust threshold if needed)
+    na_threshold <- 3  # Define what counts as "many NAs in a row"
+    na_streaks <- rle(na_rows)
+    
+    # Find the first large NA block
+    na_lengths <- cumsum(na_streaks$lengths)
+    first_large_na <- which(na_streaks$values & na_streaks$lengths >= na_threshold)
+    
+    if (length(first_large_na) > 0) {
+      cut_off_index <- na_lengths[first_large_na[1]]  # Find where to cut
+      df <- df[1:cut_off_index, , drop = FALSE]  # Keep only data before the NA block
+    }
+    
     
     # Keep only rows where there is data
     df <- df[apply(df, 1, function(row) any(row != "" & !is.na(row))), , drop = FALSE]
@@ -766,6 +925,24 @@ clean_onsitehedge_enhancement <- function(metric) {
     df <- df[,-24:-25]
     #df <- df[,-1]
     df <- df[-1:-2,]
+    
+    # Identify rows that are completely empty
+    na_rows <- apply(df, 1, function(row) all(is.na(row) | row == ""))
+    
+    # Detect large NA blocks (adjust threshold if needed)
+    na_threshold <- 3  # Define what counts as "many NAs in a row"
+    na_streaks <- rle(na_rows)
+    
+    # Find the first large NA block
+    na_lengths <- cumsum(na_streaks$lengths)
+    first_large_na <- which(na_streaks$values & na_streaks$lengths >= na_threshold)
+    
+    if (length(first_large_na) > 0) {
+      cut_off_index <- na_lengths[first_large_na[1]]  # Find where to cut
+      df <- df[1:cut_off_index, , drop = FALSE]  # Keep only data before the NA block
+    }
+    
+    
     
     # Keep only rows where there is data
     df <- df[apply(df, 1, function(row) any(row != "" & !is.na(row))), , drop = FALSE]
