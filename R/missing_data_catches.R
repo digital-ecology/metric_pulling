@@ -345,6 +345,8 @@ clean_onsitehab_baseline <- function(metric) {
     df <- df[,-31:-32]
     df <- df[,-28]
     df <- df[,-23:-25]
+    df <- df[,-18]
+    df <- df[,-17]
     df <- df[,-3]
     df <- df[-1,]
     
@@ -411,6 +413,8 @@ clean_onsitehab_retain <- function(metric) {
     df <- df[,-31:-32]
     df <- df[,-28]
     df <- df[,-23:-25]
+    df <- df[,-18]
+    df <- df[,-17]
     df <- df[,-3]
     df <- df[-1,]
     
@@ -476,6 +480,8 @@ clean_onsitehab_loss <- function(metric) {
     df <- df[,-31:-32]
     df <- df[,-28]
     df <- df[,-23:-25]
+    df <- df[,-18]
+    df <- df[,-17]
     df <- df[,-3]
     df <- df[-1,]
     
