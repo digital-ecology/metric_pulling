@@ -334,11 +334,11 @@ pullonsitehedgeenhancement <- function(metric) {
             skipEmptyRows = TRUE
           )
           # Remove empty rows and ensure there's data
-          if (!is.null(data) && nrow(data) > 0) {
-            data <- data[data$X1 != "", , drop = FALSE]
-            if (nrow(data) > 0) return(data)
-          }
-          NULL
+          # if (!is.null(data) && nrow(data) > 0) {
+          #   data <- data[data$X1 != "", , drop = FALSE]
+          #   if (nrow(data) > 0) return(data)
+          # }
+          #NULL
         },
         error = function(e) NULL
       )
@@ -424,17 +424,18 @@ pullonsitehedgeenhancement <- function(metric) {
       hedgeunits <- data.frame(enhancedunits = NA)
     }
     
+    print(hedgehabitattype,hedgelength,hedgecond,)
     # Combine data into a final data frame
-    hedgeenhancementdata <- data.frame(
-      hedgehabitattype,
-      hedgelength,
-      hedgecond,
-      hedgess,
-      hedgeds,
-      hedgeunits,
-      basehab,
-      basecond
-    )
+    # hedgeenhancementdata <- data.frame(
+    #   hedgehabitattype,
+    #   hedgelength,
+    #   hedgecond,
+    #   hedgess,
+    #   hedgeds,
+    #   hedgeunits,
+    #   basehab,
+    #   basecond
+    # )
     
     # Return as a list
     return(list(hedgeenhancementdata = hedgeenhancementdata))}

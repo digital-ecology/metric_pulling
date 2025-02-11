@@ -418,9 +418,6 @@ clean_onsitehab_retain <- function(metric) {
     df <- df[,-3]
     df <- df[-1,]
     
-    # Keep only rows where there is data
-    df <- df[apply(df, 1, function(row) any(row != "" & !is.na(row))), , drop = FALSE]
-    
     # Identify rows that are completely empty
     na_rows <- apply(df, 1, function(row) all(is.na(row) | row == ""))
     
@@ -437,6 +434,8 @@ clean_onsitehab_retain <- function(metric) {
       df <- df[1:cut_off_index, , drop = FALSE]  # Keep only data before the NA block
     }
     
+    # Keep only rows where there is data
+    df <- df[apply(df, 1, function(row) any(row != "" & !is.na(row))), , drop = FALSE]
     
     # Remove the last row if it's a duplicate of the previous one
     if (nrow(df) > 1 && identical(df[nrow(df), ], df[nrow(df) - 1, ])) {
