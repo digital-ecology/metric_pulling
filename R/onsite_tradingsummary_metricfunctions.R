@@ -15,8 +15,8 @@ pullonsitehabitatsumdata<-function(metric){
     #get which distinctiveness is needed for satisfying trading standards
     tradingsum <- "Trading Summary Area Habitats"
     
-    Satisfied <- openxlsx::read.xlsx(ds2, sheet = tradingsum, cols = 7, rows = 5:8, colNames = FALSE, skipEmptyRows = TRUE)
-    Distinctiveness <- openxlsx::read.xlsx(ds2, sheet = tradingsum, cols = 2, rows = 5:8, colNames = FALSE, skipEmptyRows = TRUE)
+    Satisfied <- openxlsx::read.xlsx(metric, sheet = tradingsum, cols = 7, rows = 5:8, colNames = FALSE, skipEmptyRows = TRUE)
+    Distinctiveness <- openxlsx::read.xlsx(metric, sheet = tradingsum, cols = 2, rows = 5:8, colNames = FALSE, skipEmptyRows = TRUE)
     Satisfied <- cbind(Distinctiveness, Satisfied)
     colnames(Satisfied) <- c("Distinctiveness", "Satisfied")
     
@@ -33,7 +33,7 @@ pullonsitehabitatsumdata<-function(metric){
     #get dfs for each distinctiveness, showing hab group and project wide unit change
     
     #very high
-    VHHab <- openxlsx::read.xlsx(ds2, sheet = tradingsum, cols = 2, rows = 13:32, colNames = FALSE, skipEmptyRows = TRUE)
+    VHHab <- openxlsx::read.xlsx(metric, sheet = tradingsum, cols = 2, rows = 13:32, colNames = FALSE, skipEmptyRows = TRUE)
     VHChange <- openxlsx::read.xlsx(metric, sheet = tradingsum, cols = 6, rows = 13:32, colNames = FALSE, skipEmptyRows = TRUE)
     VH <- cbind(VHHab, VHChange)
     colnames(VH) <- c("HabitatGroup", "ProjectWideUnitChange")
