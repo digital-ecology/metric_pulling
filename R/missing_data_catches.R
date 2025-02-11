@@ -9,30 +9,38 @@
 clean_C1_dataset <- function(metric) {
     # Read the dataset
     df <- openxlsx::read.xlsx(metric, "C-1 On-Site WaterC' Baseline", colNames = FALSE, startRow = 10)
-    
+    df <- as.data.frame(df)
     # Remove the first column
+    df <- df[,-39]
+    df <- df[,-35:-36]
+    df <- df[,-31]
+    df <- df[,-28]
+    df <- df[,-26]
     df <- df[, -1]
     
-    # Keep only rows where column 1 has data
-    df <- df[df[[1]] != "" & !is.na(df[[1]]), , drop = FALSE]
     
-    # Keep only columns 1-23, 26-33, and 36-37
-    selected_columns <- c(1:23, 26:33, 36:37)
-    df <- df[, selected_columns, drop = FALSE]
+    # Always remove the last row of the dataset (if there is more than one row)
+    if (nrow(df) > 1) {
+      df <- df[-nrow(df), , drop = FALSE]
+    }
     
     # Remove the last row if it's a duplicate of the previous one
     if (nrow(df) > 1 && identical(df[nrow(df), ], df[nrow(df) - 1, ])) {
       df <- df[-nrow(df), , drop = FALSE]
     }
-    
-    # Remove rows with all NA values
-    df <- df[rowSums(is.na(df)) < ncol(df), ]
+    df[df == "NA" | df == ""| df == " "] <- NA
+    df <- df[rowSums(is.na(df)) != ncol(df), ]  # Remove rows where all values are NA
     
     # Check for the presence of "Check Data ⚠" in any dataset
     for (i in df) {
       if (any(is.na(i) | i == "")) {
         return("Please check metric is filled in appropriately before continuing")
       }
+    }
+    # Check if all columns have the same number of rows
+    column_lengths <- sapply(df, function(col) sum(!is.na(col) & col != ""))
+    if (length(unique(column_lengths)) > 1) {
+      return("Please check metric is filled in appropriately before continuing")
     }
     if (nrow(df) == 0) {
       return(df)
@@ -54,29 +62,34 @@ clean_C2_dataset <- function(metric) {
     df <- openxlsx::read.xlsx(metric, "C-2 On-Site WaterC' Creation", colNames = FALSE, startRow = 10)
     
     # Remove the first column
+    df <- df[,-30]
+    df <- df[,-26:-29]
+    df <- df[,-13]
     df <- df[, -1]
     df <- df[-1:-2,]
     
-    # Keep only rows where column 1 has data
-    df <- df[df[[1]] != "" & !is.na(df[[1]]), , drop = FALSE]
-    
-    # Keep only columns 1-23, 26-33, and 36-37
-    selected_columns <- c(1:9, 20:22, 24)
-    df <- df[, selected_columns, drop = FALSE]
+    # Always remove the last row of the dataset (if there is more than one row)
+    if (nrow(df) > 1) {
+      df <- df[-nrow(df), , drop = FALSE]
+    }
     
     # Remove the last row if it's a duplicate of the previous one
     if (nrow(df) > 1 && identical(df[nrow(df), ], df[nrow(df) - 1, ])) {
       df <- df[-nrow(df), , drop = FALSE]
     }
-    
-    # Remove rows with all NA values
-    df <- df[rowSums(is.na(df)) < ncol(df), ]
+    df[df == "NA" | df == ""| df == " "] <- NA
+    df <- df[rowSums(is.na(df)) != ncol(df), ]  # Remove rows where all values are NA
     
     # Check for the presence of "Check Data ⚠" in any dataset
     for (i in df) {
       if (any(is.na(i) | i == "")) {
         return("Please check metric is filled in appropriately before continuing")
       }
+    }
+    # Check if all columns have the same number of rows
+    column_lengths <- sapply(df, function(col) sum(!is.na(col) & col != ""))
+    if (length(unique(column_lengths)) > 1) {
+      return("Please check metric is filled in appropriately before continuing")
     }
     if (nrow(df) == 0) {
       return(df)
@@ -101,15 +114,18 @@ clean_C3_dataset <- function(metric) {
     df <- openxlsx::read.xlsx(metric, "C-3 On-Site WaterC' Enhancement", colNames = FALSE, startRow = 10)
     
     # Remove the first column
+    df <- df[, -50]
+    df <- df[, -39:-41]
+    df <- df[, -26]
     df <- df[, -1]
     df <- df[-1:-2,]
     
-    # Keep only rows where column 1 has data
-    df <- df[df[[1]] != "" & !is.na(df[[1]]), , drop = FALSE]
+    # Keep only rows where there is data
+    df <- df[apply(df, 1, function(row) any(row != "" & !is.na(row))), , drop = FALSE]
     
-    # Keep only columns 1-23, 26-33, and 36-37
-    selected_columns <- c(1:13, 30:37, 41:49)
-    df <- df[, selected_columns, drop = FALSE]
+    if (nrow(df) > 1) {
+      df <- df[-nrow(df), , drop = FALSE]
+    }
     
     # Remove the last row if it's a duplicate of the previous one
     if (nrow(df) > 1 && identical(df[nrow(df), ], df[nrow(df) - 1, ])) {
@@ -117,13 +133,19 @@ clean_C3_dataset <- function(metric) {
     }
     
     # Remove rows with all NA values
-    df <- df[rowSums(is.na(df)) < ncol(df), ]
+    df[df == "NA" | df == ""| df == " "] <- NA
+    df <- df[rowSums(is.na(df)) != ncol(df), ]  # Remove rows where all values are NA
     
     # Check for the presence of "Check Data ⚠" in any dataset
     for (i in df) {
       if (any(is.na(i) | i == "")) {
         return("Please check metric is filled in appropriately before continuing")
       }
+    }
+    # Check if all columns have the same number of rows
+    column_lengths <- sapply(df, function(col) sum(!is.na(col) & col != ""))
+    if (length(unique(column_lengths)) > 1) {
+      return("Please check metric is filled in appropriately before continuing")
     }
     if (nrow(df) == 0) {
       return(df)
@@ -141,7 +163,7 @@ clean_C3_dataset <- function(metric) {
 #' @export
 #'
 #' @examples \dontrun{checked_dataset<-clean_habsum_dataset(metric)}   
-  clean_habsum_dataset <- function(metric) {
+clean_habsum_dataset <- function(metric) {
     # Define column and row ranges for each dataset
     datasets_info <- list(
       Satisfied       = list(cols = 7, rows = 5:8),
@@ -326,8 +348,8 @@ clean_onsitehab_baseline <- function(metric) {
     df <- df[,-3]
     df <- df[-1,]
     
-    # Keep only rows where column 1 has data
-    df <- df[df[[1]] != "" & !is.na(df[[1]]), , drop = FALSE]
+    # Keep only rows where there is data
+    df <- df[apply(df, 1, function(row) any(row != "" & !is.na(row))), , drop = FALSE]
     
     # Remove the last row if it's a duplicate of the previous one
     if (nrow(df) > 1 && identical(df[nrow(df), ], df[nrow(df) - 1, ])) {
@@ -339,6 +361,11 @@ clean_onsitehab_baseline <- function(metric) {
       if (any(is.na(i) | i == "")) {
         return("Please check metric is filled in appropriately before continuing")
       }
+    }
+    # Check if all columns have the same number of rows
+    column_lengths <- sapply(df, function(col) sum(!is.na(col) & col != ""))
+    if (length(unique(column_lengths)) > 1) {
+      return("Please check metric is filled in appropriately before continuing")
     }
     if (nrow(df) == 0) {
       return(df)
@@ -369,8 +396,8 @@ clean_onsitehab_retain <- function(metric) {
     df <- df[,-3]
     df <- df[-1,]
     
-    # Keep only rows where column 1 has data
-    df <- df[df[[1]] != "" & !is.na(df[[1]]), , drop = FALSE]
+    # Keep only rows where there is data
+    df <- df[apply(df, 1, function(row) any(row != "" & !is.na(row))), , drop = FALSE]
     
     # Remove the last row if it's a duplicate of the previous one
     if (nrow(df) > 1 && identical(df[nrow(df), ], df[nrow(df) - 1, ])) {
@@ -382,6 +409,11 @@ clean_onsitehab_retain <- function(metric) {
       if (any(is.na(i) | i == "")) {
         return("Please check metric is filled in appropriately before continuing")
       }
+    }
+    # Check if all columns have the same number of rows
+    column_lengths <- sapply(df, function(col) sum(!is.na(col) & col != ""))
+    if (length(unique(column_lengths)) > 1) {
+      return("Please check metric is filled in appropriately before continuing")
     }
     if (nrow(df) == 0) {
       return(df)
@@ -412,8 +444,8 @@ clean_onsitehab_loss <- function(metric) {
     df <- df[,-3]
     df <- df[-1,]
     
-    # Keep only rows where column 1 has data
-    df <- df[df[[1]] != "" & !is.na(df[[1]]), , drop = FALSE]
+    # Keep only rows where there is data
+    df <- df[apply(df, 1, function(row) any(row != "" & !is.na(row))), , drop = FALSE]
     
     # Remove the last row if it's a duplicate of the previous one
     if (nrow(df) > 1 && identical(df[nrow(df), ], df[nrow(df) - 1, ])) {
@@ -425,6 +457,11 @@ clean_onsitehab_loss <- function(metric) {
       if (any(is.na(i) | i == "")) {
         return("Please check metric is filled in appropriately before continuing")
       }
+    }
+    # Check if all columns have the same number of rows
+    column_lengths <- sapply(df, function(col) sum(!is.na(col) & col != ""))
+    if (length(unique(column_lengths)) > 1) {
+      return("Please check metric is filled in appropriately before continuing")
     }
     if (nrow(df) == 0) {
       return(df)
@@ -452,8 +489,8 @@ clean_onsitehab_creation <- function(metric) {
     df <- df[,-2]
     df <- df[-1,]
     
-    # Keep only rows where column 1 has data
-    df <- df[df[[1]] != "" & !is.na(df[[1]]), , drop = FALSE]
+    # Keep only rows where there is data
+    df <- df[apply(df, 1, function(row) any(row != "" & !is.na(row))), , drop = FALSE]
     
     # Remove the last row if it's a duplicate of the previous one
     if (nrow(df) > 1 && identical(df[nrow(df), ], df[nrow(df) - 1, ])) {
@@ -465,6 +502,11 @@ clean_onsitehab_creation <- function(metric) {
       if (any(is.na(i) | i == "")) {
         return("Please check metric is filled in appropriately before continuing")
       }
+    }
+    # Check if all columns have the same number of rows
+    column_lengths <- sapply(df, function(col) sum(!is.na(col) & col != ""))
+    if (length(unique(column_lengths)) > 1) {
+      return("Please check metric is filled in appropriately before continuing")
     }
     if (nrow(df) == 0) {
       return(df)
@@ -492,8 +534,8 @@ clean_onsitehab_enhancement <- function(metric) {
     #df <- df[,-2]
     df <- df[-1:-2,]
     
-    # Keep only rows where column 1 has data
-    df <- df[df[[1]] != "" & !is.na(df[[1]]), , drop = FALSE]
+    # Keep only rows where there is data
+    df <- df[apply(df, 1, function(row) any(row != "" & !is.na(row))), , drop = FALSE]
     
     # Remove the last row if it's a duplicate of the previous one
     if (nrow(df) > 1 && identical(df[nrow(df), ], df[nrow(df) - 1, ])) {
@@ -505,6 +547,11 @@ clean_onsitehab_enhancement <- function(metric) {
       if (any(is.na(i) | i == "")) {
         return("Please check metric is filled in appropriately before continuing")
       }
+    }
+    # Check if all columns have the same number of rows
+    column_lengths <- sapply(df, function(col) sum(!is.na(col) & col != ""))
+    if (length(unique(column_lengths)) > 1) {
+      return("Please check metric is filled in appropriately before continuing")
     }
     if (nrow(df) == 0) {
       return(df)
@@ -534,8 +581,8 @@ clean_onsitehedge_baseline <- function(metric) {
     df <- df[,-1]
     df <- df[-1:-2,]
     
-    # Keep only rows where column 1 has data
-    df <- df[df[[1]] != "" & !is.na(df[[1]]), , drop = FALSE]
+    # Keep only rows where there is data
+    df <- df[apply(df, 1, function(row) any(row != "" & !is.na(row))), , drop = FALSE]
     
     # Remove the last row if it's a duplicate of the previous one
     if (nrow(df) > 1 && identical(df[nrow(df), ], df[nrow(df) - 1, ])) {
@@ -547,6 +594,11 @@ clean_onsitehedge_baseline <- function(metric) {
       if (any(is.na(i) | i == "")) {
         return("Please check metric is filled in appropriately before continuing")
       }
+    }
+    # Check if all columns have the same number of rows
+    column_lengths <- sapply(df, function(col) sum(!is.na(col) & col != ""))
+    if (length(unique(column_lengths)) > 1) {
+      return("Please check metric is filled in appropriately before continuing")
     }
     if (nrow(df) == 0) {
       return(df)
@@ -576,8 +628,8 @@ clean_onsitehedge_retain <- function(metric) {
     df <- df[,-1]
     df <- df[-1:-2,]
     
-    # Keep only rows where column 1 has data
-    df <- df[df[[1]] != "" & !is.na(df[[1]]), , drop = FALSE]
+    # Keep only rows where there is data
+    df <- df[apply(df, 1, function(row) any(row != "" & !is.na(row))), , drop = FALSE]
     
     # Remove the last row if it's a duplicate of the previous one
     if (nrow(df) > 1 && identical(df[nrow(df), ], df[nrow(df) - 1, ])) {
@@ -589,6 +641,11 @@ clean_onsitehedge_retain <- function(metric) {
       if (any(is.na(i) | i == "")) {
         return("Please check metric is filled in appropriately before continuing")
       }
+    }
+    # Check if all columns have the same number of rows
+    column_lengths <- sapply(df, function(col) sum(!is.na(col) & col != ""))
+    if (length(unique(column_lengths)) > 1) {
+      return("Please check metric is filled in appropriately before continuing")
     }
     if (nrow(df) == 0) {
       return(df)
@@ -618,8 +675,8 @@ clean_onsitehedge_loss <- function(metric) {
     df <- df[,-1]
     df <- df[-1:-2,]
     
-    # Keep only rows where column 1 has data
-    df <- df[df[[1]] != "" & !is.na(df[[1]]), , drop = FALSE]
+    # Keep only rows where there is data
+    df <- df[apply(df, 1, function(row) any(row != "" & !is.na(row))), , drop = FALSE]
     
     # Remove the last row if it's a duplicate of the previous one
     if (nrow(df) > 1 && identical(df[nrow(df), ], df[nrow(df) - 1, ])) {
@@ -631,6 +688,11 @@ clean_onsitehedge_loss <- function(metric) {
       if (any(is.na(i) | i == "")) {
         return("Please check metric is filled in appropriately before continuing")
       }
+    }
+    # Check if all columns have the same number of rows
+    column_lengths <- sapply(df, function(col) sum(!is.na(col) & col != ""))
+    if (length(unique(column_lengths)) > 1) {
+      return("Please check metric is filled in appropriately before continuing")
     }
     if (nrow(df) == 0) {
       return(df)
@@ -658,8 +720,8 @@ clean_onsitehedge_creation <- function(metric) {
     df <- df[,-1]
     df <- df[-1:-2,]
     
-    # Keep only rows where column 1 has data
-    df <- df[df[[1]] != "" & !is.na(df[[1]]), , drop = FALSE]
+    # Keep only rows where there is data
+    df <- df[apply(df, 1, function(row) any(row != "" & !is.na(row))), , drop = FALSE]
     
     # Remove the last row if it's a duplicate of the previous one
     if (nrow(df) > 1 && identical(df[nrow(df), ], df[nrow(df) - 1, ])) {
@@ -672,6 +734,13 @@ clean_onsitehedge_creation <- function(metric) {
         return("Please check metric is filled in appropriately before continuing")
       }
     }
+    
+    # Check if all columns have the same number of rows
+    column_lengths <- sapply(df, function(col) sum(!is.na(col) & col != ""))
+    if (length(unique(column_lengths)) > 1) {
+      return("Please check metric is filled in appropriately before continuing")
+    }
+    
     if (nrow(df) == 0) {
       return(df)
     }
@@ -695,11 +764,11 @@ clean_onsitehedge_enhancement <- function(metric) {
     # Remove the first column
     df <- df[,-34:-37]
     df <- df[,-24:-25]
-    df <- df[,-1]
+    #df <- df[,-1]
     df <- df[-1:-2,]
     
-    # Keep only rows where column 1 has data
-    df <- df[df[[1]] != "" & !is.na(df[[1]]), , drop = FALSE]
+    # Keep only rows where there is data
+    df <- df[apply(df, 1, function(row) any(row != "" & !is.na(row))), , drop = FALSE]
     
     # Remove the last row if it's a duplicate of the previous one
     if (nrow(df) > 1 && identical(df[nrow(df), ], df[nrow(df) - 1, ])) {
@@ -712,6 +781,12 @@ clean_onsitehedge_enhancement <- function(metric) {
         return("Please check metric is filled in appropriately before continuing")
       }
     }
+    # Check if all columns have the same number of rows
+    column_lengths <- sapply(df, function(col) sum(!is.na(col) & col != ""))
+    if (length(unique(column_lengths)) > 1) {
+      return("Please check metric is filled in appropriately before continuing")
+    }
+    
     if (nrow(df) == 0) {
       return(df)
     }
