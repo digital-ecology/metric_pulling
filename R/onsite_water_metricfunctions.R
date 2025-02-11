@@ -84,7 +84,7 @@ pullonsitewaterbaseline<-function(metric){
     
     return(waterbaselinedata)}
   else {
-    return(df)
+    return(catch_c1)
   }
   
 }
@@ -141,7 +141,7 @@ pullonsitewaterretain<-function(metric){
     
     return(waterretaindata)}
   else {
-    return(df)
+    return(catch_c1)
   }
   
 }
@@ -201,7 +201,7 @@ pullonsitewaterloss<-function(metric){
   
     return(waterlossdata)}
   else {
-    return(df)
+    return(catch_c1)
   }
 }
 

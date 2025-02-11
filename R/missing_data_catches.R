@@ -1,4 +1,12 @@
-  clean_C1_dataset <- function(metric) {
+#' cleans C1 water metric data 
+#'
+#' @param metric feas metric
+#'
+#' @return df, a cleaned version of the input dataset - to be used as an argument in actual metric pulling function
+#' @export
+#'
+#' @examples \dontrun{checked_dataset<-clean_C1_dataset(metric)}  
+clean_C1_dataset <- function(metric) {
     # Read the dataset
     df <- openxlsx::read.xlsx(metric, "C-1 On-Site WaterC' Baseline", colNames = FALSE, startRow = 10)
     
@@ -20,16 +28,28 @@
     # Remove rows with all NA values
     df <- df[rowSums(is.na(df)) < ncol(df), ]
     
-    # Check for any NA values in the dataset
-    if (any(is.na(df))) {
-      return("Please check metric is filled in appropriately before continuing")
+    # Check for the presence of "Check Data ⚠" in any dataset
+    for (i in df) {
+      if (any(is.na(i) | i == "")) {
+        return("Please check metric is filled in appropriately before continuing")
+      }
+    }
+    if (nrow(df) == 0) {
+      return(df)
     }
     
     return(df)
   }
   
-  
-  clean_C2_dataset <- function(metric) {
+#' cleans C2 water metric data 
+#'
+#' @param metric feas metric
+#'
+#' @return df, a cleaned version of the input dataset - to be used as an argument in actual metric pulling function
+#' @export
+#'
+#' @examples \dontrun{checked_dataset<-clean_C2_dataset(metric)}    
+clean_C2_dataset <- function(metric) {
     # Read the dataset
     df <- openxlsx::read.xlsx(metric, "C-2 On-Site WaterC' Creation", colNames = FALSE, startRow = 10)
     
@@ -52,9 +72,14 @@
     # Remove rows with all NA values
     df <- df[rowSums(is.na(df)) < ncol(df), ]
     
-    # Check for any NA values in the dataset
-    if (any(is.na(df))) {
-      return("Please check metric is filled in appropriately before continuing")
+    # Check for the presence of "Check Data ⚠" in any dataset
+    for (i in df) {
+      if (any(is.na(i) | i == "")) {
+        return("Please check metric is filled in appropriately before continuing")
+      }
+    }
+    if (nrow(df) == 0) {
+      return(df)
     }
     
     return(df)
@@ -63,8 +88,15 @@
   
 
   
-  
-  clean_C3_dataset <- function(metric) {
+#' cleans C3 water metric data 
+#'
+#' @param metric feas metric
+#'
+#' @return df, a cleaned version of the input dataset - to be used as an argument in actual metric pulling function
+#' @export
+#'
+#' @examples \dontrun{checked_dataset<-clean_C3_dataset(metric)}    
+clean_C3_dataset <- function(metric) {
     # Read the dataset
     df <- openxlsx::read.xlsx(metric, "C-3 On-Site WaterC' Enhancement", colNames = FALSE, startRow = 10)
     
@@ -87,94 +119,161 @@
     # Remove rows with all NA values
     df <- df[rowSums(is.na(df)) < ncol(df), ]
     
-    # Check for any NA values in the dataset
-    if (any(is.na(df))) {
-      return("Please check metric is filled in appropriately before continuing")
+    # Check for the presence of "Check Data ⚠" in any dataset
+    for (i in df) {
+      if (any(is.na(i) | i == "")) {
+        return("Please check metric is filled in appropriately before continuing")
+      }
+    }
+    if (nrow(df) == 0) {
+      return(df)
     }
     
     return(df)
   }
 
-  
+#' cleans habsum metric data 
+#'
+#' @param metric feas metric
+#'
+#' @return df, a cleaned version of the input dataset - to be used as an argument in actual metric pulling function
+#' 
+#' @export
+#'
+#' @examples \dontrun{checked_dataset<-clean_habsum_dataset(metric)}   
   clean_habsum_dataset <- function(metric) {
-    # Read the dataset
-    Satisfied <- openxlsx::read.xlsx(metric, sheet = "Trading Summary Area Habitats", cols = 7, rows = 5:8, colNames = FALSE, skipEmptyRows = TRUE)
-    Distinctiveness <- openxlsx::read.xlsx(metric, sheet = "Trading Summary Area Habitats", cols = 2, rows = 5:8, colNames = FALSE, skipEmptyRows = TRUE)
-    VHHab <- openxlsx::read.xlsx(metric, sheet = "Trading Summary Area Habitats", cols = 2, rows = 13:32, colNames = FALSE, skipEmptyRows = TRUE)
-    VHChange <- openxlsx::read.xlsx(metric, sheet = "Trading Summary Area Habitats", cols = 6, rows = 13:32, colNames = FALSE, skipEmptyRows = TRUE)
-    HHab <- openxlsx::read.xlsx(metric, sheet = "Trading Summary Area Habitats", cols = 2, rows = 41:82, colNames = FALSE, skipEmptyRows = TRUE)
-    HChange <- openxlsx::read.xlsx(metric, sheet = "Trading Summary Area Habitats", cols = 6, rows = 41:82, colNames = FALSE, skipEmptyRows = TRUE)
-    MHab <- openxlsx::read.xlsx(metric, sheet = "Trading Summary Area Habitats", cols = 2, rows = 89:115, colNames = FALSE, skipEmptyRows = TRUE)
-    MChange <- openxlsx::read.xlsx(metric, sheet = "Trading Summary Area Habitats", cols = 6, rows = 89:115, colNames = FALSE, skipEmptyRows = TRUE)
-    LHab <- openxlsx::read.xlsx(metric, sheet = "Trading Summary Area Habitats", cols = 2, rows = 125:162, colNames = FALSE, skipEmptyRows = TRUE)
-    LChange <- openxlsx::read.xlsx(metric, sheet = "Trading Summary Area Habitats", cols = 6, rows = 125:162, colNames = FALSE, skipEmptyRows = TRUE)
+    # Define column and row ranges for each dataset
+    datasets_info <- list(
+      Satisfied       = list(cols = 7, rows = 5:8),
+      Distinctiveness = list(cols = 2, rows = 5:8),
+      VHHab          = list(cols = 2, rows = 13:32),
+      VHChange       = list(cols = 6, rows = 13:32),
+      HHab           = list(cols = 2, rows = 41:82),
+      HChange        = list(cols = 6, rows = 41:82),
+      MHab           = list(cols = 2, rows = 89:115),
+      MChange        = list(cols = 6, rows = 89:115),
+      LHab           = list(cols = 2, rows = 125:162),
+      LChange        = list(cols = 6, rows = 125:162)
+    )
     
-    datasets <- list(Satisfied, Distinctiveness, VHHab, VHChange, HHab, HChange, MHab, MChange,LHab,LChange)
+    # Read all datasets into a list
+    datasets <- lapply(datasets_info, function(info) {
+      openxlsx::read.xlsx(metric, sheet = "Trading Summary Area Habitats", 
+                          cols = info$cols, rows = info$rows, 
+                          colNames = FALSE, skipEmptyRows = TRUE)
+    })
     
-    # Check for any NA values in the dataset
-    for (i in datasets){
-      if (any(is.na(i))) {
-        return("Please check metric is filled in appropriately before continuing")
-      }
+    # Check for missing values or empty strings in any dataset
+    if (any(sapply(datasets, function(df) any(sapply(df, function(col) any(is.na(col) | col == "")))))) {
+      return("Please check metric is filled in appropriately before continuing")
     }
     
-    return(Satisfied)
+    # Function to check if a dataset is completely empty
+    is_dataset_empty <- function(df) {
+      return(nrow(df) == 0 || all(sapply(df, function(col) all(is.na(col) | col == ""))))
+    }
+    
+    # Check if all datasets are completely empty
+    if (all(sapply(datasets, is_dataset_empty))) {
+      return(data.frame())  # Return an empty dataframe if all datasets are empty
+    }
+    
+    return(datasets$Satisfied)
   }
+  
    
-  
-  clean_hedgesum_dataset <- function(metric) {
-    # Read the dataset
-    Satisfied <- openxlsx::read.xlsx(metric, sheet = "Trading Summary Hedgerows", cols = 6, rows = 5:9, colNames = FALSE, skipEmptyRows = TRUE)
-    Distinctiveness <- openxlsx::read.xlsx(metric, sheet = "Trading Summary Hedgerows", cols = 2, rows = 5:9, colNames = FALSE, skipEmptyRows = TRUE)
-    VHHab <- openxlsx::read.xlsx(metric, sheet = "Trading Summary Hedgerows", cols = 2, rows = 14, colNames = FALSE, skipEmptyRows = TRUE)
-    VHChange <- openxlsx::read.xlsx(metric, sheet = "Trading Summary Hedgerows", cols = 5, rows = 14, colNames = FALSE, skipEmptyRows = TRUE)
-    HHab <- openxlsx::read.xlsx(metric, sheet = "Trading Summary Hedgerows", cols = 2, rows = 22:24, colNames = FALSE, skipEmptyRows = TRUE)
-    HChange <- openxlsx::read.xlsx(metric, sheet = "Trading Summary Hedgerows", cols = 5, rows = 22:24, colNames = FALSE, skipEmptyRows = TRUE)
-    MHab <- openxlsx::read.xlsx(metric, sheet = "Trading Summary Hedgerows", cols = 2, rows = 32:36, colNames = FALSE, skipEmptyRows = TRUE)
-    MChange <- openxlsx::read.xlsx(metric, sheet = "Trading Summary Hedgerows", cols = 5, rows = 32:36, colNames = FALSE, skipEmptyRows = TRUE)
-    VLHab <- openxlsx::read.xlsx(metric, sheet = "Trading Summary Hedgerows", cols = 2, rows = 54, colNames = FALSE, skipEmptyRows = TRUE)
-    VLChange <- openxlsx::read.xlsx(metric, sheet = "Trading Summary Hedgerows", cols = 5, rows = 54, colNames = FALSE, skipEmptyRows = TRUE)
+#' cleans hedgesum metric data 
+#'
+#' @param metric feas metric
+#'
+#' @return df, a cleaned version of the input dataset - to be used as an argument in actual metric pulling function
+#' 
+#' @export
+#'
+#' @examples \dontrun{checked_dataset<-clean_hedgesum_dataset(metric)}     
+clean_hedgesum_dataset <- function(metric) {
+    datasets_info <- list(
+      Satisfied       = list(cols = 6, rows = 5:9),
+      Distinctiveness = list(cols = 2, rows = 5:9),
+      VHHab          = list(cols = 2, rows = 14),
+      VHChange       = list(cols = 5, rows = 14),
+      HHab           = list(cols = 2, rows = 22:24),
+      HChange        = list(cols = 5, rows = 22:24),
+      MHab           = list(cols = 2, rows = 32:36),
+      MChange        = list(cols = 5, rows = 32:36),
+      VLHab          = list(cols = 2, rows = 54),
+      VLChange       = list(cols = 5, rows = 54)
+    )
     
-    datasets <- list(Satisfied, Distinctiveness, VHHab, VHChange, HHab, HChange, MHab, MChange,VLHab,VLChange)
+    datasets <- lapply(datasets_info, function(info) {
+      openxlsx::read.xlsx(metric, sheet = "Trading Summary Hedgerows", 
+                          cols = info$cols, rows = info$rows, 
+                          colNames = FALSE, skipEmptyRows = TRUE)
+    })
     
-    # Check for any NA values in the dataset
-    for (i in datasets){
-      if (any(is.na(i))) {
-        return("Please check metric is filled in appropriately before continuing")
-      }
+    if (any(sapply(datasets, function(df) any(sapply(df, function(col) any(is.na(col) | col == "")))))) {
+      return("Please check metric is filled in appropriately before continuing")
     }
     
-    return(Satisfied)
-  }
-  
-  clean_watersum_dataset <- function(metric) {
-    # Read the dataset
-    Satisfied <- openxlsx::read.xlsx(metric, sheet = "Trading Summary WaterC's", cols = 7, rows = 4:9, colNames = FALSE, skipEmptyRows = TRUE)
-    Distinctiveness <- openxlsx::read.xlsx(metric, sheet = "Trading Summary WaterC's", cols = 2, rows = 4:9, colNames = FALSE, skipEmptyRows = TRUE)
-    VHHab <- openxlsx::read.xlsx(metric, sheet = "Trading Summary WaterC's", cols = 2, rows = 13, colNames = FALSE, skipEmptyRows = TRUE)
-    VHChange <- openxlsx::read.xlsx(metric, sheet = "Trading Summary WaterC's", cols = 5, rows = 13, colNames = FALSE, skipEmptyRows = TRUE)
-    HHab <- openxlsx::read.xlsx(metric, sheet = "Trading Summary WaterC's", cols = 2, rows = 22, colNames = FALSE, skipEmptyRows = TRUE)
-    HChange <- openxlsx::read.xlsx(metric, sheet = "Trading Summary WaterC's", cols = 5, rows = 22, colNames = FALSE, skipEmptyRows = TRUE)
-    MHab <- openxlsx::read.xlsx(metric, sheet = "Trading Summary WaterC's", cols = 2, rows = 30:31, colNames = FALSE, skipEmptyRows = TRUE)
-    MChange <- openxlsx::read.xlsx(metric, sheet = "Trading Summary WaterC's", cols = 5, rows = 30:31, colNames = FALSE, skipEmptyRows = TRUE)
-    LHab <- openxlsx::read.xlsx(metric, sheet = "Trading Summary WaterC's", cols = 2, rows = 42, colNames = FALSE, skipEmptyRows = TRUE)
-    LChange <- openxlsx::read.xlsx(metric, sheet = "Trading Summary WaterC's", cols = 5, rows = 42, colNames = FALSE, skipEmptyRows = TRUE)
-    
-    datasets <- list(Satisfied, Distinctiveness, VHHab, VHChange, HHab, HChange, MHab, MChange,LHab,LChange)
-    
-    # Check for any NA values in the dataset
-    for (i in datasets){
-      if (any(is.na(i))) {
-        return("Please check metric is filled in appropriately before continuing")
-      }
+    if (all(sapply(datasets, function(df) nrow(df) == 0 || all(sapply(df, function(col) all(is.na(col) | col == "")))))) {
+      return(data.frame())
     }
     
-    return(Satisfied)
+    return(datasets$Satisfied)
   }
-  
   
 
-  clean_onsitenet_dataset <- function(metric) {
+#' cleans watersum metric data 
+#'
+#' @param metric feas metric
+#'
+#' @return df, a cleaned version of the input dataset - to be used as an argument in actual metric pulling function
+#' 
+#' @export
+#'
+#' @examples \dontrun{checked_dataset<-clean_watersum_dataset(metric)}
+clean_watersum_dataset <- function(metric) {
+    datasets_info <- list(
+      Satisfied       = list(cols = 7, rows = 4:9),
+      Distinctiveness = list(cols = 2, rows = 4:9),
+      VHHab          = list(cols = 2, rows = 13),
+      VHChange       = list(cols = 5, rows = 13),
+      HHab           = list(cols = 2, rows = 22),
+      HChange        = list(cols = 5, rows = 22),
+      MHab           = list(cols = 2, rows = 30:31),
+      MChange        = list(cols = 5, rows = 30:31),
+      LHab           = list(cols = 2, rows = 42),
+      LChange        = list(cols = 5, rows = 42)
+    )
+    
+    datasets <- lapply(datasets_info, function(info) {
+      openxlsx::read.xlsx(metric, sheet = "Trading Summary WaterC's", 
+                          cols = info$cols, rows = info$rows, 
+                          colNames = FALSE, skipEmptyRows = TRUE)
+    })
+    
+    if (any(sapply(datasets, function(df) any(sapply(df, function(col) any(is.na(col) | col == "")))))) {
+      return("Please check metric is filled in appropriately before continuing")
+    }
+    
+    if (all(sapply(datasets, function(df) nrow(df) == 0 || all(sapply(df, function(col) all(is.na(col) | col == "")))))) {
+      return(data.frame())
+    }
+    
+    return(datasets$Satisfied)
+  }
+  
+  
+#' cleans onsitenet metric data 
+#'
+#' @param metric feas metric
+#'
+#' @return df, a cleaned version of the input dataset - to be used as an argument in actual metric pulling function
+#' 
+#' @export
+#'
+#' @examples \dontrun{checked_dataset<-clean_onsitenet_dataset(metric)}    
+clean_onsitenet_dataset <- function(metric) {
     # Read the dataset
     NetHabUnits <- openxlsx::read.xlsx(metric, sheet = "Headline Results", cols = 8, rows = 47, colNames = FALSE, skipEmptyRows = TRUE)
     NetHedgeUnits<- openxlsx::read.xlsx(metric, sheet = "Headline Results", cols = 8, rows = 48, colNames = FALSE, skipEmptyRows = TRUE)
@@ -190,24 +289,40 @@
     datasets <- list(NetHabUnits, NetHedgeUnits, NetWaterUnits, NetHabPercent, NetHedgePercent, NetWaterPercent, 
                      TradeSatisfied, HabDeficit, HedgeDeficit, WaterDeficit)
     
-    # Check for the presence of "Check Data ⚠" in any dataset
-    for (i in datasets) {
-      if (any(i == "Check Data ⚠", i == "Error ▲",na.rm = TRUE)) {
+    # Check for missing values or empty strings in each dataset
+    for (data in datasets) {
+      if (any(sapply(data, function(x) any(is.na(x) | x == ""  | x =="Check Data ⚠"| x == "Error ▲")))) {
         return("Please check metric is filled in appropriately before continuing")
       }
+    }
+    
+    # Check if any dataset has zero rows
+    if (any(sapply(datasets, nrow) == 0)) {
+      return(NetHabUnits)
     }
     
     return(NetHabUnits)
   }
   
-  
-  clean_onsitehab_baseline <- function(metric) {
+#' cleans onsitehab baseline metric data 
+#'
+#' @param metric feas metric
+#'
+#' @return df, a cleaned version of the input dataset - to be used as an argument in actual metric pulling function
+#' 
+#' @export
+#'
+#' @examples \dontrun{checked_dataset<-clean_onsitehab_baseline(metric)}   
+clean_onsitehab_baseline <- function(metric) {
     # Read the dataset
     df <- openxlsx::read.xlsx(metric, "A-1 On-Site Habitat Baseline", colNames = FALSE, startRow = 10)
     
     # Remove the first column
-    df <- df[, -36]
-    df <- df[,-32]
+    df <- df[,-40:-41]
+    df <- df[, -33:-38]
+    df <- df[,-31:-32]
+    df <- df[,-28]
+    df <- df[,-23:-25]
     df <- df[,-3]
     df <- df[-1,]
     
@@ -220,16 +335,386 @@
     }
     
     # Check for the presence of "Check Data ⚠" in any dataset
-    for (i in df){
-      if (any(is.na(i))) {
+    for (i in df) {
+      if (any(is.na(i) | i == "")) {
         return("Please check metric is filled in appropriately before continuing")
       }
+    }
+    if (nrow(df) == 0) {
+      return(df)
     }
     
     return(df)
   }
   
+#' cleans onsitehab retain metric data 
+#'
+#' @param metric feas metric
+#'
+#' @return df, a cleaned version of the input dataset - to be used as an argument in actual metric pulling function
+#' 
+#' @export
+#'
+#' @examples \dontrun{checked_dataset<-clean_onsitehab_retain(metric)}     
+clean_onsitehab_retain <- function(metric) {
+    # Read the dataset
+    df <- openxlsx::read.xlsx(metric, "A-1 On-Site Habitat Baseline", colNames = FALSE, startRow = 10)
+    
+    # Remove the first column
+    df <- df[,-40:-41]
+    df <- df[, -33:-38]
+    df <- df[,-31:-32]
+    df <- df[,-28]
+    df <- df[,-23:-25]
+    df <- df[,-3]
+    df <- df[-1,]
+    
+    # Keep only rows where column 1 has data
+    df <- df[df[[1]] != "" & !is.na(df[[1]]), , drop = FALSE]
+    
+    # Remove the last row if it's a duplicate of the previous one
+    if (nrow(df) > 1 && identical(df[nrow(df), ], df[nrow(df) - 1, ])) {
+      df <- df[-nrow(df), , drop = FALSE]
+    }
+    
+    # Check for the presence of "Check Data ⚠" in any dataset
+    for (i in df) {
+      if (any(is.na(i) | i == "")) {
+        return("Please check metric is filled in appropriately before continuing")
+      }
+    }
+    if (nrow(df) == 0) {
+      return(df)
+    }
+    
+    return(df)
+  }
   
+#' cleans onsitehab loss metric data 
+#'
+#' @param metric feas metric
+#'
+#' @return df, a cleaned version of the input dataset - to be used as an argument in actual metric pulling function
+#' 
+#' @export
+#'
+#' @examples \dontrun{checked_dataset<-clean_onsitehab_loss(metric)}       
+clean_onsitehab_loss <- function(metric) {
+    # Read the dataset
+    df <- openxlsx::read.xlsx(metric, "A-1 On-Site Habitat Baseline", colNames = FALSE, startRow = 10)
+    
+    # Remove the first column
+    df <- df[,-40:-41]
+    df <- df[, -33:-38]
+    df <- df[,-31:-32]
+    df <- df[,-28]
+    df <- df[,-23:-25]
+    df <- df[,-3]
+    df <- df[-1,]
+    
+    # Keep only rows where column 1 has data
+    df <- df[df[[1]] != "" & !is.na(df[[1]]), , drop = FALSE]
+    
+    # Remove the last row if it's a duplicate of the previous one
+    if (nrow(df) > 1 && identical(df[nrow(df), ], df[nrow(df) - 1, ])) {
+      df <- df[-nrow(df), , drop = FALSE]
+    }
+    
+    # Check for the presence of "Check Data ⚠" in any dataset
+    for (i in df) {
+      if (any(is.na(i) | i == "")) {
+        return("Please check metric is filled in appropriately before continuing")
+      }
+    }
+    if (nrow(df) == 0) {
+      return(df)
+    }
+    
+    return(df)
+  }
   
+#' cleans onsitehab creation metric data 
+#'
+#' @param metric feas metric
+#'
+#' @return df, a cleaned version of the input dataset - to be used as an argument in actual metric pulling function
+#' 
+#' @export
+#'
+#' @examples \dontrun{checked_dataset<-clean_onsitehab_creation(metric)}     
+clean_onsitehab_creation <- function(metric) {
+    # Read the dataset
+    df <- openxlsx::read.xlsx(metric, "A-2 On-Site Habitat Creation", colNames = FALSE, startRow = 10)
+    
+    # Remove the first column
+    df <- df[,-26:-29]
+    df <- df[,-16:-17]
+    df <- df[,-2]
+    df <- df[-1,]
+    
+    # Keep only rows where column 1 has data
+    df <- df[df[[1]] != "" & !is.na(df[[1]]), , drop = FALSE]
+    
+    # Remove the last row if it's a duplicate of the previous one
+    if (nrow(df) > 1 && identical(df[nrow(df), ], df[nrow(df) - 1, ])) {
+      df <- df[-nrow(df), , drop = FALSE]
+    }
+    
+    # Check for the presence of "Check Data ⚠" in any dataset
+    for (i in df) {
+      if (any(is.na(i) | i == "")) {
+        return("Please check metric is filled in appropriately before continuing")
+      }
+    }
+    if (nrow(df) == 0) {
+      return(df)
+    }
+    
+    return(df)
+  }
+
+#' cleans onsitehab enchancement metric data 
+#'
+#' @param metric feas metric
+#'
+#' @return df, a cleaned version of the input dataset - to be used as an argument in actual metric pulling function
+#' 
+#' @export
+#'
+#' @examples \dontrun{checked_dataset<-clean_onsitehab_enhancement(metric)}   
+clean_onsitehab_enhancement <- function(metric) {
+    # Read the dataset
+    df <- openxlsx::read.xlsx(metric, "A-3 On-Site Habitat Enhancement", colNames = FALSE, startRow = 10)
+    
+    # Remove the first column
+    df <- df[,-40:-44]
+    df <- df[,-30:-31]
+    #df <- df[,-2]
+    df <- df[-1:-2,]
+    
+    # Keep only rows where column 1 has data
+    df <- df[df[[1]] != "" & !is.na(df[[1]]), , drop = FALSE]
+    
+    # Remove the last row if it's a duplicate of the previous one
+    if (nrow(df) > 1 && identical(df[nrow(df), ], df[nrow(df) - 1, ])) {
+      df <- df[-nrow(df), , drop = FALSE]
+    }
+    
+    # Check for the presence of "Check Data ⚠" in any dataset
+    for (i in df) {
+      if (any(is.na(i) | i == "")) {
+        return("Please check metric is filled in appropriately before continuing")
+      }
+    }
+    if (nrow(df) == 0) {
+      return(df)
+    }
+    
+    return(df)
+  }
   
+#' cleans onsitehedge baseline metric data 
+#'
+#' @param metric feas metric
+#'
+#' @return df, a cleaned version of the input dataset - to be used as an argument in actual metric pulling function
+#' 
+#' @export
+#'
+#' @examples \dontrun{checked_dataset<-clean_onsitehedge_baseline(metric)}     
+clean_onsitehedge_baseline <- function(metric) {
+    # Read the dataset
+    df <- openxlsx::read.xlsx(metric, "B-1 On-Site Hedge Baseline", colNames = FALSE, startRow = 10)
+    
+    # Remove the first column
+    df <- df[,-22:-24]
+    df <- df[,-18:-19]
+    df <- df[,-16]
+    df <- df[,-14]
+    df <- df[,-1]
+    df <- df[-1:-2,]
+    
+    # Keep only rows where column 1 has data
+    df <- df[df[[1]] != "" & !is.na(df[[1]]), , drop = FALSE]
+    
+    # Remove the last row if it's a duplicate of the previous one
+    if (nrow(df) > 1 && identical(df[nrow(df), ], df[nrow(df) - 1, ])) {
+      df <- df[-nrow(df), , drop = FALSE]
+    }
+    
+    # Check for the presence of "Check Data ⚠" in any dataset
+    for (i in df) {
+      if (any(is.na(i) | i == "")) {
+        return("Please check metric is filled in appropriately before continuing")
+      }
+    }
+    if (nrow(df) == 0) {
+      return(df)
+    }
+    
+    return(df)
+  }
   
+#' cleans onsitehedge retain metric data 
+#'
+#' @param metric feas metric
+#'
+#' @return df, a cleaned version of the input dataset - to be used as an argument in actual metric pulling function
+#' 
+#' @export
+#'
+#' @examples \dontrun{checked_dataset<-clean_onsitehedge_retain(metric)}     
+clean_onsitehedge_retain <- function(metric) {
+    # Read the dataset
+    df <- openxlsx::read.xlsx(metric, "B-1 On-Site Hedge Baseline", colNames = FALSE, startRow = 10)
+    
+    # Remove the first column
+    df <- df[,-22:-24]
+    df <- df[,-18:-19]
+    df <- df[,-16]
+    df <- df[,-14]
+    df <- df[,-1]
+    df <- df[-1:-2,]
+    
+    # Keep only rows where column 1 has data
+    df <- df[df[[1]] != "" & !is.na(df[[1]]), , drop = FALSE]
+    
+    # Remove the last row if it's a duplicate of the previous one
+    if (nrow(df) > 1 && identical(df[nrow(df), ], df[nrow(df) - 1, ])) {
+      df <- df[-nrow(df), , drop = FALSE]
+    }
+    
+    # Check for the presence of "Check Data ⚠" in any dataset
+    for (i in df) {
+      if (any(is.na(i) | i == "")) {
+        return("Please check metric is filled in appropriately before continuing")
+      }
+    }
+    if (nrow(df) == 0) {
+      return(df)
+    }
+    
+    return(df)
+  }
+
+#' cleans onsitehedge retain loss data 
+#'
+#' @param metric feas metric
+#'
+#' @return df, a cleaned version of the input dataset - to be used as an argument in actual metric pulling function
+#' 
+#' @export
+#'
+#' @examples \dontrun{checked_dataset<-clean_onsitehedge_loss(metric)}    
+clean_onsitehedge_loss <- function(metric) {
+    # Read the dataset
+    df <- openxlsx::read.xlsx(metric, "B-1 On-Site Hedge Baseline", colNames = FALSE, startRow = 10)
+    
+    # Remove the first column
+    df <- df[,-22:-24]
+    df <- df[,-18:-19]
+    df <- df[,-16]
+    df <- df[,-14]
+    df <- df[,-1]
+    df <- df[-1:-2,]
+    
+    # Keep only rows where column 1 has data
+    df <- df[df[[1]] != "" & !is.na(df[[1]]), , drop = FALSE]
+    
+    # Remove the last row if it's a duplicate of the previous one
+    if (nrow(df) > 1 && identical(df[nrow(df), ], df[nrow(df) - 1, ])) {
+      df <- df[-nrow(df), , drop = FALSE]
+    }
+    
+    # Check for the presence of "Check Data ⚠" in any dataset
+    for (i in df) {
+      if (any(is.na(i) | i == "")) {
+        return("Please check metric is filled in appropriately before continuing")
+      }
+    }
+    if (nrow(df) == 0) {
+      return(df)
+    }
+    
+    return(df)
+}
+
+#' cleans onsitehedge creation loss data 
+#'
+#' @param metric feas metric
+#'
+#' @return df, a cleaned version of the input dataset - to be used as an argument in actual metric pulling function
+#' 
+#' @export
+#'
+#' @examples \dontrun{checked_dataset<-clean_onsitehedge_creation(metric)}    
+clean_onsitehedge_creation <- function(metric) {
+    # Read the dataset
+    df <- openxlsx::read.xlsx(metric, "B-2 On-Site Hedge Creation", colNames = FALSE, startRow = 10)
+    
+    # Remove the first column
+    df <- df[,-23:-26]
+    df <- df[,-14]
+    df <- df[,-1]
+    df <- df[-1:-2,]
+    
+    # Keep only rows where column 1 has data
+    df <- df[df[[1]] != "" & !is.na(df[[1]]), , drop = FALSE]
+    
+    # Remove the last row if it's a duplicate of the previous one
+    if (nrow(df) > 1 && identical(df[nrow(df), ], df[nrow(df) - 1, ])) {
+      df <- df[-nrow(df), , drop = FALSE]
+    }
+    
+    # Check for the presence of "Check Data ⚠" in any dataset
+    for (i in df) {
+      if (any(is.na(i) | i == "")) {
+        return("Please check metric is filled in appropriately before continuing")
+      }
+    }
+    if (nrow(df) == 0) {
+      return(df)
+    }
+    
+    return(df)
+  }
+
+#' cleans onsitehedge enhancement loss data 
+#'
+#' @param metric feas metric
+#'
+#' @return df, a cleaned version of the input dataset - to be used as an argument in actual metric pulling function
+#' 
+#' @export
+#'
+#' @examples \dontrun{checked_dataset<-clean_onsitehedge_enhancement(metric)}   
+clean_onsitehedge_enhancement <- function(metric) {
+    # Read the dataset
+    df <- openxlsx::read.xlsx(metric, "B-3 On-Site Hedge Enhancement", colNames = FALSE, startRow = 10)
+    
+    # Remove the first column
+    df <- df[,-34:-37]
+    df <- df[,-24:-25]
+    df <- df[,-1]
+    df <- df[-1:-2,]
+    
+    # Keep only rows where column 1 has data
+    df <- df[df[[1]] != "" & !is.na(df[[1]]), , drop = FALSE]
+    
+    # Remove the last row if it's a duplicate of the previous one
+    if (nrow(df) > 1 && identical(df[nrow(df), ], df[nrow(df) - 1, ])) {
+      df <- df[-nrow(df), , drop = FALSE]
+    }
+    
+    # Check for the presence of "Check Data ⚠" in any dataset
+    for (i in df) {
+      if (any(is.na(i) | i == "")) {
+        return("Please check metric is filled in appropriately before continuing")
+      }
+    }
+    if (nrow(df) == 0) {
+      return(df)
+    }
+    
+    return(df)
+}
