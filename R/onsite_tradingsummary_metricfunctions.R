@@ -8,10 +8,6 @@
 #'
 #' @examples \dontrun{habitatsumdata<-pullonsitehabitatsumdata(metric)}
 pullonsitehabitatsumdata<-function(metric){
-  catch_habsum <-   clean_habsum_dataset(metric)
-
-  if (is.data.frame(catch_habsum)) {
-      
     #get which distinctiveness is needed for satisfying trading standards
     tradingsum <- "Trading Summary Area Habitats"
     
@@ -63,10 +59,6 @@ pullonsitehabitatsumdata<-function(metric){
                   LNet = L)
     
     return(sumdata)
-  }
-  else {
-    return(catch_habsum)
-  }
   
 }
 
@@ -80,9 +72,7 @@ pullonsitehabitatsumdata<-function(metric){
 #'
 #' @examples \dontrun{hedgesumdata<-pullonsitehedgesumdata(metric)}
 pullonsitehedgesumdata<-function(metric){
-  catch_hedgesum <-   clean_hedgesum_dataset(metric)
-  
-  if (is.data.frame(catch_hedgesum)) {
+ 
     #get which distinctiveness is needed for satisfying trading standards
     tradingsum <- "Trading Summary Hedgerows"
     
@@ -140,11 +130,7 @@ pullonsitehedgesumdata<-function(metric){
                   LNet = L,
                   VLNet = VL)
     
-    return(sumdata)}
-  else {
-    return(catch_hedgesum)
-  }
-    
+    return(sumdata)
 }
 
 #' pull metadata needed, including site size, net units gained, net percentage gain, etc.
@@ -157,10 +143,7 @@ pullonsitehedgesumdata<-function(metric){
 #'
 #' @examples \dontrun{watersumdata<-pullonsitewatersumdata(metric)}
 pullonsitewatersumdata<-function(metric){
-  catch_watersum <-   clean_watersum_dataset(metric)
-  
-  if (is.data.frame(catch_watersum)) {
-    #get which distinctiveness is needed for satisfying trading standards
+   #get which distinctiveness is needed for satisfying trading standards
     tradingsum <- "Trading Summary WaterC's"
     
     Satisfied <- openxlsx::read.xlsx(metric, sheet = tradingsum, cols = 7, rows = 4:9, colNames = FALSE, skipEmptyRows = TRUE)
@@ -216,11 +199,7 @@ pullonsitewatersumdata<-function(metric){
                   MNet = M,
                   LNet = L)
     
-    return(sumdata)}
-  else {
-      return(catch_watersum)
-      
-      }
+    return(sumdata)
 }
   
 

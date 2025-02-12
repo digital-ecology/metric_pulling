@@ -8,10 +8,6 @@
 #' @examples \dontrun{waterbaselinedata<-pullonsitewaterbaseline(metric)}
 pullonsitewaterbaseline<-function(metric){
   
-  catch_c1 <- clean_C1_dataset(metric)
-  
-  if (is.data.frame(catch_c1)) {
-  
     #baselinesheet
     baselinesheet <- "C-1 On-Site WaterC' Baseline"
     
@@ -95,10 +91,7 @@ pullonsitewaterbaseline<-function(metric){
                             totallength = totalwaterlength,
                             totalunits = totalwaterunits)
     
-    return(waterbaselinedata)}
-  else {
-    return(catch_c1)
-  }
+    return(waterbaselinedata)
   
 }
 
@@ -111,9 +104,7 @@ pullonsitewaterbaseline<-function(metric){
 #'
 #' @examples \dontrun{waterretaindata<-pullonsitewaterretain(metric)}
 pullonsitewaterretain<-function(metric){
-  catch_c1 <- clean_C1_dataset(metric)
   
-  if (is.data.frame(catch_c1)) {
     #baselinesheet
     baselinesheet <- "C-1 On-Site WaterC' Baseline"
     
@@ -152,10 +143,7 @@ pullonsitewaterretain<-function(metric){
     
     waterretaindata<-list(waterretaindata = waterretaindata)
     
-    return(waterretaindata)}
-  else {
-    return(catch_c1)
-  }
+    return(waterretaindata)
   
 }
 
@@ -168,9 +156,6 @@ pullonsitewaterretain<-function(metric){
 #'
 #' @examples \dontrun{waterlossdata<-pullonsitewaterloss(metric)}
 pullonsitewaterloss<-function(metric){
-  catch_c1 <- clean_C1_dataset(metric)
-  
-  if (is.data.frame(catch_c1)) {
     #baselinesheet
     baselinesheet <- "C-1 On-Site WaterC' Baseline"
     
@@ -212,10 +197,8 @@ pullonsitewaterloss<-function(metric){
     
     waterlossdata<-list(waterlostdata = waterlostdata)
   
-    return(waterlossdata)}
-  else {
-    return(catch_c1)
-  }
+    return(waterlossdata)
+  
 }
 
 #' pull created water data
@@ -227,9 +210,7 @@ pullonsitewaterloss<-function(metric){
 #'
 #' @examples \dontrun{watercreation<-pullonsitewatercreation(metric)}
 pullonsitewatercreation<-function(metric){
-  catch_c2 <- clean_C2_dataset(metric)
   
-  if (is.data.frame(catch_c2)) {
     #creationsheet
     creationsheet <- "C-2 On-Site WaterC' Creation"
     
@@ -302,10 +283,7 @@ pullonsitewatercreation<-function(metric){
                             TotalCreatedwaterUnits = totalwaterunits)
     
     
-    return(watercreationdata)}
-      else {
-        return(catch_c2)
-      }
+    return(watercreationdata)
     }
   
   
@@ -322,9 +300,6 @@ pullonsitewatercreation<-function(metric){
 #'
 #' @examples \dontrun{waterenhancementdata<-pullonsitewaterenhancement(metric)}
 pullonsitewaterenhancement<-function(metric){
-  catch_c3 <- clean_C3_dataset(metric)
-  
-  if (is.data.frame(catch_c3)) {
     #enhancement sheet
     enhancementsheet <- "C-3 On-Site WaterC' Enhancement"
     
@@ -398,9 +373,6 @@ pullonsitewaterenhancement<-function(metric){
     
     waterenhancementdata <- list(waterenhancementdata = waterenhancementdata)
   
-  return(waterenhancementdata)}
-    else {
-      return(catch_c3)
-    }
+  return(waterenhancementdata)
 }  
 

@@ -8,10 +8,6 @@
 #'
 #' @examples \dontrun{baselinedata<-pullonsitehabitatbaseline(metric)}
 pullonsitehabitatbaseline<-function(metric){
-  clean_onsitehab_baseline <- clean_onsitehab_baseline(metric)
-  
-  if (is.data.frame(clean_onsitehab_baseline)) {
-    
     #baselinesheet
     baselinesheet <- "A-1 On-Site Habitat Baseline"
     
@@ -71,10 +67,7 @@ pullonsitehabitatbaseline<-function(metric){
                               totalarea = totalarea,
                               totalunits = totalunits)
   
-    return(habitatbaselinedata)}
-  else {
-    return(clean_onsitehab_baseline)
-  }
+    return(habitatbaselinedata)
 
 }
 
@@ -87,9 +80,8 @@ pullonsitehabitatbaseline<-function(metric){
 #'
 #' @examples \dontrun{retaindata<-pullonsitehabitatretain(metric)}
 pullonsitehabitatretain<-function(metric){
-  clean_onsitehab_retain <- clean_onsitehab_retain(metric)
+
   
-  if (is.data.frame(clean_onsitehab_retain)) {
     #baselinesheet
     baselinesheet <- "A-1 On-Site Habitat Baseline"
     
@@ -132,10 +124,7 @@ pullonsitehabitatretain<-function(metric){
                             TotalRetainArea = totalretainarea,
                             TotalRetainUnits = totalretainunits)
     
-    return(retainhabitatdata)}
-  else{
-    return(clean_onsitehab_retain)
-  }
+    return(retainhabitatdata)
   
 }
 
@@ -148,11 +137,7 @@ pullonsitehabitatretain<-function(metric){
 #'
 #' @examples \dontrun{habitatlossdata<-pullonsitehabitatloss(metric)}
 pullonsitehabitatloss<-function(metric){
-  clean_onsitehab_loss <- clean_onsitehab_loss(metric)
-  
-  if (is.data.frame(clean_onsitehab_loss)) {
-    
-    #baselinesheet
+   #baselinesheet
     baselinesheet <- "A-1 On-Site Habitat Baseline"
     
     #Broad Habitat
@@ -192,11 +177,7 @@ pullonsitehabitatloss<-function(metric){
                    TotallostArea = totallostarea,
                    TotallostUnits = totallostunits)
     
-    return(lostdata)}
-  else{
-    return(clean_onsitehab_loss)
-  }
-  
+    return(lostdata)
 }
 
 #' pull onsite habitats to be created
@@ -208,9 +189,7 @@ pullonsitehabitatloss<-function(metric){
 #'
 #' @examples \dontrun{creationdata<-pullonsitehabitatcreation(metric)}
 pullonsitehabitatcreation<-function(metric){
-  clean_onsitehab_creation <- clean_onsitehab_creation(metric)
   
-  if (is.data.frame(clean_onsitehab_creation)) {
     #creation bits
     creationsheet <- "A-2 On-Site Habitat Creation"
     
@@ -310,11 +289,7 @@ pullonsitehabitatcreation<-function(metric){
                                 TotalCreationArea = totalcreationarea,
                                 TotalCreationUnits = totalcreationunits)
   
-    return(habitatcreationdata)}
-  else{
-    return(clean_onsitehab_creation)
-  }
-
+    return(habitatcreationdata)
 }
 
 #' pull onsite habitats to be enhanced
@@ -328,9 +303,6 @@ pullonsitehabitatcreation<-function(metric){
 #'
 #' @examples \dontrun{enhancedata<-pullonsitehabitatenhancement(metric)}
 pullonsitehabitatenhancement<-function(metric){
-  clean_onsitehab_enhancement <- clean_onsitehab_enhancement(metric)
-  
-  if (is.data.frame(clean_onsitehab_enhancement)) {
     #enhancement bits
     enhancementsheet <-"A-3 On-Site Habitat Enhancement"
     
@@ -421,9 +393,5 @@ pullonsitehabitatenhancement<-function(metric){
                         TotalEnhanceArea = totalenhancearea,
                         TotalEnhanceUnits = totalenhanceunits)
   
-    return(enhancedata)}
-   else{
-      return(clean_onsitehab_enhancement)
-    }
-
+    return(enhancedata)
 }

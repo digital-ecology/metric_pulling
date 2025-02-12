@@ -8,11 +8,7 @@
 #'
 #' @examples \dontrun{netdata<-pullonsitenetdata(metric)}
 pullonsitenetdata<-function(metric){
-  catch_onsite <- clean_onsitenet_dataset(metric)
-  
-  if (is.data.frame(catch_onsite)) {
-    
-    resultssheet<-"Headline Results"
+  resultssheet<-"Headline Results"
     
     #get on site baseline for habitat, hedgerow, and watercourse units
     BaseHabUnits<-openxlsx::read.xlsx(metric, sheet = resultssheet, cols = 8, rows = 8, colNames = FALSE, skipEmptyRows = TRUE)
@@ -83,10 +79,5 @@ pullonsitenetdata<-function(metric){
     netdata<-list(NetData = netdata,
                   TradeSatisfied = TradeSatisfied)
     
-    return(netdata)}
-  else {
-    return(catch_onsite)
-  
-  }
-  
+    return(netdata)
 }

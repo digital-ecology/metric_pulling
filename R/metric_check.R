@@ -11,25 +11,25 @@
 #'c <- metric_check("data-raw/OnSiteHedgeEnhance2.xlsx") # metric used in testing qmd}
 metric_check <- function(metric) {
   checks <- list(
-    "A-1 On-Site Habitat Baseline (columns 5,6,8,9,11,13,17)" = pullonsitehabitatbaseline(metric),
-    "A-1 On-Site Habitat Baseline (columns 5,6,19,21)" = pullonsitehabitatretain(metric),
-    "A-1 On-Site Habitat Baseline (columns 5,6,23,24)" = pullonsitehabitatloss(metric),
-    "A-2 On-Site Habitat Creation (columns 4,5,7,8,10,12,19,25)" = pullonsitehabitatcreation(metric),
-    "A-3 On-Site Habitat Enhancement (columns 6,17,18,22,23,25,27,30,40)" = pullonsitehabitatenhancement(metric),
-    "Headline Results (rows 8,9,10,47,48,49,51,52,53,55,61,62,63)" = pullonsitenetdata(metric),
-    "Trading Summary Area Habitats" = pullonsitehabitatsumdata(metric),
-    "Trading Summary Hedgerows" = pullonsitehedgesumdata(metric),
-    "Trading Summary WaterC's" = pullonsitewatersumdata(metric),
-    "B-1 On-Site Hedge Baseline (columns 3,5,8,10,14,17,19)" = pullonsitehedgebaseline(metric),
-    "B-1 On-Site Hedge Baseline (columns 3,4,16,18)" = pullonsitehedgeretain(metric),
-    "B-1 On-Site Hedge Baseline (columns 3,4,20,21)" = pullonsitehedgeloss(metric),
-    "B-2 On-Site Hedge Creation (columns 3,4,5,6,8,10,23) " = pullonsitehedgecreation(metric),
-    "B-3 On-Site Hedge Enhancement (columns 2,3,7,16,17,19,21,34)" = pullonsitehedgeenhancement(metric),
-    "C-1 On-Site WaterC' Baseline (columns 4,5,6,8,10,24)" = pullonsitewaterbaseline(metric),
-    "C-1 On-Site WaterC' Baseline (columns 4,23)" = pullonsitewaterretain(metric),
-    "C-1 On-Site WaterC' Baseline (columns 4,25,26)" = pullonsitewaterloss(metric),
-    "C-2 On-Site WaterC' Creation (columns 3,4,5,7,9,26,29)" = pullonsitewatercreation(metric),
-    "C-3 On-Site WaterC' Enhancement (columns 3,7,14,17,18,20,22,39)" = pullonsitewaterenhancement(metric)
+    "A-1 On-Site Habitat Baseline (columns 5,6,8,9,11,13,17)" = clean_onsitehab_baseline(metric),
+    "A-1 On-Site Habitat Baseline (columns 5,6,19,21)" = clean_onsitehab_retain(metric),
+    "A-1 On-Site Habitat Baseline (columns 5,6,23,24)" = clean_onsitehab_loss(metric),
+    "A-2 On-Site Habitat Creation (columns 4,5,7,8,10,12,19,25)" = clean_onsitehab_creation(metric),
+    "A-3 On-Site Habitat Enhancement (columns 6,17,18,22,23,25,27,30,40)" = clean_onsitehab_enhancement(metric),
+    "Headline Results (rows 8,9,10,47,48,49,51,52,53,55,61,62,63)" = clean_onsitenet_dataset(metric),
+    "Trading Summary Area Habitats" = clean_habsum_dataset(metric),
+    "Trading Summary Hedgerows" = clean_hedgesum_dataset(metric),
+    "Trading Summary WaterC's" = clean_watersum_dataset(metric),
+    "B-1 On-Site Hedge Baseline (columns 3,5,8,10,14,17,19)" = clean_onsitehedge_baseline(metric),
+    "B-1 On-Site Hedge Baseline (columns 3,4,16,18)" = clean_onsitehedge_retain(metric),
+    "B-1 On-Site Hedge Baseline (columns 3,4,20,21)" = clean_onsitehedge_loss(metric),
+    "B-2 On-Site Hedge Creation (columns 3,4,5,6,8,10,23) " = clean_onsitehedge_creation(metric),
+    "B-3 On-Site Hedge Enhancement (columns 2,3,7,16,17,19,21,34)" = clean_onsitehedge_enhancement(metric),
+    "C-1 On-Site WaterC' Baseline (columns 4,5,6,8,10,24)" = clean_C1_dataset(metric),
+    "C-1 On-Site WaterC' Baseline (columns 4,23)" = clean_C1_dataset(metric),
+    "C-1 On-Site WaterC' Baseline (columns 4,25,26)" = clean_C1_dataset(metric),
+    "C-2 On-Site WaterC' Creation (columns 3,4,5,7,9,26,29)" = clean_C2_dataset(metric),
+    "C-3 On-Site WaterC' Enhancement (columns 3,7,14,17,18,20,22,39)" = clean_C3_dataset(metric)
   )
   
   # outputs to character to allow for proper matching

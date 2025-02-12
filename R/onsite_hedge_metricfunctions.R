@@ -7,9 +7,7 @@
 #'
 #' @examples \dontrun{hedgebaselinedata<-pullonsitehedgebaseline(metric)}
 pullonsitehedgebaseline<-function(metric){
-  clean_onsitehedge_baseline <- clean_onsitehedge_baseline(metric)
-  
-  if (is.data.frame(clean_onsitehedge_baseline)) {
+
     #baselinesheet
     baselinesheet <- "B-1 On-Site Hedge Baseline"
     
@@ -87,10 +85,7 @@ pullonsitehedgebaseline<-function(metric){
                             totallength = totalhedgelength,
                             totalunits = totalhedgeunits)
                         
-    return(hedgebaselinedata)}
-  else {
-    return(clean_onsitehedge_baseline)
-  }
+    return(hedgebaselinedata)
 }
 
 #' pullhedgeretain
@@ -102,9 +97,7 @@ pullonsitehedgebaseline<-function(metric){
 #'
 #' @examples \dontrun{hedgeretaindata<-pullonsitehedgeretain(metric)}
 pullonsitehedgeretain<-function(metric){
-  clean_onsitehedge_retain <- clean_onsitehedge_retain(metric)
   
-  if (is.data.frame(clean_onsitehedge_retain)) {
     #baselinesheet
     baselinesheet <- "B-1 On-Site Hedge Baseline"
     
@@ -147,10 +140,7 @@ pullonsitehedgeretain<-function(metric){
     
     hedgeretaindata<-list(hedgeretaindata = hedgeretaindata)
     
-    return(hedgeretaindata)}
-  else {
-    return(clean_onsitehedge_retain)
-  }
+    return(hedgeretaindata)
 }
 
 #' pullhedgeloss
@@ -162,9 +152,7 @@ pullonsitehedgeretain<-function(metric){
 #'
 #' @examples \dontrun{hedgelossdata<-pullonsitehedgeloss(metric)}
 pullonsitehedgeloss<-function(metric){
-  clean_onsitehedge_loss <- clean_onsitehedge_loss(metric)
   
-  if (is.data.frame(clean_onsitehedge_loss)) {
 
     #baselinesheet
     baselinesheet <- "B-1 On-Site Hedge Baseline"
@@ -209,10 +197,7 @@ pullonsitehedgeloss<-function(metric){
     
     hedgelossdata<-list(hedgelostdata = hedgelostdata)
   
-  return(hedgelossdata)}
-  else {
-    return(clean_onsitehedge_loss)
-  }
+  return(hedgelossdata)
 }
 
 #' pull created hedge data
@@ -224,9 +209,7 @@ pullonsitehedgeloss<-function(metric){
 #'
 #' @examples \dontrun{hedgecreation<-pullonsitehedgecreation(metric)}
 pullonsitehedgecreation<-function(metric){
-  clean_onsitehedge_creation <- clean_onsitehedge_creation(metric)
   
-  if (is.data.frame(clean_onsitehedge_creation)) {
     #creationsheet
     creationsheet <- "B-2 On-Site Hedge Creation"
     
@@ -300,10 +283,7 @@ pullonsitehedgecreation<-function(metric){
                             TotalCreatedHedgeUnits = totalhedgeunits)
   
   
-  return(hedgecreationdata)}
-  else {
-    return(clean_onsitehedge_creation)
-  }
+  return(hedgecreationdata)
 }
 
 #' pull hedge enhance
@@ -315,9 +295,6 @@ pullonsitehedgecreation<-function(metric){
 #'
 #' @examples \dontrun{hedgeenhancementdata<-pullonsitehedgeenhancement(metric)}
 pullonsitehedgeenhancement <- function(metric) {
-  clean_onsitehedge_enhancement <- clean_onsitehedge_enhancement(metric)
-  
-  if (is.data.frame(clean_onsitehedge_enhancement)) {
     
     #enhancement sheet
     enhancementsheet <- "B-3 On-Site Hedge Enhancement"
@@ -397,9 +374,6 @@ pullonsitehedgeenhancement <- function(metric) {
     
     hedgeenhancementdata <- list(hedgeenhancementdata = hedgeenhancementdata)
     
-    return(hedgeenhancementdata)}
-  else {
-    return(clean_onsitehedge_enhancement)
-  }
+    return(hedgeenhancementdata)
 }
 
