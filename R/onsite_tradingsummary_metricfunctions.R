@@ -160,7 +160,7 @@ pullonsitewatersumdata<-function(metric){
   catch_watersum <-   clean_watersum_dataset(metric)
   
   if (is.data.frame(catch_watersum)) {
-  #get which distinctiveness is needed for satisfying trading standards
+    #get which distinctiveness is needed for satisfying trading standards
     tradingsum <- "Trading Summary WaterC's"
     
     Satisfied <- openxlsx::read.xlsx(metric, sheet = tradingsum, cols = 7, rows = 4:9, colNames = FALSE, skipEmptyRows = TRUE)
