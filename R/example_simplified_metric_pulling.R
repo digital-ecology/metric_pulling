@@ -26,9 +26,7 @@ pullonsitehabitatsumdata<-function(metric){
   }
   
   #get dfs for each distinctiveness, showing hab group and project wide unit change
-  
   #very high
-  
   VHHab <- full_data[13:32, 2, drop = FALSE]
   VHChange <- full_data[13:32, 6, drop = FALSE]
   VH <- cbind(VHHab, VHChange)
