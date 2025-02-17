@@ -13,10 +13,12 @@ clean_C1_dataset <- function(metric) {
     # Remove the first column
     df <- df[,-39]
     df <- df[,-35:-36]
+    df <- df[,-32]
     df <- df[,-31]
     df <- df[,-28]
     df <- df[,-26]
     df <- df[,-25]
+    df <- df[,-21]
     df <- df[, -1]
     
     
@@ -24,6 +26,37 @@ clean_C1_dataset <- function(metric) {
     if (nrow(df) > 1) {
       df <- df[-nrow(df), , drop = FALSE]
     }
+    
+    # Identify rows that are completely empty
+    na_rows <- apply(df, 1, function(row) all(is.na(row) | row == ""))
+    
+    # Detect large NA blocks (adjust threshold if needed)
+    na_threshold <- 3  # Define what counts as "many NAs in a row"
+    na_streaks <- rle(na_rows)
+    
+    # Find the first large NA block
+    na_lengths <- cumsum(na_streaks$lengths)
+    first_large_na <- which(na_streaks$values & na_streaks$lengths >= na_threshold)
+    
+    if (length(first_large_na) > 0) {
+      cut_off_index <- na_lengths[first_large_na[1]]  # Find where to cut
+      df <- df[1:cut_off_index, , drop = FALSE]  # Keep only data before the NA block
+    }
+    
+    
+    # Replace sequential runs within any column with NA
+    for (col_idx in 2:ncol(df)) {
+      col_values <- as.numeric(df[[col_idx]])
+      if (any(!is.na(col_values))) {
+        diffs <- diff(col_values)
+        seq_indices <- which(diffs == 1)  # Find indices where values increase sequentially
+        
+        if (length(seq_indices) > 0) {
+          df[[col_idx]][c(seq_indices, seq_indices + 1)] <- NA  # Replace sequential values with NA
+        }
+      }
+    }
+    
     
     # Remove the last row if it's a duplicate of the previous one
     if (nrow(df) > 1 && identical(df[nrow(df), ], df[nrow(df) - 1, ])) {
@@ -43,6 +76,9 @@ clean_C1_dataset <- function(metric) {
     if (length(unique(column_lengths)) > 1) {
       return("Please check metric is filled in appropriately before continuing")
     }
+    
+    
+    
     if (nrow(df) == 0) {
       return(df)
     }
@@ -73,6 +109,37 @@ clean_C2_dataset <- function(metric) {
     if (nrow(df) > 1) {
       df <- df[-nrow(df), , drop = FALSE]
     }
+    
+    # Identify rows that are completely empty
+    na_rows <- apply(df, 1, function(row) all(is.na(row) | row == ""))
+    
+    # Detect large NA blocks (adjust threshold if needed)
+    na_threshold <- 3  # Define what counts as "many NAs in a row"
+    na_streaks <- rle(na_rows)
+    
+    # Find the first large NA block
+    na_lengths <- cumsum(na_streaks$lengths)
+    first_large_na <- which(na_streaks$values & na_streaks$lengths >= na_threshold)
+    
+    if (length(first_large_na) > 0) {
+      cut_off_index <- na_lengths[first_large_na[1]]  # Find where to cut
+      df <- df[1:cut_off_index, , drop = FALSE]  # Keep only data before the NA block
+    }
+    
+    
+    # Replace sequential runs within any column with NA
+    for (col_idx in 2:ncol(df)) {
+      col_values <- as.numeric(df[[col_idx]])
+      if (any(!is.na(col_values))) {
+        diffs <- diff(col_values)
+        seq_indices <- which(diffs == 1)  # Find indices where values increase sequentially
+        
+        if (length(seq_indices) > 0) {
+          df[[col_idx]][c(seq_indices, seq_indices + 1)] <- NA  # Replace sequential values with NA
+        }
+      }
+    }
+    
     
     # Remove the last row if it's a duplicate of the previous one
     if (nrow(df) > 1 && identical(df[nrow(df), ], df[nrow(df) - 1, ])) {
@@ -121,12 +188,45 @@ clean_C3_dataset <- function(metric) {
     df <- df[, -1]
     df <- df[-1:-2,]
     
-    # Keep only rows where there is data
-    df <- df[apply(df, 1, function(row) any(row != "" & !is.na(row))), , drop = FALSE]
+   
     
     if (nrow(df) > 1) {
       df <- df[-nrow(df), , drop = FALSE]
     }
+    
+    # Identify rows that are completely empty
+    na_rows <- apply(df, 1, function(row) all(is.na(row) | row == ""))
+    
+    # Detect large NA blocks (adjust threshold if needed)
+    na_threshold <- 3  # Define what counts as "many NAs in a row"
+    na_streaks <- rle(na_rows)
+    
+    # Find the first large NA block
+    na_lengths <- cumsum(na_streaks$lengths)
+    first_large_na <- which(na_streaks$values & na_streaks$lengths >= na_threshold)
+    
+    if (length(first_large_na) > 0) {
+      cut_off_index <- na_lengths[first_large_na[1]]  # Find where to cut
+      df <- df[1:cut_off_index, , drop = FALSE]  # Keep only data before the NA block
+    }
+    
+    
+    
+    # Replace sequential runs within any column with NA
+    for (col_idx in 2:ncol(df)) {
+      col_values <- as.numeric(df[[col_idx]])
+      if (any(!is.na(col_values))) {
+        diffs <- diff(col_values)
+        seq_indices <- which(diffs == 1)  # Find indices where values increase sequentially
+        
+        if (length(seq_indices) > 0) {
+          df[[col_idx]][c(seq_indices, seq_indices + 1)] <- NA  # Replace sequential values with NA
+        }
+      }
+    }
+    
+    # Keep only rows where there is data
+    df <- df[apply(df, 1, function(row) any(row != "" & !is.na(row))), , drop = FALSE]
     
     # Remove the last row if it's a duplicate of the previous one
     if (nrow(df) > 1 && identical(df[nrow(df), ], df[nrow(df) - 1, ])) {
