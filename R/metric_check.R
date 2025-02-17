@@ -32,19 +32,23 @@ metric_check <- function(metric) {
     "C-3 On-Site WaterC' Enhancement (columns 3,7,14,17,18,20,22,39)" = clean_C3_dataset(metric)
   )
   
-  # Outputs to character to allow for proper matching
-  checks_as_character <- vapply(checks, function(x) 
-    if (is.character(x) && length(x) == 1) x else "OK", 
-    FUN.VALUE = character(1)
-  )
+  checks_as_character <- vapply(checks, function(x) {
+    if (is.data.frame(x) && nrow(x) == 0) {
+      "OK"  # Allow empty datasets
+    } else if (is.character(x) && length(x) == 1) {
+      x
+    } else {
+      "OK"
+    }
+  }, FUN.VALUE = character(1))
   
   # Check functions returning the specified check message
   issues <- names(checks_as_character)[checks_as_character == "Please check metric is filled in appropriately before continuing"]
   
   # Format the output message
   message <- if (length(issues) > 0) {
-    issue_list <- paste("- ", issues, collapse = " ")
-    paste("Please check the following metrics are filled in correctly before running the app:", issue_list)
+    issue_list <- paste("- ", issues, collapse = "\n")  # Each issue on a new line
+    paste("Please check the following metrics are filled in correctly before running the app:\n", issue_list)
   } else {
     "All metrics are correctly filled in. No issues detected."
   }
