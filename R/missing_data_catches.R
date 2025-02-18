@@ -451,6 +451,19 @@ clean_onsitehab_baseline <- function(metric) {
     df <- df[,-3]
     df <- df[-1,]
     
+    # Replace sequential runs within any column with NA
+    for (col_idx in 2:ncol(df)) {
+      col_values <- as.numeric(df[[col_idx]])
+      if (any(!is.na(col_values))) {
+        diffs <- diff(col_values)
+        seq_indices <- which(diffs == 1)  # Find indices where values increase sequentially
+        
+        if (length(seq_indices) > 0) {
+          df[[col_idx]][c(seq_indices, seq_indices + 1)] <- NA  # Replace sequential values with NA
+        }
+      }
+    }
+    
     # Identify rows that are completely empty
     na_rows <- apply(df, 1, function(row) all(is.na(row) | row == ""))
     
@@ -467,7 +480,7 @@ clean_onsitehab_baseline <- function(metric) {
       df <- df[1:cut_off_index, , drop = FALSE]  # Keep only data before the NA block
     }
     
-    
+  
     # Keep only rows where there is data
     df <- df[apply(df, 1, function(row) any(row != "" & !is.na(row))), , drop = FALSE]
     
@@ -518,6 +531,19 @@ clean_onsitehab_retain <- function(metric) {
     df <- df[,-17]
     df <- df[,-3]
     df <- df[-1,]
+    
+    # Replace sequential runs within any column with NA
+    for (col_idx in 2:ncol(df)) {
+      col_values <- as.numeric(df[[col_idx]])
+      if (any(!is.na(col_values))) {
+        diffs <- diff(col_values)
+        seq_indices <- which(diffs == 1)  # Find indices where values increase sequentially
+        
+        if (length(seq_indices) > 0) {
+          df[[col_idx]][c(seq_indices, seq_indices + 1)] <- NA  # Replace sequential values with NA
+        }
+      }
+    }
     
     # Identify rows that are completely empty
     na_rows <- apply(df, 1, function(row) all(is.na(row) | row == ""))
@@ -585,6 +611,19 @@ clean_onsitehab_loss <- function(metric) {
     df <- df[,-3]
     df <- df[-1,]
     
+    # Replace sequential runs within any column with NA
+    for (col_idx in 2:ncol(df)) {
+      col_values <- as.numeric(df[[col_idx]])
+      if (any(!is.na(col_values))) {
+        diffs <- diff(col_values)
+        seq_indices <- which(diffs == 1)  # Find indices where values increase sequentially
+        
+        if (length(seq_indices) > 0) {
+          df[[col_idx]][c(seq_indices, seq_indices + 1)] <- NA  # Replace sequential values with NA
+        }
+      }
+    }
+    
     # Identify rows that are completely empty
     na_rows <- apply(df, 1, function(row) all(is.na(row) | row == ""))
     
@@ -647,6 +686,19 @@ clean_onsitehab_creation <- function(metric) {
     df <- df[,-2]
     df <- df[-1,]
     
+    # Replace sequential runs within any column with NA
+    for (col_idx in 2:ncol(df)) {
+      col_values <- as.numeric(df[[col_idx]])
+      if (any(!is.na(col_values))) {
+        diffs <- diff(col_values)
+        seq_indices <- which(diffs == 1)  # Find indices where values increase sequentially
+        
+        if (length(seq_indices) > 0) {
+          df[[col_idx]][c(seq_indices, seq_indices + 1)] <- NA  # Replace sequential values with NA
+        }
+      }
+    }
+    
     # Identify rows that are completely empty
     na_rows <- apply(df, 1, function(row) all(is.na(row) | row == ""))
     
@@ -708,6 +760,19 @@ clean_onsitehab_enhancement <- function(metric) {
     df <- df[,-30:-31]
     #df <- df[,-2]
     df <- df[-1:-2,]
+    
+    # Replace sequential runs within any column with NA
+    for (col_idx in 2:ncol(df)) {
+      col_values <- as.numeric(df[[col_idx]])
+      if (any(!is.na(col_values))) {
+        diffs <- diff(col_values)
+        seq_indices <- which(diffs == 1)  # Find indices where values increase sequentially
+        
+        if (length(seq_indices) > 0) {
+          df[[col_idx]][c(seq_indices, seq_indices + 1)] <- NA  # Replace sequential values with NA
+        }
+      }
+    }
     
     # Identify rows that are completely empty
     na_rows <- apply(df, 1, function(row) all(is.na(row) | row == ""))
@@ -773,6 +838,19 @@ clean_onsitehedge_baseline <- function(metric) {
     df <- df[,-1]
     df <- df[-1:-2,]
     
+    # Replace sequential runs within any column with NA
+    for (col_idx in 2:ncol(df)) {
+      col_values <- as.numeric(df[[col_idx]])
+      if (any(!is.na(col_values))) {
+        diffs <- diff(col_values)
+        seq_indices <- which(diffs == 1)  # Find indices where values increase sequentially
+        
+        if (length(seq_indices) > 0) {
+          df[[col_idx]][c(seq_indices, seq_indices + 1)] <- NA  # Replace sequential values with NA
+        }
+      }
+    }
+    
     # Identify rows that are completely empty
     na_rows <- apply(df, 1, function(row) all(is.na(row) | row == ""))
     
@@ -837,6 +915,19 @@ clean_onsitehedge_retain <- function(metric) {
     df <- df[,-14]
     df <- df[,-1]
     df <- df[-1:-2,]
+    
+    # Replace sequential runs within any column with NA
+    for (col_idx in 2:ncol(df)) {
+      col_values <- as.numeric(df[[col_idx]])
+      if (any(!is.na(col_values))) {
+        diffs <- diff(col_values)
+        seq_indices <- which(diffs == 1)  # Find indices where values increase sequentially
+        
+        if (length(seq_indices) > 0) {
+          df[[col_idx]][c(seq_indices, seq_indices + 1)] <- NA  # Replace sequential values with NA
+        }
+      }
+    }
     
     # Identify rows that are completely empty
     na_rows <- apply(df, 1, function(row) all(is.na(row) | row == ""))
@@ -904,6 +995,19 @@ clean_onsitehedge_loss <- function(metric) {
     df <- df[,-1]
     df <- df[-1:-2,]
     
+    # Replace sequential runs within any column with NA
+    for (col_idx in 2:ncol(df)) {
+      col_values <- as.numeric(df[[col_idx]])
+      if (any(!is.na(col_values))) {
+        diffs <- diff(col_values)
+        seq_indices <- which(diffs == 1)  # Find indices where values increase sequentially
+        
+        if (length(seq_indices) > 0) {
+          df[[col_idx]][c(seq_indices, seq_indices + 1)] <- NA  # Replace sequential values with NA
+        }
+      }
+    }
+    
     # Identify rows that are completely empty
     na_rows <- apply(df, 1, function(row) all(is.na(row) | row == ""))
     
@@ -967,6 +1071,19 @@ clean_onsitehedge_creation <- function(metric) {
     df <- df[,-14]
     df <- df[,-1]
     df <- df[-1:-2,]
+    
+    # Replace sequential runs within any column with NA
+    for (col_idx in 2:ncol(df)) {
+      col_values <- as.numeric(df[[col_idx]])
+      if (any(!is.na(col_values))) {
+        diffs <- diff(col_values)
+        seq_indices <- which(diffs == 1)  # Find indices where values increase sequentially
+        
+        if (length(seq_indices) > 0) {
+          df[[col_idx]][c(seq_indices, seq_indices + 1)] <- NA  # Replace sequential values with NA
+        }
+      }
+    }
     
     # Identify rows that are completely empty
     na_rows <- apply(df, 1, function(row) all(is.na(row) | row == ""))
@@ -1032,6 +1149,19 @@ clean_onsitehedge_enhancement <- function(metric) {
     #df <- df[,-1]
     df <- df[-1:-2,]
     
+    
+    # Replace sequential runs within any column with NA
+    for (col_idx in 2:ncol(df)) {
+      col_values <- as.numeric(df[[col_idx]])
+      if (any(!is.na(col_values))) {
+        diffs <- diff(col_values)
+        seq_indices <- which(diffs == 1)  # Find indices where values increase sequentially
+        
+        if (length(seq_indices) > 0) {
+          df[[col_idx]][c(seq_indices, seq_indices + 1)] <- NA  # Replace sequential values with NA
+        }
+      }
+    }
     # Identify rows that are completely empty
     na_rows <- apply(df, 1, function(row) all(is.na(row) | row == ""))
     
