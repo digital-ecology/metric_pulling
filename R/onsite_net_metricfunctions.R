@@ -18,22 +18,30 @@ pullonsitenetdata<-function(metric){
     BaseWaterUnits<-openxlsx::read.xlsx(metric, sheet = resultssheet, cols = 8, rows = 10, colNames = FALSE, skipEmptyRows = TRUE)
     colnames(BaseWaterUnits) <- "BaseUnits"
     
+    #get on site pi for habitat, hedgerow, and watercourse units
+    PIHabUnits<-openxlsx::read.xlsx(metric, sheet = resultssheet, cols = 8, rows = 12, colNames = FALSE, skipEmptyRows = TRUE)
+    colnames(PIHabUnits) <- "PIUnits"
+    PIHedgeUnits<-openxlsx::read.xlsx(metric, sheet = resultssheet, cols = 8, rows = 13, colNames = FALSE, skipEmptyRows = TRUE)
+    colnames(PIHedgeUnits) <- "PIUnits"
+    PIWaterUnits<-openxlsx::read.xlsx(metric, sheet = resultssheet, cols = 8, rows = 14, colNames = FALSE, skipEmptyRows = TRUE)
+    colnames(PIWaterUnits) <- "PIUnits"
+    
     #get on site net change for habitat, hedgerow, and watercourse units
-    NetHabUnits <- openxlsx::read.xlsx(metric, sheet = resultssheet, cols = 8, rows = 47, colNames = FALSE, skipEmptyRows = TRUE)
+    NetHabUnits <- openxlsx::read.xlsx(metric, sheet = resultssheet, cols = 8, rows = 16, colNames = FALSE, skipEmptyRows = TRUE)
     colnames(NetHabUnits) <- "NetUnits"
-    NetHedgeUnits<- openxlsx::read.xlsx(metric, sheet = resultssheet, cols = 8, rows = 48, colNames = FALSE, skipEmptyRows = TRUE)
+    NetHedgeUnits<- openxlsx::read.xlsx(metric, sheet = resultssheet, cols = 8, rows = 17, colNames = FALSE, skipEmptyRows = TRUE)
     colnames(NetHedgeUnits) <- "NetUnits"
-    NetWaterUnits<- openxlsx::read.xlsx(metric, sheet = resultssheet, cols = 8, rows = 49, colNames = FALSE, skipEmptyRows = TRUE)
+    NetWaterUnits<- openxlsx::read.xlsx(metric, sheet = resultssheet, cols = 8, rows = 18, colNames = FALSE, skipEmptyRows = TRUE)
     colnames(NetWaterUnits) <- "NetUnits"
     
     #get on site net percentage change for habitat, hedgerow, and watercourse units
-    NetHabPercent <- openxlsx::read.xlsx(metric, sheet = resultssheet, cols = 8, rows = 51, colNames = FALSE, skipEmptyRows = TRUE)
+    NetHabPercent <- openxlsx::read.xlsx(metric, sheet = resultssheet, cols = 10, rows = 16, colNames = FALSE, skipEmptyRows = TRUE)
     NetHabPercent <-round((NetHabPercent * 100), digits = 2)
     colnames(NetHabPercent) <- "NetPercent"
-    NetHedgePercent<- openxlsx::read.xlsx(metric, sheet = resultssheet, cols = 8, rows = 52, colNames = FALSE, skipEmptyRows = TRUE)
+    NetHedgePercent<- openxlsx::read.xlsx(metric, sheet = resultssheet, cols = 10, rows = 17, colNames = FALSE, skipEmptyRows = TRUE)
     NetHedgePercent <-round((NetHedgePercent * 100), digits = 2)
     colnames(NetHedgePercent) <- "NetPercent"
-    NetWaterPercent<- openxlsx::read.xlsx(metric, sheet = resultssheet, cols = 8, rows = 53, colNames = FALSE, skipEmptyRows = TRUE)
+    NetWaterPercent<- openxlsx::read.xlsx(metric, sheet = resultssheet, cols = 10, rows = 18, colNames = FALSE, skipEmptyRows = TRUE)
     NetWaterPercent <-round((NetWaterPercent * 100), digits = 2)
     colnames(NetWaterPercent) <- "NetPercent"
     
@@ -57,19 +65,22 @@ pullonsitenetdata<-function(metric){
     colnames(WaterDeficit) <- "Deficit"
     
     nethabitat<-data.frame(Type = "Area-based",
-                           BaseUnits = BaseHabUnits, 
+                           BaseUnits = BaseHabUnits,
+                           PIUnits = PIHabUnits,
                            NetUnits = NetHabUnits, 
                            NetPercent = NetHabPercent,
                            Deficit = HabDeficit)
     
     nethedge<-data.frame(Type = "Hedgerow",
-                         BaseUnits = BaseHedgeUnits, 
+                         BaseUnits = BaseHedgeUnits,
+                         PIUnits = PIHedgeUnits,
                          NetUnits = NetHedgeUnits, 
                          NetPercent = NetHedgePercent,
                          Deficit = HedgeDeficit)
     
     netwater<-data.frame(Type = "Watercourse",
                          BaseUnits = BaseWaterUnits,
+                         PIUnits = PIWaterUnits,
                          NetUnits = NetWaterUnits,
                          NetPercent = NetWaterPercent,
                          Deficit = WaterDeficit)
