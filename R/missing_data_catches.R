@@ -442,9 +442,9 @@ clean_onsitehab_baseline <- function(metric) {
     
     # Remove the first column
     df <- df[,-40:-42]
-    df <- df[, -33:-38]
+    df <- df[, -33:-39]
     df <- df[,-31:-32]
-    df <- df[,-28]
+    df <- df[,-27:-28]
     df <- df[,-23:-25]
     df <- df[,-18]
     df <- df[,-17]
@@ -523,9 +523,9 @@ clean_onsitehab_retain <- function(metric) {
     
     # Remove the first column
     df <- df[,-40:-42]
-    df <- df[, -33:-38]
+    df <- df[, -33:-39]
     df <- df[,-31:-32]
-    df <- df[,-28]
+    df <- df[,-27:-28]
     df <- df[,-23:-25]
     df <- df[,-18]
     df <- df[,-17]
@@ -602,9 +602,9 @@ clean_onsitehab_loss <- function(metric) {
     
     # Remove the first column
     df <- df[,-40:-42]
-    df <- df[, -33:-38]
+    df <- df[, -33:-39]
     df <- df[,-31:-32]
-    df <- df[,-28]
+    df <- df[,-27:-28]
     df <- df[,-23:-25]
     df <- df[,-18]
     df <- df[,-17]
