@@ -106,9 +106,13 @@ pullonsitehedgeretain<-function(metric){
     
     #if nothing on baseline, insert placeholder so code doesnt crash
     if(is.null(hedgehabitattype)) {
-      hedgehabitattype <- data.frame(habitattype = "No Existing Hedgerows") 
+      hedgehabitattype <- data.frame(habitattype = "No Hedgerows Retained") 
     } else {
       colnames(hedgehabitattype) <- "habitattype"
+    }
+    
+    #now run rest as long as there is data
+    if (!"No Hedgerows Retained" %in% hedgehabitattype){
       
       #hedgenumbers
       hedgenum<-openxlsx::read.xlsx(metric, baselinesheet, cols = 3, colNames = FALSE, startRow = 10)
@@ -136,6 +140,10 @@ pullonsitehedgeretain<-function(metric){
       #if youre left with nothing, insert placeholder
       if (nrow(hedgeretaindata) == 0) {hedgeretaindata <- data.frame(habitattype = "No Hedgerows Retained")}
       
+    } else {
+      
+      hedgeretaindata<-data.frame(hedgehabitattype)
+      
     }
     
     hedgeretaindata<-list(hedgeretaindata = hedgeretaindata)
@@ -153,7 +161,6 @@ pullonsitehedgeretain<-function(metric){
 #' @examples \dontrun{hedgelossdata<-pullonsitehedgeloss(metric)}
 pullonsitehedgeloss<-function(metric){
   
-
     #baselinesheet
     baselinesheet <- "B-1 On-Site Hedge Baseline"
     
@@ -162,12 +169,13 @@ pullonsitehedgeloss<-function(metric){
     
     #if nothing on baseline, insert placeholder so code doesnt crash
     if(is.null(hedgehabitattype)) {
-      
-      hedgehabitattype <- data.frame(habitattype = "No Existing Hedgerows")
-      
+      hedgehabitattype <- data.frame(habitattype = "No Hedgerows Lost") 
     } else {
-      
       colnames(hedgehabitattype) <- "habitattype"
+    }
+    
+    #now run rest as long as there is data
+    if (!"No Hedgerows Lost" %in% hedgehabitattype){
       
       hedgenum<-openxlsx::read.xlsx(metric, baselinesheet, cols = 3, colNames = FALSE, startRow = 10)
       colnames(hedgenum) <- "hedgenumber"
@@ -192,6 +200,10 @@ pullonsitehedgeloss<-function(metric){
       
       #if youre left with nothing, insert placeholder
       if (nrow(hedgelostdata) == 0) {hedgelostdata <- data.frame(habitattype = "No Hedgerows Lost")}
+      
+    } else {
+      
+      hedgelostdata <- data.frame(hedgehabitattype)
       
     }
     
