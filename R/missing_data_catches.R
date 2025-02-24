@@ -441,7 +441,7 @@ clean_onsitehab_baseline <- function(metric) {
     df <- openxlsx::read.xlsx(metric, "A-1 On-Site Habitat Baseline", colNames = FALSE, startRow = 10)
     
     # Remove the first column
-    df <- df[,-40:-41]
+    df <- df[,-40:-42]
     df <- df[, -33:-38]
     df <- df[,-31:-32]
     df <- df[,-28]
@@ -522,7 +522,7 @@ clean_onsitehab_retain <- function(metric) {
     df <- openxlsx::read.xlsx(metric, "A-1 On-Site Habitat Baseline", colNames = FALSE, startRow = 10)
     
     # Remove the first column
-    df <- df[,-40:-41]
+    df <- df[,-40:-42]
     df <- df[, -33:-38]
     df <- df[,-31:-32]
     df <- df[,-28]
@@ -601,7 +601,7 @@ clean_onsitehab_loss <- function(metric) {
     df <- openxlsx::read.xlsx(metric, "A-1 On-Site Habitat Baseline", colNames = FALSE, startRow = 10)
     
     # Remove the first column
-    df <- df[,-40:-41]
+    df <- df[,-40:-42]
     df <- df[, -33:-38]
     df <- df[,-31:-32]
     df <- df[,-28]
