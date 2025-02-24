@@ -111,12 +111,14 @@ pullonsitewaterretain<-function(metric){
     #Broad Habitat
     waterhabitattype<- openxlsx::read.xlsx(metric, baselinesheet, cols = 4, colNames = FALSE, startRow = 10)
     
-    #if nothing on baseline, insert placeholder so code doesnt crash
     if(is.null(waterhabitattype)) {
-      waterretaindata <- data.frame(habitattype = "No Watercourses Retained") 
+      waterhabitattype <- data.frame(habitattype = "No Watercourses Retained") 
     } else {
-      
       colnames(waterhabitattype) <- "habitattype"
+    }
+    
+    #now run rest as long as there is data
+    if (!"No Watercourses Retained" %in% waterhabitattype){
       
       #RetainLengths
       waterretainlength<-openxlsx::read.xlsx(metric, baselinesheet, cols = 23, colNames = FALSE, startRow = 10)
@@ -138,6 +140,10 @@ pullonsitewaterretain<-function(metric){
       
       #if youre left with nothing, insert placeholder
       if (nrow(waterretaindata) == 0) {waterretaindata <- data.frame(habitattype = "No Watercourses Retained")}
+      
+    } else {
+      
+      waterretaindata <- data.frame(waterhabitattype)
       
     }
     
@@ -164,12 +170,13 @@ pullonsitewaterloss<-function(metric){
     
     #if nothing on baseline, insert placeholder so code doesnt crash
     if(is.null(waterhabitattype)) {
-      
-      waterlostdata <- data.frame(habitattype = "No Watercourses Lost") 
-      
+      waterhabitattype <- data.frame(habitattype = "No Watercourses Lost") 
     } else {
-      
       colnames(waterhabitattype) <- "habitattype"
+    }
+    
+    #now run rest as long as there is data
+    if (!"No Watercourses Lost" %in% waterhabitattype){
       
       #LostLength
       waterlostlength<-openxlsx::read.xlsx(metric, baselinesheet, cols = 25, colNames = FALSE, startRow = 10)
@@ -192,6 +199,10 @@ pullonsitewaterloss<-function(metric){
       
       #if youre left with nothing, insert placeholder
       if (nrow(waterlostdata) == 0) {waterlostdata <- data.frame(habitattype = "No Watercourses Lost")}
+      
+    } else {
+      
+      waterlostdata<-data.frame(waterhabitattype)
       
     }
     
@@ -286,11 +297,6 @@ pullonsitewatercreation<-function(metric){
     return(watercreationdata)
     }
   
-  
-
-
-
-
 #' pull water enhance
 #'
 #' @param metric metric
