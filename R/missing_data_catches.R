@@ -431,81 +431,89 @@ clean_onsitenet_dataset <- function(metric) {
 #'
 #' @param metric feas metric
 #'
-#' @return df, a cleaned version of the input dataset - to be used as an argument in actual metric pulling function
+#' @return error messages, a string of error messages to be shown so user knows where data is incorrect 
 #' 
 #' @export
 #'
 #' @examples \dontrun{checked_dataset<-clean_onsitehab_baseline(metric)}   
 clean_onsitehab_baseline <- function(metric) {
-    # Read the dataset
-    df <- openxlsx::read.xlsx(metric, "A-1 On-Site Habitat Baseline", colNames = FALSE, startRow = 10)
-    
-    # Remove the first column
-    df <- df[,-40:-42]
-    df <- df[, -33:-39]
-    df <- df[,-31:-32]
-    df <- df[,-27:-28]
-    df <- df[,-23:-25]
-    df <- df[,-18]
-    df <- df[,-17]
-    df <- df[,-3]
-    df <- df[-1,]
-    
-    # Replace sequential runs within any column with NA
-    for (col_idx in 2:ncol(df)) {
-      col_values <- as.numeric(df[[col_idx]])
-      if (any(!is.na(col_values))) {
-        diffs <- diff(col_values)
-        seq_indices <- which(diffs == 1)  # Find indices where values increase sequentially
-        
-        if (length(seq_indices) > 0) {
-          df[[col_idx]][c(seq_indices, seq_indices + 1)] <- NA  # Replace sequential values with NA
-        }
-      }
-    }
-    
-    # Identify rows that are completely empty
-    na_rows <- apply(df, 1, function(row) all(is.na(row) | row == ""))
-    
-    # Detect large NA blocks (adjust threshold if needed)
-    na_threshold <- 3  # Define what counts as "many NAs in a row"
-    na_streaks <- rle(na_rows)
-    
-    # Find the first large NA block
-    na_lengths <- cumsum(na_streaks$lengths)
-    first_large_na <- which(na_streaks$values & na_streaks$lengths >= na_threshold)
-    
-    if (length(first_large_na) > 0) {
-      cut_off_index <- na_lengths[first_large_na[1]]  # Find where to cut
-      df <- df[1:cut_off_index, , drop = FALSE]  # Keep only data before the NA block
-    }
-    
   
-    # Keep only rows where there is data
-    df <- df[apply(df, 1, function(row) any(row != "" & !is.na(row))), , drop = FALSE]
+  #read the dataset
+  df <- openxlsx::read.xlsx(metric, "A-1 On-Site Habitat Baseline", cols = c(4:6, 8:9, 11, 17:25, 28), colNames = TRUE, startRow = 10)
+  
+  #row nrow of the SECOND col with data in it, which is the last lines of the habitats, giving nrow for rest 
+  numberrows <- sum(!is.na(df[[2]])) #number of non NA vals
+  df <- df[1:numberrows, ] #chop dataframe beyond numberrows
+  
+  errormessages <- c()
+  
+  #first thing that needs to be checked, is if there are any NAs in any column 
+  for (i in 1:ncol(df)) { #for each column in the dataframe
     
+    if (any(is.na(df[[i]]))) { #if ANY have NA, return a message - can assign this to a message object, to pass back to user
+      errormessages<- paste(errormessages, "Column", i, "contains NA values.\n")
+      
+    }
+  }
+  
+  #Maybe add in a check for if there are any Check Data, any Error in Trading, etc? return error messages
+  
     
-    # Remove the last row if it's a duplicate of the previous one
-    if (nrow(df) > 1 && identical(df[nrow(df), ], df[nrow(df) - 1, ])) {
-      df <- df[-nrow(df), , drop = FALSE]
-    }
+    # # Replace sequential runs within any column with NA
+    # for (col_idx in 2:ncol(df)) {
+    #   col_values <- as.numeric(df[[col_idx]])
+    #   if (any(!is.na(col_values))) {
+    #     diffs <- diff(col_values)
+    #     seq_indices <- which(diffs == 1)  # Find indices where values increase sequentially
+    #     
+    #     if (length(seq_indices) > 0) {
+    #       df[[col_idx]][c(seq_indices, seq_indices + 1)] <- NA  # Replace sequential values with NA
+    #     }
+    #   }
+    # }
+    # 
+    # # Identify rows that are completely empty
+    # na_rows <- apply(df, 1, function(row) all(is.na(row) | row == ""))
+    # 
+    # # Detect large NA blocks (adjust threshold if needed)
+    # na_threshold <- 3  # Define what counts as "many NAs in a row"
+    # na_streaks <- rle(na_rows)
+    # 
+    # # Find the first large NA block
+    # na_lengths <- cumsum(na_streaks$lengths)
+    # first_large_na <- which(na_streaks$values & na_streaks$lengths >= na_threshold)
+    # 
+    # if (length(first_large_na) > 0) {
+    #   cut_off_index <- na_lengths[first_large_na[1]]  # Find where to cut
+    #   df <- df[1:cut_off_index, , drop = FALSE]  # Keep only data before the NA block
+    # }
+    # 
+    # 
+    # # Keep only rows where there is data
+    # df <- df[apply(df, 1, function(row) any(row != "" & !is.na(row))), , drop = FALSE]
+    # 
+    # 
+    # # Remove the last row if it's a duplicate of the previous one
+    # if (nrow(df) > 1 && identical(df[nrow(df), ], df[nrow(df) - 1, ])) {
+    #   df <- df[-nrow(df), , drop = FALSE]
+    # }
+    # 
+    # # Check for the presence of "Check Data ⚠" in any dataset
+    # for (i in df) {
+    #   if (any(is.na(i) | i == "")) {
+    #     return("Please check metric is filled in appropriately before continuing")
+    #   }
+    # }
+    # # Check if all columns have the same number of rows
+    # column_lengths <- sapply(df, function(col) sum(!is.na(col) & col != ""))
+    # if (length(unique(column_lengths)) > 1) {
+    #   return("Please check metric is filled in appropriately before continuing")
+    # }
+    # if (nrow(df) == 0) {
+    #   return(df)
+    # }
     
-    # Check for the presence of "Check Data ⚠" in any dataset
-    for (i in df) {
-      if (any(is.na(i) | i == "")) {
-        return("Please check metric is filled in appropriately before continuing")
-      }
-    }
-    # Check if all columns have the same number of rows
-    column_lengths <- sapply(df, function(col) sum(!is.na(col) & col != ""))
-    if (length(unique(column_lengths)) > 1) {
-      return("Please check metric is filled in appropriately before continuing")
-    }
-    if (nrow(df) == 0) {
-      return(df)
-    }
-    
-    return(df)
+    return(errormessages)
   }
   
 #' cleans onsitehab retain metric data 
