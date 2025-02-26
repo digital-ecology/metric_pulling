@@ -379,16 +379,10 @@ clean_onsitehab_creation <- function(metric) {
 clean_onsitehab_enhancement <- function(metric) {
   
   #read the dataset
-  df <- openxlsx::read.xlsx(metric, "A-3 On-Site Habitat Enhancement", cols = c(6,17,18,22,23,25,27,30,40), colNames = FALSE, startRow = 10)
-  new_col_names <- paste(df[1, ], df[2, ], sep = "_")
+  df <- openxlsx::read.xlsx(metric, "A-3 On-Site Habitat Enhancement", cols = c(6,17,18,22,23,25,27,30,40), colNames = TRUE, startRow = 11)
   
-  # Read the full dataset, skipping the first two rows, and assign new column names
-  df <- openxlsx::read.xlsx(metric, sheet = "A-3 On-Site Habitat Enhancement",     cols = c(6,17,18,22,23,25,27,30,40), 
-                            colNames = FALSE, startRow = 12  # Skipping the first two rows used for column names
-  )
-  
-  # Assign the new column names
-  colnames(df) <- new_col_names
+  #set columns to tell user where data is missing 
+  colnames(df)[colnames(df) == "X4"] <- "Area"
   
   #row nrow of the SECOND col with data in it, which is the last lines of the habitats, giving nrow for rest 
   df[df == ""] <- NA #change any empty values with NA 
