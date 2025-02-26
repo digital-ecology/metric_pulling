@@ -313,7 +313,7 @@ pullonsitehabitatenhancement<-function(metric){
     broadenhance <- broadenhance[broadenhance$X1 != "", , drop = FALSE]
     
     #if this DF is empty, then just paste 'No Habitats Enhanced'
-    if(nrow(broadenhance) == 0) {
+    if(nrow(broadenhance) == 0 || is.null(broadenhance)) {
       broadenhance <- data.frame(broadhabitat =  "No Habitats Enhanced")
     } else {
       colnames(broadenhance) <- "broadhabitat"
