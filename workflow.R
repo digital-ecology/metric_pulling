@@ -39,6 +39,4 @@ if (sitename == "Locksbrook Road South"){metric <- file.path(data_dir, "Metrics"
 if (sitename == "Little Mill, Farringdon"){metric <- file.path(data_dir, "Metrics", "Little Farringdon Mill Metric V1.xlsx")}
 if (sitename == "Swindon J16"){metric <- file.path(data_dir, "Metrics", "Swindon J16 Statutory Biodiversity Metric V4.xlsx")}
 if (sitename == "The Vale"){metric <- file.path(data_dir, "Metrics", "The Vale Statutory Metric 24.01.25.xlsx")}
-if (sitename == "Copenacre, Corsham"){metric <- file.path(data_dir, "Metrics", "Copenacer Statutory Biodiversity Metric Oct24.xlsx")}
-
-metric_check(metric)
+if (sitename == "Copenacre, Corsham"){metric <- file.path(data_dir, "Metrics", "CopenacerERROR")}
