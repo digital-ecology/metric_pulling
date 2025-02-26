@@ -34,16 +34,35 @@ pullonsitenetdata<-function(metric){
     NetWaterUnits<- openxlsx::read.xlsx(metric, sheet = resultssheet, cols = 8, rows = 18, colNames = FALSE, skipEmptyRows = TRUE)
     colnames(NetWaterUnits) <- "NetUnits"
     
-    #get on site net percentage change for habitat, hedgerow, and watercourse units
+    #get on site net percentage change for habitat
     NetHabPercent <- openxlsx::read.xlsx(metric, sheet = resultssheet, cols = 10, rows = 16, colNames = FALSE, skipEmptyRows = TRUE)
-    NetHabPercent <-round((NetHabPercent * 100), digits = 2)
-    colnames(NetHabPercent) <- "NetPercent"
-    NetHedgePercent<- openxlsx::read.xlsx(metric, sheet = resultssheet, cols = 10, rows = 17, colNames = FALSE, skipEmptyRows = TRUE)
-    NetHedgePercent <-round((NetHedgePercent * 100), digits = 2)
-    colnames(NetHedgePercent) <- "NetPercent"
+    
+    if (is.numeric(NetHabPercent$X1)){
+      
+      NetHabPercent <-round((NetHabPercent * 100), digits = 2)
+      colnames(NetHabPercent) <- "NetPercent"
+      
+    } else {NetHabPercent <- NA}
+    
+    #get on site net percentage change for hedgerow
+    NetHedgePercent <- openxlsx::read.xlsx(metric, sheet = resultssheet, cols = 10, rows = 17, colNames = FALSE, skipEmptyRows = TRUE)
+    
+    if (is.numeric(NetHedgePercent$X1)){
+      
+      NetHedgePercent <-round((NetHedgePercent * 100), digits = 2)
+      colnames(NetHedgePercent) <- "NetPercent"
+      
+    } else {NetHedgePercent <- NA}
+    
+    #get on site net percentage change for watercourse units
     NetWaterPercent<- openxlsx::read.xlsx(metric, sheet = resultssheet, cols = 10, rows = 18, colNames = FALSE, skipEmptyRows = TRUE)
-    NetWaterPercent <-round((NetWaterPercent * 100), digits = 2)
-    colnames(NetWaterPercent) <- "NetPercent"
+    
+    if (is.numeric(NetWaterPercent$X1)){
+      
+      NetWaterPercent <-round((NetWaterPercent * 100), digits = 2)
+      colnames(NetWaterPercent) <- "NetPercent"
+      
+    } else {NetWaterPercent <- NA}
     
     #get if trading standards satisfied
     TradeSatisfied <- openxlsx::read.xlsx(metric, sheet = resultssheet, cols = 6, rows = 55, colNames = FALSE, skipEmptyRows = TRUE)
