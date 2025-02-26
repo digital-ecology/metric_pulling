@@ -1,16 +1,18 @@
-##### figure out where data dir is ####
+
 if (.Platform$OS.type == "windows") {
-  data_dir <- file.path(Sys.getenv("USERPROFILE"), "Nextcloud", "Shared", "ETHOSData") 
+  data_dir <- file.path(Sys.getenv("USERPROFILE"), "Nextcloud", "Shared", "ETHOSData")
 } else {
   data_dir <- file.path(Sys.getenv("HOME"), "Nextcloud", "Shared", "ETHOSData")
 }
+# read in the .gdb
+data_dir <- normalizePath(data_dir, winslash = "/", mustWork = TRUE)
 
 ##### simulate selection of sitename and subsetting of data ####
 
 #these render in app perfectly fine
 
 #sitename <- "Woburn maintanence yard"
-#sitename <- "Land South of Snarlton Farm, Melksham"
+sitename <- "Land South of Snarlton Farm, Melksham"
 #sitename <- "Land South of Wing Road Stewkley"
 
 #these render in app perfectly fine, but with mistakes - maddie is currently checking to see if the reports in RR have similar issues
@@ -20,7 +22,7 @@ if (.Platform$OS.type == "windows") {
 
 #these don't render specifically because of a metric error - CHARLIE CODE IN WAYS TO NOTICE THESE BEFORE IN METRIC CHECK
 
-sitename <- "Copenacre, Corsham" #crashes 3% [metric-set-up] Error in `FUN()`:! non-numeric argument to binary operator
+#sitename <- "Copenacre, Corsham" #crashes 3% [metric-set-up] Error in `FUN()`:! non-numeric argument to binary operator
 #sitename <- "Swindon J16" #crashes  3% [metric-set-up] Error in `if (nrow(broadenhance) == 0) ...`:! argument is of length zero
 #sitename <- "Little Mill, Farringdon" #crashes 3% [metric-set-up]  Error in `if (nrow(broadenhance) == 0) ...`: ! argument is of length zero
 #sitename <- "The Vale"  #crashes 3% [metric-set-up] Error in `if (nrow(broadenhance) == 0) ...`: ! argument is of length zero
