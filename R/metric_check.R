@@ -11,45 +11,34 @@
 #'c <- metric_check("data-raw/OnSiteHedgeEnhance2.xlsx") # metric used in testing qmd}
 metric_check <- function(metric) {
   
-  A1em<-clean_onsitehab_baseline(metric)
+  HRem <- clean_onsitenet_dataset(metric)
+  TAem <- clean_habsum_dataset(metric)
+  THem <- clean_hedgesum_dataset(metric)
+  TWem <- clean_watersum_dataset(metric)
+  A1em <- clean_onsitehab_baseline(metric)
+  A2em <- clean_onsitehab_creation(metric)
+  A3em <- clean_onsitehab_enhancement(metric)
+  B1em <- clean_onsitehedge_baseline(metric)
+  B2em <- clean_onsitehedge_creation(metric)
+  B3em <- clean_onsitehedge_enhancement(metric)
+  C1em <- clean_c1_dataset(metric)
+  C2em <- clean_c2_dataset(metric)
+  C3em <- clean_c3_dataset(metric)
   
   checks <- list(
-    # "Headline Results" = HRem,
-    # "Trading Summary Area Habitats" = TAem,
-    # "Trading Summary Hedgerows" = THem,
-    # "Trading Summary WaterC's" = TWem,
-    "A-1 On-Site Habitat Baseline" = A1em
-    # "A-2 On-Site Habitat Creation" = A2em,
-    # "A-3 On-Site Habitat Enhancement" = A3em,
-    # "B-1 On-Site Hedge Baseline" = B1em,
-    # "B-2 On-Site Hedge Creation" = B2em,
-    # "B-3 On-Site Hedge Enhancement" = B3em,
-    # "C-1 On-Site WaterC' Baseline" = C1em,
-    # "C-2 On-Site WaterC' Creation" = C2em,
-    # "C-3 On-Site WaterC' Enhancement" = C2em
-    
-    
-    
-    
-    
-    # "A-1 On-Site Habitat Baseline " = clean_onsitehab_retain(metric),
-    # "A-1 On-Site Habitat Baseline " = clean_onsitehab_loss(metric),
-    # "A-2 On-Site Habitat Creation (columns 4,5,7,8,10,12,19,25)" = clean_onsitehab_creation(metric),
-    # "A-3 On-Site Habitat Enhancement (columns 6,17,18,22,23,25,27,30,40)" = clean_onsitehab_enhancement(metric),
-    # "Headline Results (rows 8,9,10,47,48,49,51,52,53,55,61,62,63)" = clean_onsitenet_dataset(metric),
-    # "Trading Summary Area Habitats" = clean_habsum_dataset(metric),
-    # "Trading Summary Hedgerows" = clean_hedgesum_dataset(metric),
-    # "Trading Summary WaterC's" = clean_watersum_dataset(metric),
-    # "B-1 On-Site Hedge Baseline (columns 3,5,8,10,14,17,19)" = clean_onsitehedge_baseline(metric),
-    # "B-1 On-Site Hedge Baseline (columns 3,4,16,18)" = clean_onsitehedge_retain(metric),
-    # "B-1 On-Site Hedge Baseline (columns 3,4,20,21)" = clean_onsitehedge_loss(metric),
-    # "B-2 On-Site Hedge Creation (columns 3,4,5,6,8,10,23) " = clean_onsitehedge_creation(metric),
-    # "B-3 On-Site Hedge Enhancement (columns 2,3,7,16,17,19,21,34)" = clean_onsitehedge_enhancement(metric),
-    # "C-1 On-Site WaterC' Baseline (columns 4,5,6,8,10,24)" = clean_C1_dataset(metric),
-    # "C-1 On-Site WaterC' Baseline (columns 4,23)" = clean_C1_dataset(metric),
-    # "C-1 On-Site WaterC' Baseline (columns 4,25,26)" = clean_C1_dataset(metric),
-    # "C-2 On-Site WaterC' Creation (columns 3,4,5,7,9,26,29)" = clean_C2_dataset(metric),
-    # "C-3 On-Site WaterC' Enhancement (columns 3,7,14,17,18,20,22,39)" = clean_C3_dataset(metric)
+    "Headline Results" = HRem,
+    "Trading Summary Area Habitats" = TAem,
+    "Trading Summary Hedgerows" = THem,
+    "Trading Summary WaterC's" = TWem,
+    "A-1 On-Site Habitat Baseline" = A1em,
+    "A-2 On-Site Habitat Creation" = A2em,
+    "A-3 On-Site Habitat Enhancement" = A3em,
+    "B-1 On-Site Hedge Baseline" = B1em,
+    "B-2 On-Site Hedge Creation" = B2em,
+    "B-3 On-Site Hedge Enhancement" = B3em,
+    "C-1 On-Site WaterC' Baseline" = C1em,
+    "C-2 On-Site WaterC' Creation" = C2em,
+    "C-3 On-Site WaterC' Enhancement" = C3em
   )
   
   #as you add the new sections into the checks, you'll get 14 checks, and each will list just the unique columns missing on each sheet - the retain, loss, base, are all the same can just be one function!
@@ -78,27 +67,7 @@ metric_check <- function(metric) {
    return(message)
    
  }
-    
-    
-    
-  
-  
-  
-  # # Check functions returning the specified check message
-  # issues <- names(checks_as_character)[checks_as_character == "Please check metric is filled in appropriately before continuing"]
-  # 
-  # # Format the output message
-  # message <- if (length(issues) > 0) {
-  #   issue_list <- paste("- ", issues, collapse = "\n")  # Each issue on a new line
-  #   paste("Please check the following metrics are filled in correctly before running the app:\n", issue_list)
-  # } else {
-  #   "All metrics are correctly filled in. No issues detected."
-  # }
-  # 
-  # # Print and return message
-  # #print(message)
-  # return(message)
-  
+
 }  
 
 
