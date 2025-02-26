@@ -14,9 +14,26 @@ metric_check <- function(metric) {
   A1em<-clean_onsitehab_baseline(metric)
   
   checks <- list(
+    # "Headline Results" = HRem,
+    # "Trading Summary Area Habitats" = TAem,
+    # "Trading Summary Hedgerows" = THem,
+    # "Trading Summary WaterC's" = TWem,
     "A-1 On-Site Habitat Baseline" = A1em
-    # "A-1 On-Site Habitat Baseline (columns 5,6,19,21)" = clean_onsitehab_retain(metric),
-    # "A-1 On-Site Habitat Baseline (columns 5,6,23,24)" = clean_onsitehab_loss(metric),
+    # "A-2 On-Site Habitat Creation" = A2em,
+    # "A-3 On-Site Habitat Enhancement" = A3em,
+    # "B-1 On-Site Hedge Baseline" = B1em,
+    # "B-2 On-Site Hedge Creation" = B2em,
+    # "B-3 On-Site Hedge Enhancement" = B3em,
+    # "C-1 On-Site WaterC' Baseline" = C1em,
+    # "C-2 On-Site WaterC' Creation" = C2em,
+    # "C-3 On-Site WaterC' Enhancement" = C2em
+    
+    
+    
+    
+    
+    # "A-1 On-Site Habitat Baseline " = clean_onsitehab_retain(metric),
+    # "A-1 On-Site Habitat Baseline " = clean_onsitehab_loss(metric),
     # "A-2 On-Site Habitat Creation (columns 4,5,7,8,10,12,19,25)" = clean_onsitehab_creation(metric),
     # "A-3 On-Site Habitat Enhancement (columns 6,17,18,22,23,25,27,30,40)" = clean_onsitehab_enhancement(metric),
     # "Headline Results (rows 8,9,10,47,48,49,51,52,53,55,61,62,63)" = clean_onsitenet_dataset(metric),
