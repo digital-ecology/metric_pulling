@@ -64,10 +64,10 @@ metric_check <- function(metric) {
       
     }
    
-   return(message)
    
  }
-
+  return(message)
+  
 }  
 
 
