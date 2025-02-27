@@ -10,7 +10,8 @@ clean_c1_dataset <- function(metric) {
   
   #read the dataset
   df <- openxlsx::read.xlsx(metric, "C-1 On-Site WaterC' Baseline", cols = c(4,5,6,8,10,23,24,25,26), colNames = TRUE, startRow = 9)
-  
+  colnames(df) <- gsub("\\.", " ", colnames(df))
+
   #row nrow of the SECOND col with data in it, which is the last lines of the habitats, giving nrow for rest 
   df[df == ""] <- NA #change any empty values with NA 
   numberrows <- sum(!is.na(df[[2]])) #number of non NA vals
@@ -44,6 +45,7 @@ clean_c2_dataset <- function(metric) {
   
   #read the dataset
   df <- openxlsx::read.xlsx(metric, "C-2 On-Site WaterC' Creation", cols = c(3,4,5,7,9,26,29), colNames = TRUE, startRow = 11)
+  colnames(df) <- gsub("\\.", " ", colnames(df))
   
   colnames(df)[colnames(df) == "X6"] <- "Watercourse units delivered"
   #row nrow of the SECOND col with data in it, which is the last lines of the habitats, giving nrow for rest 
@@ -82,6 +84,7 @@ clean_c3_dataset <- function(metric) {
   df <- openxlsx::read.xlsx(metric, "C-3 On-Site WaterC' Enhancement", cols = c(3,7,14,17,18,20,22,39), colNames = TRUE, startRow = 11)
   colnames(df)[colnames(df) == "X3"] <- "Proposed Habitats"
   colnames(df)[colnames(df) == "X7"] <- "Strategic Significance"
+  colnames(df) <- gsub("\\.", " ", colnames(df))
   
   #row nrow of the SECOND col with data in it, which is the last lines of the habitats, giving nrow for rest 
   df[df == ""] <- NA #change any empty values with NA 
@@ -142,7 +145,7 @@ clean_habsum_dataset <- function(metric) {
     # Check for missing values
     for (i in 1:ncol(df)) {
       if (any(is.na(df[[i]]))) {
-        errormessages <- paste(errormessages, dataset_name, "- Column", names(df)[i], "contains NA values.\n")
+        errormessages <- paste(errormessages, dataset_name, "Column", names(df)[i], "contains NA values.\n")
       }
     }
   }
@@ -190,7 +193,7 @@ clean_hedgesum_dataset <- function(metric) {
     # Check for missing values
     for (i in 1:ncol(df)) {
       if (any(is.na(df[[i]]))) {
-        errormessages <- paste(errormessages, dataset_name, "- Column", names(df)[i], "contains NA values.\n")
+        errormessages <- paste(errormessages, dataset_name, "Column", names(df)[i], "contains NA values.\n")
       }
     }
   }
@@ -239,7 +242,7 @@ clean_watersum_dataset <- function(metric) {
     # Check for missing values
     for (i in 1:ncol(df)) {
       if (any(is.na(df[[i]]))) {
-        errormessages <- paste(errormessages, dataset_name, "- Column", names(df)[i], "contains NA values.\n")
+        errormessages <- paste(errormessages, dataset_name, "Column", names(df)[i], "contains NA values.\n")
       }
     }
   }
@@ -293,7 +296,7 @@ clean_onsitenet_dataset <- function(metric) {
     # Check for missing values
     for (i in 1:ncol(df)) {
       if (any(is.na(df[[i]]) | df[[i]] == "Check Data ⚠" | df[[i]] == "Error ▲")) {
-        errormessages <- paste(errormessages, dataset_name, "- Column", names(df)[i], "contains NA/Check Data ⚠/Error ▲ values.\n")
+        errormessages <- paste(errormessages, dataset_name, "Column", names(df)[i], "contains NA/Check Data ⚠/Error ▲ values.\n")
       }
     }
   }
@@ -313,6 +316,7 @@ clean_onsitehab_baseline <- function(metric) {
   
   #read the dataset
   df <- openxlsx::read.xlsx(metric, "A-1 On-Site Habitat Baseline", cols = c(4:6, 8:9, 11, 17:25, 28), colNames = TRUE, startRow = 10)
+  colnames(df) <- gsub("\\.", " ", colnames(df))
   
   #row nrow of the SECOND col with data in it, which is the last lines of the habitats, giving nrow for rest 
   df[df == ""] <- NA #change any empty values with NA 
@@ -351,6 +355,8 @@ clean_onsitehab_creation <- function(metric) {
   colnames(df)[colnames(df) == "X2"] <- "Proposed Habitats"
   colnames(df)[colnames(df) == "X3"] <- "Acres (Ha)"
   colnames(df)[colnames(df) == "X8"] <- "Habitat Units Delivered"
+  colnames(df) <- gsub("\\.", " ", colnames(df))
+  
   #row nrow of the SECOND col with data in it, which is the last lines of the habitats, giving nrow for rest 
   df[df == ""] <- NA #change any empty values with NA 
   numberrows <- sum(!is.na(df[[2]])) #number of non NA vals
@@ -389,6 +395,7 @@ clean_onsitehab_enhancement <- function(metric) {
   colnames(df)[colnames(df) == "X5"] <- "Distinctiveness"
   colnames(df)[colnames(df) == "X4"] <- "Acres (Ha)"
   colnames(df)[colnames(df) == "X8"] <- "Habitat Units Delivered"
+  colnames(df) <- gsub("\\.", " ", colnames(df))
   
   
   #row nrow of the SECOND col with data in it, which is the last lines of the habitats, giving nrow for rest 
@@ -425,6 +432,7 @@ clean_onsitehedge_baseline <- function(metric) {
   
   #read the dataset
   df <- openxlsx::read.xlsx(metric, "B-1 On-Site Hedge Baseline", cols = c(3,4,5,8,10,14,16,17,18,19,20,21), colNames = TRUE, startRow = 9)
+  colnames(df) <- gsub("\\.", " ", colnames(df))
   
   #row nrow of the SECOND col with data in it, which is the last lines of the habitats, giving nrow for rest 
   df[df == ""] <- NA #change any empty values with NA 
@@ -462,6 +470,7 @@ clean_onsitehedge_creation <- function(metric) {
   #read the dataset
   df <- openxlsx::read.xlsx(metric, "B-2 On-Site Hedge Creation", cols = c(3,4,5,6,8,10,23), colNames = TRUE, startRow = 11)
   colnames(df)[colnames(df) == "X7"] <- "Hedge Units Delivered"
+  colnames(df) <- gsub("\\.", " ", colnames(df))
   
   df[df == ""] <- NA #change any empty values with NA 
   numberrows <- sum(!is.na(df[[2]])) #number of non NA vals
@@ -498,6 +507,7 @@ clean_onsitehedge_enhancement <- function(metric) {
   df <- openxlsx::read.xlsx(metric, "B-3 On-Site Hedge Enhancement", cols = c(2,3,7,16,17,19,21,34), colNames = TRUE, startRow = 11)
   colnames(df)[colnames(df) == "X4"] <- "Length (km)"
   colnames(df)[colnames(df) == "X8"] <- "Hedge Units Delivered"
+  colnames(df) <- gsub("\\.", " ", colnames(df))
   
   df[df == ""] <- NA #change any empty values with NA 
   numberrows <- sum(!is.na(df[[2]])) #number of non NA vals
