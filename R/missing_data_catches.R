@@ -22,7 +22,7 @@ clean_c1_dataset <- function(metric) {
   for (i in 1:ncol(df)) { #for each column in the dataframe
     
     if (any(is.na(df[[i]]))) { #if ANY have NA, return a message - can assign this to a message object, to pass back to user
-      errormessages<- paste(errormessages, "Column", i, "contains NA values.\n")
+      errormessages<- paste(errormessages, "Column", names(df)[i], "contains NA values.\n")
       
     }
   }
@@ -45,6 +45,7 @@ clean_c2_dataset <- function(metric) {
   #read the dataset
   df <- openxlsx::read.xlsx(metric, "C-2 On-Site WaterC' Creation", cols = c(3,4,5,7,9,26,29), colNames = TRUE, startRow = 11)
   
+  colnames(df)[colnames(df) == "X6"] <- "Watercourse units delivered"
   #row nrow of the SECOND col with data in it, which is the last lines of the habitats, giving nrow for rest 
   df[df == ""] <- NA #change any empty values with NA 
   numberrows <- sum(!is.na(df[[2]])) #number of non NA vals
@@ -56,7 +57,7 @@ clean_c2_dataset <- function(metric) {
   for (i in 1:ncol(df)) { #for each column in the dataframe
     
     if (any(is.na(df[[i]]))) { #if ANY have NA, return a message - can assign this to a message object, to pass back to user
-      errormessages<- paste(errormessages, "Column", i, "contains NA values.\n")
+      errormessages<- paste(errormessages, "Column", names(df)[i], "contains NA values.\n")
       
     }
   }
@@ -79,6 +80,8 @@ clean_c3_dataset <- function(metric) {
   
   #read the dataset
   df <- openxlsx::read.xlsx(metric, "C-3 On-Site WaterC' Enhancement", cols = c(3,7,14,17,18,20,22,39), colNames = TRUE, startRow = 11)
+  colnames(df)[colnames(df) == "X3"] <- "Proposed Habitats"
+  colnames(df)[colnames(df) == "X7"] <- "Strategic Significance"
   
   #row nrow of the SECOND col with data in it, which is the last lines of the habitats, giving nrow for rest 
   df[df == ""] <- NA #change any empty values with NA 
@@ -91,7 +94,7 @@ clean_c3_dataset <- function(metric) {
   for (i in 1:ncol(df)) { #for each column in the dataframe
     
     if (any(is.na(df[[i]]))) { #if ANY have NA, return a message - can assign this to a message object, to pass back to user
-      errormessages<- paste(errormessages, "Column", i, "contains NA values.\n")
+      errormessages<- paste(errormessages, "Column", names(df)[i], "contains NA values.\n")
       
     }
   }
@@ -124,7 +127,6 @@ clean_habsum_dataset <- function(metric) {
     LHab           = list(cols = 2, rows = 125:162),
     LChange        = list(cols = 6, rows = 125:162)
   )
-  
   errormessages <- c()
   
   # Read all datasets and check for missing values
@@ -140,11 +142,11 @@ clean_habsum_dataset <- function(metric) {
     # Check for missing values
     for (i in 1:ncol(df)) {
       if (any(is.na(df[[i]]))) {
-        errormessages <- paste(errormessages, dataset_name, "- Column", i, "contains NA values.\n")
+        errormessages <- paste(errormessages, dataset_name, "- Column", names(df)[i], "contains NA values.\n")
       }
     }
   }
-  
+
   return(errormessages)
 }
    
@@ -188,7 +190,7 @@ clean_hedgesum_dataset <- function(metric) {
     # Check for missing values
     for (i in 1:ncol(df)) {
       if (any(is.na(df[[i]]))) {
-        errormessages <- paste(errormessages, dataset_name, "- Column", i, "contains NA values.\n")
+        errormessages <- paste(errormessages, dataset_name, "- Column", names(df)[i], "contains NA values.\n")
       }
     }
   }
@@ -237,7 +239,7 @@ clean_watersum_dataset <- function(metric) {
     # Check for missing values
     for (i in 1:ncol(df)) {
       if (any(is.na(df[[i]]))) {
-        errormessages <- paste(errormessages, dataset_name, "- Column", i, "contains NA values.\n")
+        errormessages <- paste(errormessages, dataset_name, "- Column", names(df)[i], "contains NA values.\n")
       }
     }
   }
@@ -291,7 +293,7 @@ clean_onsitenet_dataset <- function(metric) {
     # Check for missing values
     for (i in 1:ncol(df)) {
       if (any(is.na(df[[i]]) | df[[i]] == "Check Data ⚠" | df[[i]] == "Error ▲")) {
-        errormessages <- paste(errormessages, dataset_name, "- Column", i, "contains NA/Check Data ⚠/Error ▲ values.\n")
+        errormessages <- paste(errormessages, dataset_name, "- Column", names(df)[i], "contains NA/Check Data ⚠/Error ▲ values.\n")
       }
     }
   }
@@ -323,7 +325,7 @@ clean_onsitehab_baseline <- function(metric) {
   for (i in 1:ncol(df)) { #for each column in the dataframe
     
     if (any(is.na(df[[i]]))) { #if ANY have NA, return a message - can assign this to a message object, to pass back to user
-      errormessages<- paste(errormessages, "Column", i, "contains NA values.\n")
+      errormessages<- paste(errormessages, "Column",names(df)[i], "contains NA values.\n")
       
     }
   }
@@ -345,7 +347,10 @@ clean_onsitehab_creation <- function(metric) {
   
   #read the dataset
   df <- openxlsx::read.xlsx(metric, "A-2 On-Site Habitat Creation", cols = c(4,5,7,8,10,12,19,25), colNames = TRUE, startRow = 10)
-  
+  colnames(df)[colnames(df) == "X1"] <- "Broad Habitat"
+  colnames(df)[colnames(df) == "X2"] <- "Proposed Habitats"
+  colnames(df)[colnames(df) == "X3"] <- "Acres (Ha)"
+  colnames(df)[colnames(df) == "X8"] <- "Habitat Units Delivered"
   #row nrow of the SECOND col with data in it, which is the last lines of the habitats, giving nrow for rest 
   df[df == ""] <- NA #change any empty values with NA 
   numberrows <- sum(!is.na(df[[2]])) #number of non NA vals
@@ -357,7 +362,7 @@ clean_onsitehab_creation <- function(metric) {
   for (i in 1:ncol(df)) { #for each column in the dataframe
     
     if (any(is.na(df[[i]]))) { #if ANY have NA, return a message - can assign this to a message object, to pass back to user
-      errormessages<- paste(errormessages, "Column", i, "contains NA values.\n")
+      errormessages<- paste(errormessages, "Column", names(df)[i], "contains NA values.\n")
       
     }
   }
@@ -378,17 +383,13 @@ clean_onsitehab_creation <- function(metric) {
 #' @examples \dontrun{checked_dataset<-clean_onsitehab_enhancement(metric)}   
 clean_onsitehab_enhancement <- function(metric) {
   
-  #read the dataset
-  df <- openxlsx::read.xlsx(metric, "A-3 On-Site Habitat Enhancement", cols = c(6,17,18,22,23,25,27,30,40), colNames = FALSE, startRow = 10)
-  new_col_names <- paste(df[1, ], df[2, ], sep = "_")
+  df <- openxlsx::read.xlsx(metric, sheet = "A-3 On-Site Habitat Enhancement", 
+                            cols = c(6,17,18,22,23,25,27,30,40), 
+                            colNames = TRUE, startRow = 11)
+  colnames(df)[colnames(df) == "X5"] <- "Distinctiveness"
+  colnames(df)[colnames(df) == "X4"] <- "Acres (Ha)"
+  colnames(df)[colnames(df) == "X8"] <- "Habitat Units Delivered"
   
-  # Read the full dataset, skipping the first two rows, and assign new column names
-  df <- openxlsx::read.xlsx(metric, sheet = "A-3 On-Site Habitat Enhancement",     cols = c(6,17,18,22,23,25,27,30,40), 
-                            colNames = FALSE, startRow = 12  # Skipping the first two rows used for column names
-  )
-  
-  # Assign the new column names
-  colnames(df) <- new_col_names
   
   #row nrow of the SECOND col with data in it, which is the last lines of the habitats, giving nrow for rest 
   df[df == ""] <- NA #change any empty values with NA 
@@ -401,7 +402,7 @@ clean_onsitehab_enhancement <- function(metric) {
   for (i in 1:ncol(df)) { #for each column in the dataframe
     
     if (any(is.na(df[[i]]))) { #if ANY have NA, return a message - can assign this to a message object, to pass back to user
-      errormessages<- paste(errormessages, "Column", i, "contains NA values.\n")
+      errormessages<- paste(errormessages, "Column", names(df)[i], "contains NA values.\n")
       
     }
   }
@@ -436,7 +437,7 @@ clean_onsitehedge_baseline <- function(metric) {
   for (i in 1:ncol(df)) { #for each column in the dataframe
     
     if (any(is.na(df[[i]]))) { #if ANY have NA, return a message - can assign this to a message object, to pass back to user
-      errormessages<- paste(errormessages, "Column", i, "contains NA values.\n")
+      errormessages<- paste(errormessages, "Column", names(df)[i], "contains NA values.\n")
       
     }
   }
@@ -460,6 +461,7 @@ clean_onsitehedge_creation <- function(metric) {
   
   #read the dataset
   df <- openxlsx::read.xlsx(metric, "B-2 On-Site Hedge Creation", cols = c(3,4,5,6,8,10,23), colNames = TRUE, startRow = 11)
+  colnames(df)[colnames(df) == "X7"] <- "Hedge Units Delivered"
   
   df[df == ""] <- NA #change any empty values with NA 
   numberrows <- sum(!is.na(df[[2]])) #number of non NA vals
@@ -471,7 +473,7 @@ clean_onsitehedge_creation <- function(metric) {
   for (i in 1:ncol(df)) { #for each column in the dataframe
     
     if (any(is.na(df[[i]]))) { #if ANY have NA, return a message - can assign this to a message object, to pass back to user
-      errormessages<- paste(errormessages, "Column", i, "contains NA values.\n")
+      errormessages<- paste(errormessages, "Column", names(df)[i], "contains NA values.\n")
       
     }
   }
@@ -494,6 +496,8 @@ clean_onsitehedge_enhancement <- function(metric) {
   
   #read the dataset
   df <- openxlsx::read.xlsx(metric, "B-3 On-Site Hedge Enhancement", cols = c(2,3,7,16,17,19,21,34), colNames = TRUE, startRow = 11)
+  colnames(df)[colnames(df) == "X4"] <- "Length (km)"
+  colnames(df)[colnames(df) == "X8"] <- "Hedge Units Delivered"
   
   df[df == ""] <- NA #change any empty values with NA 
   numberrows <- sum(!is.na(df[[2]])) #number of non NA vals
@@ -505,7 +509,7 @@ clean_onsitehedge_enhancement <- function(metric) {
   for (i in 1:ncol(df)) { #for each column in the dataframe
     
     if (any(is.na(df[[i]]))) { #if ANY have NA, return a message - can assign this to a message object, to pass back to user
-      errormessages<- paste(errormessages, "Column", i, "contains NA values.\n")
+      errormessages<- paste(errormessages, "Column", names(df)[i], "contains NA values.\n")
       
     }
   }
