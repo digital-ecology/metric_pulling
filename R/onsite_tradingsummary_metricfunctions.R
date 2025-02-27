@@ -30,30 +30,72 @@ pullonsitehabitatsumdata<-function(metric){
     
     #very high
     VHHab <- openxlsx::read.xlsx(metric, sheet = tradingsum, cols = 2, rows = 13:32, colNames = FALSE, skipEmptyRows = TRUE)
+    VHGroup <- openxlsx::read.xlsx(metric, sheet = tradingsum, cols = 3, rows = 13:32, colNames = FALSE, skipEmptyRows = TRUE)
     VHChange <- openxlsx::read.xlsx(metric, sheet = tradingsum, cols = 6, rows = 13:32, colNames = FALSE, skipEmptyRows = TRUE)
-    VH <- cbind(VHHab, VHChange)
-    colnames(VH) <- c("HabitatGroup", "ProjectWideUnitChange")
+    VHOffset <- openxlsx::read.xlsx(metric, sheet = tradingsum, cols = 7, rows = 13:32, colNames = FALSE, skipEmptyRows = TRUE)
+    
+    if (is.null(VHOffset)) {
+      VHOffset <- data.frame(X1= rep(NA, 20))
+    }
+    
+    VH <- cbind(VHHab, VHGroup, VHChange, VHOffset)
+    colnames(VH) <- c("HabitatGroup", "Group", "ProjectWideUnitChange", "Offset")
     
     #high
     HHab <- openxlsx::read.xlsx(metric, sheet = tradingsum, cols = 2, rows = 41:82, colNames = FALSE, skipEmptyRows = TRUE)
+    HGroup <- openxlsx::read.xlsx(metric, sheet = tradingsum, cols = 3, rows = 41:82, colNames = FALSE, skipEmptyRows = TRUE)
     HChange <- openxlsx::read.xlsx(metric, sheet = tradingsum, cols = 6, rows = 41:82, colNames = FALSE, skipEmptyRows = TRUE)
-    H <- cbind(HHab, HChange)
-    colnames(H) <- c("HabitatGroup", "ProjectWideUnitChange")
+    
+    HOffset <- openxlsx::read.xlsx(metric, sheet = tradingsum, cols = 7, rows = 41:82, colNames = FALSE, skipEmptyRows = TRUE)
+    
+    if (is.null(HOffset)) {
+      HOffset <- data.frame(X1= rep(NA, 42))
+    }
+    
+    H <- cbind(HHab, HGroup, HChange, HOffset)
+    colnames(H) <- c("HabitatGroup", "Group", "ProjectWideUnitChange", "Offset")
     
     #medium
     MHab <- openxlsx::read.xlsx(metric, sheet = tradingsum, cols = 2, rows = 89:115, colNames = FALSE, skipEmptyRows = TRUE)
+    MGroup <- openxlsx::read.xlsx(metric, sheet = tradingsum, cols = 3, rows = 89:115, colNames = FALSE, skipEmptyRows = TRUE)
     MChange <- openxlsx::read.xlsx(metric, sheet = tradingsum, cols = 6, rows = 89:115, colNames = FALSE, skipEmptyRows = TRUE)
-    M <- cbind(MHab, MChange)
-    colnames(M) <- c("HabitatGroup", "ProjectWideUnitChange")
+    
+    MOffset <- openxlsx::read.xlsx(metric, sheet = tradingsum, cols = 7, rows = 89:115, colNames = FALSE, skipEmptyRows = TRUE)
+    
+    if (is.null(MOffset)) {
+      MOffset <- data.frame(X1= rep(NA, 9))
+    }
+    
+    #annoyingly, 10 groups, 9 broad chanes, cus last two are in one but diff names
+    Groups<-unique(MGroup)
+    Groups$X1[nrow(Groups) - 1] <- paste0(tail(Groups$X1, 2), collapse = " and ")
+    Groups <- head(Groups, -1)
+    
+    #now make broad change df too, so can explain what is lost by type
+    MGroupChange <- data.frame(HabitatGroup = Groups$X1,
+                              Deficit = MOffset$X1)
+    
+    #now rename those groups in the dataframe, so that the code can run properly
+    MGroup$X1[25:27] <- Groups$X1[9]
+    
+    M <- cbind(MHab, MGroup, MChange)
+    colnames(M) <- c("HabitatGroup", "Group", "ProjectWideUnitChange")
     
     #low
     LHab <- openxlsx::read.xlsx(metric, sheet = tradingsum, cols = 2, rows = 125:162, colNames = FALSE, skipEmptyRows = TRUE)
+    LGroup <- openxlsx::read.xlsx(metric, sheet = tradingsum, cols = 3, rows = 125:162, colNames = FALSE, skipEmptyRows = TRUE)
     LChange <- openxlsx::read.xlsx(metric, sheet = tradingsum, cols = 6, rows = 125:162, colNames = FALSE, skipEmptyRows = TRUE)
-    L <- cbind(LHab, LChange)
-    colnames(L) <- c("HabitatGroup", "ProjectWideUnitChange")
+    LOffset <- openxlsx::read.xlsx(metric, sheet = tradingsum, cols = 7, rows = 125:162, colNames = FALSE, skipEmptyRows = TRUE)
+    
+    if (is.null(LOffset)) {
+      LOffset <- data.frame(X1= rep(NA, 38))
+    }
+    
+    L <- cbind(LHab, LGroup, LChange, LOffset)
+    colnames(L) <- c("HabitatGroup", "Group", "ProjectWideUnitChange", "Offset")
     
     LSurplus <- openxlsx::read.xlsx(metric, sheet = tradingsum, cols = 11, rows = 125, colNames = FALSE, skipEmptyRows = TRUE)
-    MSurplus <- openxlsx::read.xlsx(metric, sheet = tradingsum, cols = 11, rows = 91, colNames = FALSE, skipEmptyRows = TRUE)
+    MSurplus <- openxlsx::read.xlsx(metric, sheet = tradingsum, cols = 11, rows = 90, colNames = FALSE, skipEmptyRows = TRUE)
     HSurplus <- openxlsx::read.xlsx(metric, sheet = tradingsum, cols = 11, rows = 41, colNames = FALSE, skipEmptyRows = TRUE)
     VHSurplus <- openxlsx::read.xlsx(metric, sheet = tradingsum, cols = 11, rows = 13, colNames = FALSE, skipEmptyRows = TRUE)
     
@@ -63,6 +105,7 @@ pullonsitehabitatsumdata<-function(metric){
     
     sumdata<-list(TradingSatisfied = Satisfied,
                   Surplus = Surplus,
+                  MGroupChange = MGroupChange,
                   VHNet = VH,
                   HNet = H,
                   MNet = M,
