@@ -362,7 +362,7 @@ clean_onsitehab_creation <- function(metric) {
   
   #row nrow of the SECOND col with data in it, which is the last lines of the habitats, giving nrow for rest 
   df[df == ""] <- NA #change any empty values with NA 
-  numberrows <- sum(!is.na(df[[2]])) #number of non NA vals
+  numberrows <- sum(!is.na(df[[1]])) #number of non NA vals
   df <- df[1:numberrows, ] #chop dataframe beyond numberrows
   df <- df[rowSums(is.na(df)) < ncol(df), ] #remove any straggling rows which are fully NA values
   errormessages <- c()
