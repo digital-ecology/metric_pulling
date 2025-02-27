@@ -315,7 +315,10 @@ clean_onsitenet_dataset <- function(metric) {
 clean_onsitehab_baseline <- function(metric) {
   
   #read the dataset
-  df <- openxlsx::read.xlsx(metric, "A-1 On-Site Habitat Baseline", cols = c(4:6, 8:9, 11, 17:25, 28), colNames = TRUE, startRow = 10)
+  df <- openxlsx::read.xlsx(metric, "A-1 On-Site Habitat Baseline", cols = c(4:6, 8:9, 11, 17:25), colNames = TRUE, startRow = 10)
+  df$Area.retained[is.na(df$Area.retained)] <- 0
+  df$Area.enhanced[is.na(df$Area.enhanced)] <- 0
+  
   colnames(df) <- gsub("\\.", " ", colnames(df))
   
   #row nrow of the SECOND col with data in it, which is the last lines of the habitats, giving nrow for rest 
@@ -432,6 +435,8 @@ clean_onsitehedge_baseline <- function(metric) {
   
   #read the dataset
   df <- openxlsx::read.xlsx(metric, "B-1 On-Site Hedge Baseline", cols = c(3,4,5,8,10,14,16,17,18,19,20,21), colNames = TRUE, startRow = 9)
+  df$Length.retained[is.na(df$Length.retained)] <- 0
+  df$Length.enhanced[is.na(df$Length.enhanced)] <- 0
   colnames(df) <- gsub("\\.", " ", colnames(df))
   
   #row nrow of the SECOND col with data in it, which is the last lines of the habitats, giving nrow for rest 

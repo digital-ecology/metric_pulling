@@ -10,8 +10,8 @@ data_dir <- normalizePath(data_dir, winslash = "/", mustWork = TRUE)
 
 #these render in app perfectly fine
 
-#sitename <- "Woburn maintanence yard"
-sitename <- "Land South of Snarlton Farm, Melksham"
+sitename <- "Woburn maintanence yard"
+#sitename <- "Land South of Snarlton Farm, Melksham"
 #sitename <- "Land South of Wing Road Stewkley"
 
 #these render in app perfectly fine, but with mistakes - maddie is currently checking to see if the reports in RR have similar issues
