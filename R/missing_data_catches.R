@@ -31,7 +31,7 @@ check_A1 <- function(metric) {
     for (i in 1:ncol(df)) { #for each column in the dataframe
       
       if (any(is.na(df[[i]]))) { #if ANY have NA, return a message - can assign this to a message object, to pass back to user
-        errormessages<- paste(errormessages, "Column",names(df)[i], "contains NA values.\n")
+        errormessages<- paste(errormessages, "Column '", names(df)[i], "' contains NA values.\n", sep = "")
         
       }
     }
@@ -75,7 +75,7 @@ check_A2 <- function(metric) {
     for (i in 1:ncol(df)) { #for each column in the dataframe
       
       if (any(is.na(df[[i]]))) { #if ANY have NA, return a message - can assign this to a message object, to pass back to user
-        errormessages<- paste(errormessages, "Column", names(df)[i], "contains NA values.\n")
+        errormessages<- paste(errormessages, "Column '", names(df)[i], "' contains NA values.\n", sep = "")
         
       }
     }
@@ -120,7 +120,7 @@ check_A3 <- function(metric) {
     for (i in 1:ncol(df)) { #for each column in the dataframe
       
       if (any(is.na(df[[i]]))) { #if ANY have NA, return a message - can assign this to a message object, to pass back to user
-        errormessages<- paste(errormessages, "Column", names(df)[i], "contains NA values.\n")
+        errormessages<- paste(errormessages, "Column '", names(df)[i], "' contains NA values.\n", sep = "")
         
       }
     }
@@ -128,6 +128,133 @@ check_A3 <- function(metric) {
   }
   
   return(errormessages)
+}
+
+#' cleans onsitehedge baseline metric data 
+#'
+#' @param metric feas metric
+#'
+#' @return df, a cleaned version of the input dataset - to be used as an argument in actual metric pulling function
+#' 
+#' @export
+#'
+#' @examples \dontrun{checked_dataset<-check_B1(metric)}     
+check_B1 <- function(metric) {
+  
+  #read the dataset
+  df <- openxlsx::read.xlsx(metric, "B-1 On-Site Hedge Baseline", cols = c(3,4,5,8,10,14,16,17,18,19,20,21), colNames = TRUE, startRow = 9)
+  
+  errormessages <- c()
+  if(!is.na(df$Hedge.number[1])) {
+    
+    df$Length.retained[is.na(df$Length.retained)] <- 0
+    df$Length.enhanced[is.na(df$Length.enhanced)] <- 0
+    colnames(df) <- gsub("\\.", " ", colnames(df))
+    
+    #row nrow of the SECOND col with data in it, which is the last lines of the habitats, giving nrow for rest 
+    df[df == ""] <- NA #change any empty values with NA 
+    numberrows <- sum(!is.na(df[[2]])) #number of non NA vals
+    df <- df[1:numberrows, ] #chop dataframe beyond numberrows
+    df <- df[rowSums(is.na(df)) < ncol(df), ] #remove any straggling rows which are fully NA values
+    
+    
+    #first thing that needs to be checked, is if there are any NAs in any column 
+    for (i in 1:ncol(df)) { #for each column in the dataframe
+      
+      if (any(is.na(df[[i]]))) { #if ANY have NA, return a message - can assign this to a message object, to pass back to user
+        errormessages<- paste(errormessages, "Column '", names(df)[i], "' contains NA values.\n", sep = "")
+        
+      }
+    }
+    
+  }
+  
+  return(errormessages)
+}
+
+
+#' cleans onsitehedge creation loss data 
+#'
+#' @param metric feas metric
+#'
+#' @return df, a cleaned version of the input dataset - to be used as an argument in actual metric pulling function
+#' 
+#' @export
+#'
+#' @examples \dontrun{checked_dataset<-check_B2(metric)}    
+check_B2 <- function(metric) {
+  
+  #read the dataset
+  df <- openxlsx::read.xlsx(metric, "B-2 On-Site Hedge Creation", cols = c(3,4,5,6,8,10,23), colNames = TRUE, startRow = 11)
+  
+  errormessages <- c()
+  
+  if(!is.na(df$Habitat.type[1])) {
+    
+    colnames(df)[colnames(df) == "X7"] <- "Hedge Units Delivered"
+    colnames(df) <- gsub("\\.", " ", colnames(df))
+    
+    df[df == ""] <- NA #change any empty values with NA 
+    numberrows <- sum(!is.na(df[[2]])) #number of non NA vals
+    df <- df[1:numberrows, ] #chop dataframe beyond numberrows
+    df <- df[rowSums(is.na(df)) < ncol(df), ] #remove any straggling rows which are fully NA values
+    
+    
+    #first thing that needs to be checked, is if there are any NAs in any column 
+    for (i in 1:ncol(df)) { #for each column in the dataframe
+      
+      if (any(is.na(df[[i]]))) { #if ANY have NA, return a message - can assign this to a message object, to pass back to user
+        errormessages<- paste(errormessages, "Column '", names(df)[i], "' contains NA values.\n", sep = "")
+        
+      }
+    }
+    
+  }
+  
+  return(errormessages)
+}
+
+#' cleans onsitehedge enhancement loss data 
+#'
+#' @param metric feas metric
+#'
+#' @return df, a cleaned version of the input dataset - to be used as an argument in actual metric pulling function
+#' 
+#' @export
+#'
+#' @examples \dontrun{checked_dataset<-check_B3(metric)}   
+check_B3 <- function(metric) {
+  
+  #read the dataset
+  df <- openxlsx::read.xlsx(metric, "B-3 On-Site Hedge Enhancement", cols = c(2,3,7,16,17,19,21,34), colNames = TRUE, startRow = 11)
+  
+  errormessages <- c()
+  
+  if(!is.na(df$Baseline.habitat[1])) {
+    colnames(df)[colnames(df) == "X4"] <- "Length (km)"
+    colnames(df)[colnames(df) == "X8"] <- "Hedge Units Delivered"
+    colnames(df) <- gsub("\\.", " ", colnames(df))
+    
+    df[df == ""] <- NA #change any empty values with NA 
+    numberrows <- sum(!is.na(df[[2]])) #number of non NA vals
+    df <- df[1:numberrows, ] #chop dataframe beyond numberrows
+    df <- df[rowSums(is.na(df)) < ncol(df), ] #remove any straggling rows which are fully NA values
+    
+    
+    #first thing that needs to be checked, is if there are any NAs in any column 
+    for (i in 1:ncol(df)) { #for each column in the dataframe
+      
+      if (any(is.na(df[[i]]))) { #if ANY have NA, return a message - can assign this to a message object, to pass back to user
+        errormessages<- paste(errormessages, "Column '", names(df)[i], "' contains NA values.\n", sep = "")
+        
+      }
+    }
+    
+    
+    
+  }
+  return(errormessages)
+  
 }
 
 #' cleans C1 water metric data 
@@ -159,7 +286,7 @@ check_C1 <- function(metric) {
   for (i in 1:ncol(df)) { #for each column in the dataframe
     
     if (any(is.na(df[[i]]))) { #if ANY have NA, return a message - can assign this to a message object, to pass back to user
-      errormessages<- paste(errormessages, "Column", names(df)[i], "contains NA values.\n")
+      errormessages<- paste(errormessages, "Column '", names(df)[i], "' contains NA values.\n", sep = "")
       
     }
   }
@@ -199,7 +326,7 @@ check_C2 <- function(metric) {
   for (i in 1:ncol(df)) { #for each column in the dataframe
     
     if (any(is.na(df[[i]]))) { #if ANY have NA, return a message - can assign this to a message object, to pass back to user
-      errormessages<- paste(errormessages, "Column", names(df)[i], "contains NA values.\n")
+      errormessages<- paste(errormessages, "Column '", names(df)[i], "' contains NA values.\n", sep = "")
       
     }
   }
@@ -242,7 +369,7 @@ check_C3 <- function(metric) {
   for (i in 1:ncol(df)) { #for each column in the dataframe
     
     if (any(is.na(df[[i]]))) { #if ANY have NA, return a message - can assign this to a message object, to pass back to user
-      errormessages<- paste(errormessages, "Column", names(df)[i], "contains NA values.\n")
+      errormessages<- paste(errormessages, "Column '", names(df)[i], "' contains NA values.\n", sep = "")
       
     }
   }
@@ -250,133 +377,6 @@ check_C3 <- function(metric) {
 }
   
   return(errormessages)
-}
-
-#' cleans onsitehedge baseline metric data 
-#'
-#' @param metric feas metric
-#'
-#' @return df, a cleaned version of the input dataset - to be used as an argument in actual metric pulling function
-#' 
-#' @export
-#'
-#' @examples \dontrun{checked_dataset<-check_B1(metric)}     
-check_B1 <- function(metric) {
-  
-  #read the dataset
-  df <- openxlsx::read.xlsx(metric, "B-1 On-Site Hedge Baseline", cols = c(3,4,5,8,10,14,16,17,18,19,20,21), colNames = TRUE, startRow = 9)
-  
-  errormessages <- c()
-  if(!is.na(df$Hedge.number[1])) {
-    
-  df$Length.retained[is.na(df$Length.retained)] <- 0
-  df$Length.enhanced[is.na(df$Length.enhanced)] <- 0
-  colnames(df) <- gsub("\\.", " ", colnames(df))
-  
-  #row nrow of the SECOND col with data in it, which is the last lines of the habitats, giving nrow for rest 
-  df[df == ""] <- NA #change any empty values with NA 
-  numberrows <- sum(!is.na(df[[2]])) #number of non NA vals
-  df <- df[1:numberrows, ] #chop dataframe beyond numberrows
-  df <- df[rowSums(is.na(df)) < ncol(df), ] #remove any straggling rows which are fully NA values
-  
-  
-  #first thing that needs to be checked, is if there are any NAs in any column 
-  for (i in 1:ncol(df)) { #for each column in the dataframe
-    
-    if (any(is.na(df[[i]]))) { #if ANY have NA, return a message - can assign this to a message object, to pass back to user
-      errormessages<- paste(errormessages, "Column", names(df)[i], "contains NA values.\n")
-      
-    }
-  }
-  
-  }
-  
-  return(errormessages)
-}
-
-
-#' cleans onsitehedge creation loss data 
-#'
-#' @param metric feas metric
-#'
-#' @return df, a cleaned version of the input dataset - to be used as an argument in actual metric pulling function
-#' 
-#' @export
-#'
-#' @examples \dontrun{checked_dataset<-check_B2(metric)}    
-check_B2 <- function(metric) {
-  
-  #read the dataset
-  df <- openxlsx::read.xlsx(metric, "B-2 On-Site Hedge Creation", cols = c(3,4,5,6,8,10,23), colNames = TRUE, startRow = 11)
-   
-  errormessages <- c()
-  
-   if(!is.na(df$Habitat.type[1])) {
-    
-  colnames(df)[colnames(df) == "X7"] <- "Hedge Units Delivered"
-  colnames(df) <- gsub("\\.", " ", colnames(df))
-  
-  df[df == ""] <- NA #change any empty values with NA 
-  numberrows <- sum(!is.na(df[[2]])) #number of non NA vals
-  df <- df[1:numberrows, ] #chop dataframe beyond numberrows
-  df <- df[rowSums(is.na(df)) < ncol(df), ] #remove any straggling rows which are fully NA values
- 
-  
-  #first thing that needs to be checked, is if there are any NAs in any column 
-  for (i in 1:ncol(df)) { #for each column in the dataframe
-    
-    if (any(is.na(df[[i]]))) { #if ANY have NA, return a message - can assign this to a message object, to pass back to user
-      errormessages<- paste(errormessages, "Column", names(df)[i], "contains NA values.\n")
-      
-    }
-  }
-  
-  }
-  
-  return(errormessages)
-}
-
-#' cleans onsitehedge enhancement loss data 
-#'
-#' @param metric feas metric
-#'
-#' @return df, a cleaned version of the input dataset - to be used as an argument in actual metric pulling function
-#' 
-#' @export
-#'
-#' @examples \dontrun{checked_dataset<-check_B3(metric)}   
-check_B3 <- function(metric) {
-  
-  #read the dataset
-  df <- openxlsx::read.xlsx(metric, "B-3 On-Site Hedge Enhancement", cols = c(2,3,7,16,17,19,21,34), colNames = TRUE, startRow = 11)
-  
-  errormessages <- c()
-  
-  if(!is.na(df$Baseline.habitat[1])) {
-  colnames(df)[colnames(df) == "X4"] <- "Length (km)"
-  colnames(df)[colnames(df) == "X8"] <- "Hedge Units Delivered"
-  colnames(df) <- gsub("\\.", " ", colnames(df))
-  
-  df[df == ""] <- NA #change any empty values with NA 
-  numberrows <- sum(!is.na(df[[2]])) #number of non NA vals
-  df <- df[1:numberrows, ] #chop dataframe beyond numberrows
-  df <- df[rowSums(is.na(df)) < ncol(df), ] #remove any straggling rows which are fully NA values
-  
-  
-  #first thing that needs to be checked, is if there are any NAs in any column 
-  for (i in 1:ncol(df)) { #for each column in the dataframe
-    
-    if (any(is.na(df[[i]]))) { #if ANY have NA, return a message - can assign this to a message object, to pass back to user
-      errormessages<- paste(errormessages, "Column", names(df)[i], "contains NA values.\n")
-      
-    }
-  }
-  
-  
-  
-  }
-  return(errormessages)
-  
 }
 
 #' cleans habsum metric data 
@@ -418,7 +418,7 @@ checkhabsum_dataset <- function(metric) {
     # Check for missing values
     for (i in 1:ncol(df)) {
       if (any(is.na(df[[i]]))) {
-        errormessages <- paste(errormessages, dataset_name, "Column", names(df)[i], "contains NA values.\n")
+        errormessages <- paste(errormessages, dataset_name, "Column '", names(df)[i], "' contains NA values.\n", sep = "")
       }
     }
   }
@@ -466,7 +466,7 @@ checkhedgesum_dataset <- function(metric) {
     # Check for missing values
     for (i in 1:ncol(df)) {
       if (any(is.na(df[[i]]))) {
-        errormessages <- paste(errormessages, dataset_name, "Column", names(df)[i], "contains NA values.\n")
+        errormessages <- paste(errormessages, dataset_name, "Column '", names(df)[i], "' contains NA values.\n", sep = "")
       }
     }
   }
@@ -515,7 +515,7 @@ checkwatersum_dataset <- function(metric) {
     # Check for missing values
     for (i in 1:ncol(df)) {
       if (any(is.na(df[[i]]))) {
-        errormessages <- paste(errormessages, dataset_name, "Column", names(df)[i], "contains NA values.\n")
+        errormessages <- paste(errormessages, dataset_name, "Column '", names(df)[i], "' contains NA values.\n", sep = "")
       }
     }
   }
