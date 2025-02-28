@@ -68,7 +68,7 @@ pullonsitewaterbaseline<-function(metric){
     colnames(totalwaterlength) <- "totallength"
     
     #TotalwaterUnits
-    totalwaterunits<-openxlsx::read.xlsx(metric, baselinesheet, cols = 24, colNames = FALSE, startRow = 258)
+    totalwaterunits<-openxlsx::read.xlsx(metric, baselinesheet, cols = 23, colNames = FALSE, startRow = 258)
     totalwaterunits<-round(totalwaterunits, 2)
     colnames(totalwaterunits) <- "totallbu"
     
