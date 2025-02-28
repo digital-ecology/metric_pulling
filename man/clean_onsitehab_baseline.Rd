@@ -10,7 +10,7 @@ clean_onsitehab_baseline(metric)
 \item{metric}{feas metric}
 }
 \value{
-df, a cleaned version of the input dataset - to be used as an argument in actual metric pulling function
+error messages, a string of error messages to be shown so user knows where data is incorrect
 }
 \description{
 cleans onsitehab baseline metric data
