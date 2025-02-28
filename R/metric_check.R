@@ -11,25 +11,25 @@
 #'c <- metric_check("data-raw/OnSiteHedgeEnhance2.xlsx") # metric used in testing qmd}
 metric_check <- function(metric) {
   
-  HRem <- clean_onsitenet_dataset(metric)
-  TAem <- clean_habsum_dataset(metric)
-  THem <- clean_hedgesum_dataset(metric)
-  TWem <- clean_watersum_dataset(metric)
-  A1em <- clean_onsitehab_baseline(metric)
-  A2em <- clean_onsitehab_creation(metric)
-  A3em <- clean_onsitehab_enhancement(metric)
-  B1em <- clean_onsitehedge_baseline(metric)
-  B2em <- clean_onsitehedge_creation(metric)
-  B3em <- clean_onsitehedge_enhancement(metric)
-  C1em <- clean_c1_dataset(metric)
-  C2em <- clean_c2_dataset(metric)
-  C3em <- clean_c3_dataset(metric)
+  # HRem <- checkonsitenet_dataset(metric)
+  # TAem <- checkhabsum_dataset(metric)
+  # THem <- checkhedgesum_dataset(metric)
+  # TWem <- checkwatersum_dataset(metric)
+  A1em <- check_A1(metric)
+  A2em <- check_A2(metric)
+  A3em <- check_A3(metric)
+  B1em <- check_B1(metric)
+  B2em <- check_B2(metric)
+  B3em <- check_B3(metric)
+  C1em <- check_C1(metric)
+  C2em <- check_C2(metric)
+  C3em <- check_C3(metric)
   
   checks <- list(
-    "Headline Results" = HRem,
-    "Trading Summary Area Habitats" = TAem,
-    "Trading Summary Hedgerows" = THem,
-    "Trading Summary WaterC's" = TWem,
+    # "Headline Results" = HRem,
+    # "Trading Summary Area Habitats" = TAem,
+    # "Trading Summary Hedgerows" = THem,
+    # "Trading Summary WaterC's" = TWem,
     "A-1 On-Site Habitat Baseline" = A1em,
     "A-2 On-Site Habitat Creation" = A2em,
     "A-3 On-Site Habitat Enhancement" = A3em,
