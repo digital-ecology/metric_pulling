@@ -119,11 +119,10 @@ pullonsitehedgeretain<-function(metric){
       colnames(hedgenum) <- "hedgenumber"
       
       #RetainLengths
-      hedgeretainlength<-openxlsx::read.xlsx(metric, baselinesheet, cols = 16, colNames = FALSE, startRow = 10)
-      if (nrow(hedgeretainlength) >=2) {
-        hedgeretainlength<-hedgeretainlength[-nrow(hedgeretainlength),]
-        hedgeretainlength<-as.data.frame(hedgeretainlength)
-      }
+      hedgeretainlength<-openxlsx::read.xlsx(metric, baselinesheet, cols = 16, colNames = FALSE, startRow = 10, skipEmptyRows = FALSE)
+      hedgeretainlength <- hedgeretainlength[1:nrow(hedgehabitattype), , drop = FALSE]
+      hedgeretainlength[is.na(hedgeretainlength)] <- 0
+      hedgeretainlength$X1<-as.numeric(hedgeretainlength$X1)
       colnames(hedgeretainlength) <- "lengthretained"
       
       #RetainUnits
