@@ -122,9 +122,9 @@ pullonsitewaterretain<-function(metric){
       
       #RetainLengths
       waterretainlength<-openxlsx::read.xlsx(metric, baselinesheet, cols = 23, colNames = FALSE, startRow = 10)
-      waterretainlength <- waterretainlength[waterretainlength$X1 != "", , drop = FALSE]
-      waterretainlength <- waterretainlength[-nrow(waterretainlength), , drop = FALSE]
-      waterretainlength$X1 <- as.numeric(waterretainlength$X1)
+      waterretainlength <- waterretainlength[1:nrow(waterhabitattype), , drop = FALSE]
+      waterretainlength[is.na(waterretainlength)] <- 0
+      waterretainlength$X1<-as.numeric(waterretainlength$X1)
       colnames(waterretainlength) <- "lengthretained"
       
       #RetainUnits
