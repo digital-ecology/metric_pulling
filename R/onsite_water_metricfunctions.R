@@ -41,7 +41,7 @@ pullonsitewaterbaseline<-function(metric){
       colnames(waterss) <- "baseliness"
       
       #BaselineUnits
-      waterunits<- openxlsx::read.xlsx(metric, baselinesheet, cols = 24, colNames = FALSE, startRow = 10) 
+      waterunits<- openxlsx::read.xlsx(metric, baselinesheet, cols = 23, colNames = FALSE, startRow = 10) 
       waterunits <- waterunits[waterunits$X1 != "", , drop = FALSE]
       waterunits <- waterunits[-nrow(waterunits), , drop = FALSE]
       waterunits$X1 <- as.numeric(waterunits$X1)
