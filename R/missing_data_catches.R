@@ -36,7 +36,11 @@ check_A1 <- function(metric) {
       }
     }
   }
-  return(errormessages)
+  
+  metriccheckresults<-list(sheetdata = df,
+                           errormessages = errormessages)
+  
+  return(metriccheckresults)
 }
 
 
@@ -79,11 +83,14 @@ check_A2 <- function(metric) {
         
       }
     }
-    
-    
   }
-  return(errormessages)
-}
+  
+  metriccheckresults<-list(sheetdata = df,
+                           errormessages = errormessages)
+  
+  return(metriccheckresults)
+  
+  }
 
 #' cleans onsitehab enchancement metric data 
 #'
@@ -127,7 +134,10 @@ check_A3 <- function(metric) {
     
   }
   
-  return(errormessages)
+  metriccheckresults<-list(sheetdata = df,
+                           errormessages = errormessages)
+  
+  return(metriccheckresults)
 }
 
 #' cleans onsitehedge baseline metric data 
@@ -169,7 +179,10 @@ check_B1 <- function(metric) {
     
   }
   
-  return(errormessages)
+  metriccheckresults<-list(sheetdata = df,
+                           errormessages = errormessages)
+  
+  return(metriccheckresults)
 }
 
 
@@ -210,8 +223,10 @@ check_B2 <- function(metric) {
     }
     
   }
+  metriccheckresults<-list(sheetdata = df,
+                           errormessages = errormessages)
   
-  return(errormessages)
+  return(metriccheckresults)
 }
 
 #' cleans onsitehedge enhancement loss data 
@@ -253,7 +268,11 @@ check_B3 <- function(metric) {
     
     
   }
-  return(errormessages)
+  
+  metriccheckresults<-list(sheetdata = df,
+                           errormessages = errormessages)
+  
+  return(metriccheckresults)
   
 }
 
@@ -293,7 +312,10 @@ check_C1 <- function(metric) {
   
   }
   
-  return(errormessages)
+  metriccheckresults<-list(sheetdata = df,
+                           errormessages = errormessages)
+  
+  return(metriccheckresults)
 }
   
 #' cleans C2 water metric data 
@@ -333,7 +355,10 @@ check_C2 <- function(metric) {
   
   
 }
-  return(errormessages)
+  metriccheckresults<-list(sheetdata = df,
+                           errormessages = errormessages)
+  
+  return(metriccheckresults)
 }
 
   
@@ -376,7 +401,10 @@ check_C3 <- function(metric) {
   
 }
   
-  return(errormessages)
+  metriccheckresults<-list(sheetdata = df,
+                           errormessages = errormessages)
+  
+  return(metriccheckresults)
 }
 
 #' cleans habsum metric data 
