@@ -49,11 +49,21 @@ metric_check <- function(metric) {
   #initialise empty message storer
   message<-c("Metric Check Results:\n\n")
   
-  for (i in 1:length(errormessages)) {
+  #if all messages are null, theres no problems
+  if(all(sapply(errormessages, is.null))) {
     
-    if (is.null(errormessages[[i]])){message <- paste(message, "- ", names(errormessages)[[i]],": No issues detected.\n", sep = "")
- 
- } else {
+    message <- paste(message, "- All sheets filled out correctly. No issues detected.\n", sep = "")
+    
+  } 
+  
+  #if any arent null, there is a problem
+  if(any(!sapply(errormessages, is.null))){
+    
+    #remove the null ones 
+    errormessages <- errormessages[!sapply(errormessages, is.null)]
+  
+    #for whatever is left, report issues 
+  for (i in 1:length(errormessages)) {
     
       problematicmetric <- names(errormessages)[[i]]
       
