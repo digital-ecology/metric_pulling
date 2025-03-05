@@ -47,7 +47,7 @@ metric_check <- function(metric) {
   #errormessages <- errormessages[!sapply(errormessages, is.null)]
   
   #initialise empty message storer
-  message<-c("Metric Check Results:\n\n")
+  message<-c()
   
   #if all messages are null, theres no problems
   if(all(sapply(errormessages, is.null))) {
