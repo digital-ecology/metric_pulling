@@ -18,12 +18,20 @@ check_A1 <- function(metric) {
     colnames(df) <- gsub("\\.", " ", colnames(df))
     
     #row nrow of the SECOND col with data in it, which is the last lines of the habitats, giving nrow for rest 
-    numberrows <- sum(!is.na(df[[1]])) #number of non NA vals
-    df <- df[1:numberrows, ] #chop dataframe beyond numberrows
+    # numberrows <- sum(!is.na(df[[1]])) #number of non NA vals
+    # df <- df[1:numberrows, ] #chop dataframe beyond numberrows
+    
+    #sometimes, there are entire rows of NAs. for the baseline sheet, you can remove all rows where col 1 = NA, if someone hasnt put broad hab in, wont exist
+    df <- df[!is.na(df[, 1]), ]
     
     #correct the ones which WILL have NAs, as autocorrected
     df[[7]][is.na(df[[7]])] <- 0
     df[[8]][is.na(df[[8]])] <- 0
+    
+    colnames(df) <-c("Broad Habitat", "Habitat Type", "Area (Ha)", "Distinctiveness", "Condition",
+                                 "Total Habitat Units", "Area Retained (Ha)", "Area Enhanced  (Ha)",
+                                 "Baseline Units Retained", "Baseline Units Enhanced",
+                                 "Area Lost", "Baseline Units Lost")
     
     #first thing that needs to be checked, is if there are any NAs in any column 
     for (i in 1:ncol(df)) { #for each column in the dataframe
@@ -55,7 +63,7 @@ check_A1 <- function(metric) {
 check_A2 <- function(metric) {
   
   #read the dataset
-  df <- openxlsx::read.xlsx(metric, "A-2 On-Site Habitat Creation", cols = c(4:5,7:8,10, 25), colNames = TRUE, startRow = 10)
+  df <- openxlsx::read.xlsx(metric, "A-2 On-Site Habitat Creation", cols = c(4:5,7:8,10, 25), colNames = TRUE, startRow = 10, skipEmptyRows = TRUE)
   
   errormessages <- c()
   if(!is.na(df$Condition[1])) {
@@ -63,8 +71,15 @@ check_A2 <- function(metric) {
     colnames(df) <- gsub("\\.", " ", colnames(df))
     
     #row nrow of the SECOND col with data in it, which is the last lines of the habitats, giving nrow for rest 
-    numberrows <- sum(!is.na(df[[1]])) #number of non NA vals
-    df <- df[1:numberrows, ] #chop dataframe beyond numberrows
+    #numberrows <- sum(!is.na(df[[1]])) #number of non NA vals
+    
+    #sometimes, there are entire rows of NAs. for the creation sheet, you can remove all rows where col 1 = NA, as thats autofileld
+    df <- df[!is.na(df[, 1]), ]
+    
+    #df <- df[1:numberrows, ] #chop dataframe beyond numberrows
+    
+    colnames(df) <- c("Proposed Broad Habitat", "Proposed Habitat Type", "Area (Ha)", 
+                      "Distinctiveness", "Condition", "Habitat Units Delivered")
    
     #first thing that needs to be checked, is if there are any NAs in any column 
     for (i in 1:ncol(df)) { #for each column in the dataframe
@@ -95,24 +110,24 @@ check_A2 <- function(metric) {
 check_A3 <- function(metric) {
   
   df <- openxlsx::read.xlsx(metric, sheet = "A-3 On-Site Habitat Enhancement", 
-                            cols = c(6,17,18,22,23,25,27,30,40), 
+                            cols = c(6,17:18,22:23,25,40), 
                             colNames = TRUE, startRow = 11)
   
   errormessages <- c()
-  if(!is.na(df$Baseline.habitat[1])) {
+  if(!is.na(df$Proposed.habitat[1])) {
     
-    colnames(df)[colnames(df) == "X5"] <- "Distinctiveness"
-    colnames(df)[colnames(df) == "X4"] <- "Acres (Ha)"
-    colnames(df)[colnames(df) == "X8"] <- "Habitat Units Delivered"
     colnames(df) <- gsub("\\.", " ", colnames(df))
-    
-    
+   
     #row nrow of the SECOND col with data in it, which is the last lines of the habitats, giving nrow for rest 
-    df[df == ""] <- NA #change any empty values with NA 
-    numberrows <- sum(!is.na(df[[2]])) #number of non NA vals
-    df <- df[1:numberrows, ] #chop dataframe beyond numberrows
-    df <- df[rowSums(is.na(df)) < ncol(df), ] #remove any straggling rows which are fully NA values
+    # numberrows <- sum(!is.na(df[[3]])) #number of non NA vals
+    # df <- df[1:numberrows, ] #chop dataframe beyond numberrows
     
+    #sometimes, there are entire rows of NAs. for the enhancement sheet, you can remove all rows where col 3 = NA, as thats manually entered by user
+    df <- df[!is.na(df[, 3]), ]
+    
+    #set colnames 
+    colnames(df) <- c("Existing Habitat", "Proposed Broad Habitat", "Proposed Habitat Type",
+                      "Area (Ha)", "Distinctiveness", "Condition", "Habitat Units Delivered")
     
     #first thing that needs to be checked, is if there are any NAs in any column 
     for (i in 1:ncol(df)) { #for each column in the dataframe
