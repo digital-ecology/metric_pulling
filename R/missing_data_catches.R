@@ -42,6 +42,11 @@ check_A1 <- function(metric) {
     }
   }
   
+  # colnames(df) <-c("Broad Habitat", "Habitat Type", "Area (Ha)", "Distinctiveness", "Condition",
+  #                  "Total Habitat Units", "Area Retained (Ha)", "Area Enhanced  (Ha)",
+  #                  "Baseline Units Retained", "Baseline Units Enhanced",
+  #                  "Area Lost", "Baseline Units Lost")
+  
   metriccheckresults<-list(sheetdata = df,
                            errormessages = errormessages)
   
@@ -66,9 +71,7 @@ check_A2 <- function(metric) {
   
   errormessages <- c()
   if(!is.na(df$Condition[1])) {
-    
-    colnames(df) <- gsub("\\.", " ", colnames(df))
-    
+   
     #sometimes, there are entire rows of NAs. for the creation sheet, you can remove all rows where col 1 = NA, as thats autofileld
     df <- df[!is.na(df[, 1]), ]
     
@@ -87,6 +90,9 @@ check_A2 <- function(metric) {
       }
     }
   }
+  
+  # colnames(df) <- c("Proposed Broad Habitat", "Proposed Habitat Type", "Area (Ha)", 
+  #                   "Distinctiveness", "Condition", "Habitat Units Delivered")
   
   metriccheckresults<-list(sheetdata = df,
                            errormessages = errormessages)
@@ -112,8 +118,6 @@ check_A3 <- function(metric) {
   
   errormessages <- c()
   if(!is.na(df$Proposed.habitat[1])) {
-    
-    colnames(df) <- gsub("\\.", " ", colnames(df))
    
     #sometimes, there are entire rows of NAs. for the enhancement sheet, you can remove all rows where col 3 = NA, as thats manually entered by user
     df <- df[!is.na(df[, 3]), ]
@@ -123,7 +127,7 @@ check_A3 <- function(metric) {
                       "Area (Ha)", "Distinctiveness", "Condition", "Habitat Units Delivered")
     
     #make numeric and round
-    df[, c(3, 7)] <- lapply(df[, c(4, 7)], function(x) round(as.numeric(x), 3))
+    df[, c(4, 7)] <- lapply(df[, c(4, 7)], function(x) round(as.numeric(x), 3))
     
     #first thing that needs to be checked, is if there are any NAs in any column 
     for (i in 1:ncol(df)) { #for each column in the dataframe
@@ -135,6 +139,10 @@ check_A3 <- function(metric) {
     }
     
   }
+  
+  # #set colnames 
+  # colnames(df) <- c("Existing Habitat", "Proposed Broad Habitat", "Proposed Habitat Type",
+  #                   "Area (Ha)", "Distinctiveness", "Condition", "Habitat Units Delivered")
   
   metriccheckresults<-list(sheetdata = df,
                            errormessages = errormessages)
@@ -152,22 +160,27 @@ check_A3 <- function(metric) {
 #'
 #' @examples \dontrun{checked_dataset<-check_B1(metric)}     
 check_B1 <- function(metric) {
-  
+ 
   #read the dataset
-  df <- openxlsx::read.xlsx(metric, "B-1 On-Site Hedge Baseline", cols = c(3,4,5,8,10,14,16,17,18,19,20,21), colNames = TRUE, startRow = 9)
+  df <- openxlsx::read.xlsx(metric, "B-1 On-Site Hedge Baseline", cols = c(3:5,8,14,16:21), colNames = TRUE, startRow = 9)
   
   errormessages <- c()
-  if(!is.na(df$Hedge.number[1])) {
+  if(!is.na(df$Habitat.type[1])) {
     
-    df$Length.retained[is.na(df$Length.retained)] <- 0
-    df$Length.enhanced[is.na(df$Length.enhanced)] <- 0
-    colnames(df) <- gsub("\\.", " ", colnames(df))
+    #sometimes, there are entire rows of NAs. for the baseline sheet, you can remove all rows where col 2 = NA, as thats manually entered by user
+    df <- df[!is.na(df[, 2]), ]
     
-    #row nrow of the SECOND col with data in it, which is the last lines of the habitats, giving nrow for rest 
-    df[df == ""] <- NA #change any empty values with NA 
-    numberrows <- sum(!is.na(df[[2]])) #number of non NA vals
-    df <- df[1:numberrows, ] #chop dataframe beyond numberrows
-    df <- df[rowSums(is.na(df)) < ncol(df), ] #remove any straggling rows which are fully NA values
+    #correct the ones which WILL have NAs, as autocorrected
+    df[[7]][is.na(df[[7]])] <- 0
+    df[[6]][is.na(df[[6]])] <- 0
+    
+    #set colnames 
+    colnames(df) <- c("Hedge Number", "Habitat Type", "Length (Km)", "Condition", "Baseline Units",
+                      "Length Retained", "Length Enhanced", "Units Retained", "Units Enhanced",
+                      "Length Lost", "Units Lost")
+    
+    #make numeric and round
+    df[, c(3, 5:11)] <- lapply(df[, c(3, 5:11)], function(x) round(as.numeric(x), 3))
     
     
     #first thing that needs to be checked, is if there are any NAs in any column 
@@ -180,6 +193,11 @@ check_B1 <- function(metric) {
     }
     
   }
+  
+  # #set colnames 
+  # colnames(df) <- c("Hedge Number", "Habitat Type", "Length (Km)", "Condition", "Baseline Units",
+  #                   "Length Retained", "Length Enhanced", "Units Retained", "Units Enhanced",
+  #                   "Length Lost", "Units Lost")
   
   metriccheckresults<-list(sheetdata = df,
                            errormessages = errormessages)
@@ -205,14 +223,16 @@ check_B2 <- function(metric) {
   errormessages <- c()
   
   if(!is.na(df$Habitat.type[1])) {
+   
+    #sometimes, there are entire rows of NAs. for the baseline sheet, you can remove all rows where col 2 = NA, as thats manually entered by user
+    df <- df[!is.na(df[, 2]), ]
     
-    colnames(df)[colnames(df) == "X7"] <- "Hedge Units Delivered"
-    colnames(df) <- gsub("\\.", " ", colnames(df))
+    #make numeric and round
+    df[, c(3, 7)] <- lapply(df[, c(3, 7)], function(x) round(as.numeric(x), 3))
     
-    df[df == ""] <- NA #change any empty values with NA 
-    numberrows <- sum(!is.na(df[[2]])) #number of non NA vals
-    df <- df[1:numberrows, ] #chop dataframe beyond numberrows
-    df <- df[rowSums(is.na(df)) < ncol(df), ] #remove any straggling rows which are fully NA values
+    #set colnames 
+    colnames(df) <- c("New Hedge Number", "Created Habitat Type", "Length (Km)", "Distinctiveness",
+                      "Condition", "Strategic Significance", "Units Created")
     
     
     #first thing that needs to be checked, is if there are any NAs in any column 
@@ -225,6 +245,11 @@ check_B2 <- function(metric) {
     }
     
   }
+  
+  # #set colnames 
+  # colnames(df) <- c("New Hedge Number", "Created Habitat Type", "Length (Km)", "Distinctiveness",
+  #                   "Condition", "Strategic Significance", "Units Created")
+  # 
   metriccheckresults<-list(sheetdata = df,
                            errormessages = errormessages)
   
@@ -243,19 +268,21 @@ check_B2 <- function(metric) {
 check_B3 <- function(metric) {
   
   #read the dataset
-  df <- openxlsx::read.xlsx(metric, "B-3 On-Site Hedge Enhancement", cols = c(2,3,7,16,17,19,21,34), colNames = TRUE, startRow = 11)
+  df <- openxlsx::read.xlsx(metric, "B-3 On-Site Hedge Enhancement", cols = c(3, 4, 13, 19, 21, 34), colNames = TRUE, startRow = 11)
   
   errormessages <- c()
   
-  if(!is.na(df$Baseline.habitat[1])) {
-    colnames(df)[colnames(df) == "X4"] <- "Length (km)"
-    colnames(df)[colnames(df) == "X8"] <- "Hedge Units Delivered"
-    colnames(df) <- gsub("\\.", " ", colnames(df))
+  if(!is.na(df$Condition[1])) {
     
-    df[df == ""] <- NA #change any empty values with NA 
-    numberrows <- sum(!is.na(df[[2]])) #number of non NA vals
-    df <- df[1:numberrows, ] #chop dataframe beyond numberrows
-    df <- df[rowSums(is.na(df)) < ncol(df), ] #remove any straggling rows which are fully NA values
+    #sometimes, there are entire rows of NAs. for the baseline sheet, you can remove all rows where col 2 = NA, as thats manually entered by user
+    df <- df[!is.na(df[, 4]), ]
+    
+    #set colnames 
+    colnames(df) <- c("Baseline Habitat", "Length (Km)", "Proposed Habitat Type", "Condition", 
+                      "Strategic Significance", "Units Created")
+    
+    #make numeric and round
+    df[, c(2, 6)] <- lapply(df[, c(2, 6)], function(x) round(as.numeric(x), 3))
     
     
     #first thing that needs to be checked, is if there are any NAs in any column 
@@ -270,6 +297,10 @@ check_B3 <- function(metric) {
     
     
   }
+  
+  # #set colnames 
+  # colnames(df) <- c("Baseline Habitat", "Length (Km)", "Condition", 
+  #                   "Strategic Significance", "Units Created")
   
   metriccheckresults<-list(sheetdata = df,
                            errormessages = errormessages)
