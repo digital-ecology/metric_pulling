@@ -10,22 +10,20 @@
 check_A1 <- function(metric) {
   
   #read the dataset
-  df <- openxlsx::read.xlsx(metric, "A-1 On-Site Habitat Baseline", cols = c(4:6, 8:9, 11, 17:25), colNames = TRUE, startRow = 10)
+  df <- openxlsx::read.xlsx(metric, "A-1 On-Site Habitat Baseline", cols = c(5:6, 8:9, 11, 17:25), colNames = TRUE, startRow = 10)
   
   errormessages <- c()
   if(!is.na(df$Broad.Habitat[1])) {
     
-    df$Area.retained[is.na(df$Area.retained)] <- 0
-    df$Area.enhanced[is.na(df$Area.enhanced)] <- 0
-    
     colnames(df) <- gsub("\\.", " ", colnames(df))
     
     #row nrow of the SECOND col with data in it, which is the last lines of the habitats, giving nrow for rest 
-    df[df == ""] <- NA #change any empty values with NA 
-    numberrows <- sum(!is.na(df[[2]])) #number of non NA vals
+    numberrows <- sum(!is.na(df[[1]])) #number of non NA vals
     df <- df[1:numberrows, ] #chop dataframe beyond numberrows
-    df <- df[rowSums(is.na(df)) < ncol(df), ] #remove any straggling rows which are fully NA values
     
+    #correct the ones which WILL have NAs, as autocorrected
+    df[[7]][is.na(df[[7]])] <- 0
+    df[[8]][is.na(df[[8]])] <- 0
     
     #first thing that needs to be checked, is if there are any NAs in any column 
     for (i in 1:ncol(df)) { #for each column in the dataframe
