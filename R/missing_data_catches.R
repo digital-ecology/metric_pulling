@@ -16,11 +16,7 @@ check_A1 <- function(metric) {
   if(!is.na(df$Broad.Habitat[1])) {
     
     colnames(df) <- gsub("\\.", " ", colnames(df))
-    
-    #row nrow of the SECOND col with data in it, which is the last lines of the habitats, giving nrow for rest 
-    # numberrows <- sum(!is.na(df[[1]])) #number of non NA vals
-    # df <- df[1:numberrows, ] #chop dataframe beyond numberrows
-    
+  
     #sometimes, there are entire rows of NAs. for the baseline sheet, you can remove all rows where col 1 = NA, if someone hasnt put broad hab in, wont exist
     df <- df[!is.na(df[, 1]), ]
     
@@ -33,7 +29,10 @@ check_A1 <- function(metric) {
                                  "Baseline Units Retained", "Baseline Units Enhanced",
                                  "Area Lost", "Baseline Units Lost")
     
-    #first thing that needs to be checked, is if there are any NAs in any column 
+    #make all numbers numeric and round
+    df[, c(3, 6:12)] <- lapply(df[, c(3, 6:12)], function(x) round(as.numeric(x), 3))
+    
+     #first thing that needs to be checked, is if there are any NAs in any column 
     for (i in 1:ncol(df)) { #for each column in the dataframe
       
       if (any(is.na(df[[i]]))) { #if ANY have NA, return a message - can assign this to a message object, to pass back to user
@@ -70,17 +69,15 @@ check_A2 <- function(metric) {
     
     colnames(df) <- gsub("\\.", " ", colnames(df))
     
-    #row nrow of the SECOND col with data in it, which is the last lines of the habitats, giving nrow for rest 
-    #numberrows <- sum(!is.na(df[[1]])) #number of non NA vals
-    
     #sometimes, there are entire rows of NAs. for the creation sheet, you can remove all rows where col 1 = NA, as thats autofileld
     df <- df[!is.na(df[, 1]), ]
     
-    #df <- df[1:numberrows, ] #chop dataframe beyond numberrows
-    
     colnames(df) <- c("Proposed Broad Habitat", "Proposed Habitat Type", "Area (Ha)", 
                       "Distinctiveness", "Condition", "Habitat Units Delivered")
-   
+    
+    #make numeric and round
+    df[, c(3, 6)] <- lapply(df[, c(3, 6)], function(x) round(as.numeric(x), 3))
+    
     #first thing that needs to be checked, is if there are any NAs in any column 
     for (i in 1:ncol(df)) { #for each column in the dataframe
       
@@ -118,16 +115,15 @@ check_A3 <- function(metric) {
     
     colnames(df) <- gsub("\\.", " ", colnames(df))
    
-    #row nrow of the SECOND col with data in it, which is the last lines of the habitats, giving nrow for rest 
-    # numberrows <- sum(!is.na(df[[3]])) #number of non NA vals
-    # df <- df[1:numberrows, ] #chop dataframe beyond numberrows
-    
     #sometimes, there are entire rows of NAs. for the enhancement sheet, you can remove all rows where col 3 = NA, as thats manually entered by user
     df <- df[!is.na(df[, 3]), ]
     
     #set colnames 
     colnames(df) <- c("Existing Habitat", "Proposed Broad Habitat", "Proposed Habitat Type",
                       "Area (Ha)", "Distinctiveness", "Condition", "Habitat Units Delivered")
+    
+    #make numeric and round
+    df[, c(3, 7)] <- lapply(df[, c(4, 7)], function(x) round(as.numeric(x), 3))
     
     #first thing that needs to be checked, is if there are any NAs in any column 
     for (i in 1:ncol(df)) { #for each column in the dataframe
