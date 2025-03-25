@@ -6,7 +6,7 @@
 #' gained, BNGUnits, and the net bng percentage increase, BNGPercentage, and Hectares, the size of the site.
 #' @export
 #'
-#' @examples \dontrun{netdata<-pullonsitenetdata(metric)}
+#' @examples netdata <- pullonsitenetdata(metric = system.file("extdata", "OnSiteBoth.xlsx", package = "metricpulling"))
 pullonsitenetdata<-function(metric){
   resultssheet<-"Headline Results"
     

@@ -16,8 +16,5 @@ text with list of where data is missing in metric
 metric_check
 }
 \examples{
-\dontrun{
-a <- metric_check("data-raw/OnSiteHedgeEnhance.xlsx") 
-b <- metric_check("data-raw/OnSiteHedgeEnhanceMissing.xlsx") # intentionally bad data
-c <- metric_check("data-raw/OnSiteHedgeEnhance2.xlsx") # metric used in testing qmd}
+metric_check(system.file("extdata", "OnSiteBoth.xlsx", package = "metricpulling"))
 }

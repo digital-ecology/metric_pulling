@@ -5,10 +5,7 @@
 #' @return text with list of where data is missing in metric
 #' @export
 #'
-#' @examples \dontrun{
-#'a <- metric_check("data-raw/OnSiteHedgeEnhance.xlsx") 
-#'b <- metric_check("data-raw/OnSiteHedgeEnhanceMissing.xlsx") # intentionally bad data
-#'c <- metric_check("data-raw/OnSiteHedgeEnhance2.xlsx") # metric used in testing qmd}
+#' @examples metric_check(system.file("extdata", "OnSiteBoth.xlsx", package = "metricpulling"))
 metric_check <- function(metric) {
   
   # HRem <- checkonsitenet_dataset(metric)

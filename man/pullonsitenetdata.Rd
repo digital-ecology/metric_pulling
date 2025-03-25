@@ -17,5 +17,5 @@ gained, BNGUnits, and the net bng percentage increase, BNGPercentage, and Hectar
 pull data regarding the net unit gains and net percentage gains, as well as if loss present
 }
 \examples{
-\dontrun{netdata<-pullonsitenetdata(metric)}
+netdata <- pullonsitenetdata(metric = system.file("extdata", "OnSiteBoth.xlsx", package = "metricpulling"))
 }
