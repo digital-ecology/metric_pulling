@@ -7,7 +7,7 @@
 metric_check(metric)
 }
 \arguments{
-\item{metric}{metric}
+\item{metric}{a file path to a metric}
 }
 \value{
 text with list of where data is missing in metric

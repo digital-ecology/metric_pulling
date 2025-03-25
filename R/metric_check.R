@@ -1,6 +1,6 @@
 #' metric_check
 #'
-#' @param metric metric
+#' @param metric a file path to a metric
 #'
 #' @return text with list of where data is missing in metric
 #' @export

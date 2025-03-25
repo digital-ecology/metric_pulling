@@ -1,12 +1,12 @@
 #' cleans onsitehab baseline metric data 
 #'
-#' @param metric feas metric
+#' @param metric a filepath to a metric
 #'
 #' @return error messages, a string of error messages to be shown so user knows where data is incorrect 
 #' 
 #' @export
 #'
-#' @examples \dontrun{checked_dataset<-check_A1(metric)}   
+#' @examples checked <- check_A1(metric = system.file("extdata", "OnSiteBoth.xlsx", package = "metricpulling"))
 check_A1 <- function(metric) {
   
   #read the dataset

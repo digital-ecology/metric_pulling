@@ -7,7 +7,7 @@
 check_A1(metric)
 }
 \arguments{
-\item{metric}{feas metric}
+\item{metric}{a filepath to a metric}
 }
 \value{
 error messages, a string of error messages to be shown so user knows where data is incorrect
@@ -16,5 +16,5 @@ error messages, a string of error messages to be shown so user knows where data 
 cleans onsitehab baseline metric data
 }
 \examples{
-\dontrun{checked_dataset<-check_A1(metric)}   
+checked <- check_A1(metric = system.file("extdata", "OnSiteBoth.xlsx", package = "metricpulling"))
 }
