@@ -10,7 +10,7 @@ test_that("pullonsitehabitatsumdata processes the metric file correctly", {
   result <- pullonsitehabitatsumdata(metric)
   
   # Check that the returned result is a list
-  expect_is(result, "list")
+  expect_type(result, "list")
   
   # Check that the list contains the expected elements
   expect_true("TradingSatisfied" %in% names(result))
@@ -45,7 +45,7 @@ test_that("pullonsitehedgesumdata processes the hedgerow metric file correctly",
   result <- pullonsitehedgesumdata(metric)
   
   # Check that the result is a list
-  expect_is(result, "list")
+  expect_type(result, "list")
   
   # Check that the list contains the expected elements
   expect_true("TradingSatisfied" %in% names(result))
@@ -77,7 +77,7 @@ test_that("pullonsitewatersumdata processes the water metric file correctly", {
   result <- pullonsitewatersumdata(metric)
   
   # Check that the result is a list
-  expect_is(result, "list")
+  expect_type(result, "list")
   
   # Check that the list contains the expected elements
   expect_true("TradingSatisfied" %in% names(result))

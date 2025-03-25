@@ -10,7 +10,7 @@ test_that("pullonsitenetdata processes the net data correctly", {
   result <- pullonsitenetdata(metric)
   
   # Check that the result is a list
-  expect_is(result, "list")
+  expect_type(result, "list")
   
   # Check that the list contains the expected elements
   expect_true("NetHabitatUnits" %in% names(result))
