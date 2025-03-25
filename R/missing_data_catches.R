@@ -4,7 +4,6 @@
 #'
 #' @return error messages, a string of error messages to be shown so user knows where data is incorrect 
 #' 
-#' @export
 #'
 #' @examples checked <- check_A1(metric = system.file("extdata", "OnSiteBoth.xlsx", package = "metricpulling"))
 check_A1 <- function(metric) {
@@ -56,7 +55,6 @@ check_A1 <- function(metric) {
 #'
 #' @return df, a cleaned version of the input dataset - to be used as an argument in actual metric pulling function
 #' 
-#' @export
 #'
 #' @examples \dontrun{checked_dataset<-check_A2(metric)}     
 check_A2 <- function(metric) {
@@ -99,7 +97,6 @@ check_A2 <- function(metric) {
 #'
 #' @return df, a cleaned version of the input dataset - to be used as an argument in actual metric pulling function
 #' 
-#' @export
 #'
 #' @examples \dontrun{checked_dataset<-check_A3(metric)}   
 check_A3 <- function(metric) {
@@ -144,7 +141,6 @@ check_A3 <- function(metric) {
 #'
 #' @return df, a cleaned version of the input dataset - to be used as an argument in actual metric pulling function
 #' 
-#' @export
 #'
 #' @examples \dontrun{checked_dataset<-check_B1(metric)}     
 check_B1 <- function(metric) {
@@ -195,7 +191,6 @@ check_B1 <- function(metric) {
 #'
 #' @return df, a cleaned version of the input dataset - to be used as an argument in actual metric pulling function
 #' 
-#' @export
 #'
 #' @examples \dontrun{checked_dataset<-check_B2(metric)}    
 check_B2 <- function(metric) {
@@ -242,7 +237,6 @@ check_B2 <- function(metric) {
 #'
 #' @return df, a cleaned version of the input dataset - to be used as an argument in actual metric pulling function
 #' 
-#' @export
 #'
 #' @examples \dontrun{checked_dataset<-check_B3(metric)}   
 check_B3 <- function(metric) {
@@ -290,7 +284,6 @@ check_B3 <- function(metric) {
 #' @param metric feas metric
 #'
 #' @return df, a cleaned version of the input dataset - to be used as an argument in actual metric pulling function
-#' @export
 #'
 #' @examples \dontrun{checked_dataset<-check_C1(metric)}  
 check_C1 <- function(metric) {
@@ -338,7 +331,6 @@ check_C1 <- function(metric) {
 #' @param metric feas metric
 #'
 #' @return df, a cleaned version of the input dataset - to be used as an argument in actual metric pulling function
-#' @export
 #'
 #' @examples \dontrun{checked_dataset<-check_C2(metric)}    
 check_C2 <- function(metric) {
@@ -382,7 +374,6 @@ check_C2 <- function(metric) {
 #' @param metric feas metric
 #'
 #' @return df, a cleaned version of the input dataset - to be used as an argument in actual metric pulling function
-#' @export
 #'
 #' @examples \dontrun{checked_dataset<-check_C3(metric)}    
 check_C3 <- function(metric) {
@@ -427,7 +418,6 @@ check_C3 <- function(metric) {
 #'
 #' @return df, a cleaned version of the input dataset - to be used as an argument in actual metric pulling function
 #' 
-#' @export
 #'
 #' @examples \dontrun{checked_dataset<-checkhabsum_dataset(metric)}   
 checkhabsum_dataset <- function(metric) {
@@ -474,7 +464,6 @@ checkhabsum_dataset <- function(metric) {
 #'
 #' @return df, a cleaned version of the input dataset - to be used as an argument in actual metric pulling function
 #' 
-#' @export
 #'
 #' @examples \dontrun{checked_dataset<-checkhedgesum_dataset(metric)}     
 checkhedgesum_dataset <- function(metric) {
@@ -523,7 +512,6 @@ checkhedgesum_dataset <- function(metric) {
 #'
 #' @return df, a cleaned version of the input dataset - to be used as an argument in actual metric pulling function
 #' 
-#' @export
 #'
 #' @examples \dontrun{checked_dataset<-checkwatersum_dataset(metric)}
 checkwatersum_dataset <- function(metric) {
@@ -571,7 +559,6 @@ checkwatersum_dataset <- function(metric) {
 #'
 #' @return df, a cleaned version of the input dataset - to be used as an argument in actual metric pulling function
 #' 
-#' @export
 #'
 #' @examples \dontrun{checked_dataset<-checkonsitenet_dataset(metric)}    
 checkonsitenet_dataset <- function(metric) {
