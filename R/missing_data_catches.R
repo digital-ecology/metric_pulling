@@ -42,11 +42,6 @@ check_A1 <- function(metric) {
     }
   }
   
-  # colnames(df) <-c("Broad Habitat", "Habitat Type", "Area (Ha)", "Distinctiveness", "Condition",
-  #                  "Total Habitat Units", "Area Retained (Ha)", "Area Enhanced  (Ha)",
-  #                  "Baseline Units Retained", "Baseline Units Enhanced",
-  #                  "Area Lost", "Baseline Units Lost")
-  
   metriccheckresults<-list(sheetdata = df,
                            errormessages = errormessages)
   
@@ -90,9 +85,6 @@ check_A2 <- function(metric) {
       }
     }
   }
-  
-  # colnames(df) <- c("Proposed Broad Habitat", "Proposed Habitat Type", "Area (Ha)", 
-  #                   "Distinctiveness", "Condition", "Habitat Units Delivered")
   
   metriccheckresults<-list(sheetdata = df,
                            errormessages = errormessages)
@@ -139,11 +131,7 @@ check_A3 <- function(metric) {
     }
     
   }
-  
-  # #set colnames 
-  # colnames(df) <- c("Existing Habitat", "Proposed Broad Habitat", "Proposed Habitat Type",
-  #                   "Area (Ha)", "Distinctiveness", "Condition", "Habitat Units Delivered")
-  
+
   metriccheckresults<-list(sheetdata = df,
                            errormessages = errormessages)
   
@@ -194,11 +182,6 @@ check_B1 <- function(metric) {
     
   }
   
-  # #set colnames 
-  # colnames(df) <- c("Hedge Number", "Habitat Type", "Length (Km)", "Condition", "Baseline Units",
-  #                   "Length Retained", "Length Enhanced", "Units Retained", "Units Enhanced",
-  #                   "Length Lost", "Units Lost")
-  
   metriccheckresults<-list(sheetdata = df,
                            errormessages = errormessages)
   
@@ -246,10 +229,7 @@ check_B2 <- function(metric) {
     
   }
   
-  # #set colnames 
-  # colnames(df) <- c("New Hedge Number", "Created Habitat Type", "Length (Km)", "Distinctiveness",
-  #                   "Condition", "Strategic Significance", "Units Created")
-  # 
+ 
   metriccheckresults<-list(sheetdata = df,
                            errormessages = errormessages)
   
@@ -297,11 +277,7 @@ check_B3 <- function(metric) {
     
     
   }
-  
-  # #set colnames 
-  # colnames(df) <- c("Baseline Habitat", "Length (Km)", "Condition", 
-  #                   "Strategic Significance", "Units Created")
-  
+
   metriccheckresults<-list(sheetdata = df,
                            errormessages = errormessages)
   
@@ -320,20 +296,22 @@ check_B3 <- function(metric) {
 check_C1 <- function(metric) {
   
   #read the dataset
-  df <- openxlsx::read.xlsx(metric, "C-1 On-Site WaterC' Baseline", cols = c(4,5,6,8,10,23,24,25,26), colNames = TRUE, startRow = 9)
+  df <- openxlsx::read.xlsx(metric, "C-1 On-Site WaterC' Baseline", cols = c(4,5,8,10,18,21,23,25,26), colNames = TRUE, startRow = 9)
   
   errormessages <- c()
   if(!is.na(df$Watercourse.type[1])) {
     
-  colnames(df) <- gsub("\\.", " ", colnames(df))
+    #sometimes, there are entire rows of NAs. for the baseline sheet, you can remove all rows where col 2 = NA, as thats manually entered by user
+    df <- df[!is.na(df[, 1]), ]
+    
+    #set colnames 
+    colnames(df) <- c("Watercourse Type", "Length (Km)", "Condition", 
+                      "Strategic Significance", "Existing Units", "Length Retained (Km)",
+                      "Units Retained", "Length Lost (Km)", "Units Lost")
+    
+    #make numeric and round
+    df[, c(2, 5:9)] <- lapply(df[, c(2, 5:9)], function(x) round(as.numeric(x), 3))
 
-  #row nrow of the SECOND col with data in it, which is the last lines of the habitats, giving nrow for rest 
-  df[df == ""] <- NA #change any empty values with NA 
-  numberrows <- sum(!is.na(df[[1]])) #number of non NA vals
-  df <- df[1:numberrows, ] #chop dataframe beyond numberrows
-  df <- df[rowSums(is.na(df)) < ncol(df), ] #remove any straggling rows which are fully NA values
-  
-  
   #first thing that needs to be checked, is if there are any NAs in any column 
   for (i in 1:ncol(df)) { #for each column in the dataframe
     
@@ -362,21 +340,21 @@ check_C1 <- function(metric) {
 check_C2 <- function(metric) {
   
   #read the dataset
-  df <- openxlsx::read.xlsx(metric, "C-2 On-Site WaterC' Creation", cols = c(3,4,5,7,9,26,29), colNames = TRUE, startRow = 11)
+  df <- openxlsx::read.xlsx(metric, "C-2 On-Site WaterC' Creation", cols = c(3,4,7,9,26), colNames = TRUE, startRow = 11)
   
   errormessages <- c()
   if(!is.na(df$Watercourse.type[1])) {
     
-  colnames(df) <- gsub("\\.", " ", colnames(df))
-  
-  colnames(df)[colnames(df) == "X6"] <- "Watercourse units delivered"
-  #row nrow of the SECOND col with data in it, which is the last lines of the habitats, giving nrow for rest 
-  df[df == ""] <- NA #change any empty values with NA 
-  numberrows <- sum(!is.na(df[[2]])) #number of non NA vals
-  df <- df[1:numberrows, ] #chop dataframe beyond numberrows
-  df <- df[rowSums(is.na(df)) < ncol(df), ] #remove any straggling rows which are fully NA values
-  
-  
+    #sometimes, there are entire rows of NAs. for the baseline sheet, you can remove all rows where col 2 = NA, as thats manually entered by user
+    df <- df[!is.na(df[, 1]), ]
+    
+    #set colnames 
+    colnames(df) <- c("Watercourse Type Created", "Length (Km)", "Target Condition", 
+                      "Strategic Significance", "Units Created")
+    
+    #make numeric and round
+    df[, c(2, 5)] <- lapply(df[, c(2, 5)], function(x) round(as.numeric(x), 3))
+
   #first thing that needs to be checked, is if there are any NAs in any column 
   for (i in 1:ncol(df)) { #for each column in the dataframe
     
@@ -406,23 +384,22 @@ check_C2 <- function(metric) {
 check_C3 <- function(metric) {
   
   #read the dataset
-  df <- openxlsx::read.xlsx(metric, "C-3 On-Site WaterC' Enhancement", cols = c(3,7,14,17,18,20,22,39), colNames = TRUE, startRow = 11)
+  df <- openxlsx::read.xlsx(metric, "C-3 On-Site WaterC' Enhancement", cols = c(3,7,14,17,20,22,39), colNames = TRUE, startRow = 11)
   
   errormessages <- c()
   
-  if(!is.na(df$Baseline.habitat[1])) {
+    if(!is.na(df$Condition[1])) {
     
-  colnames(df)[colnames(df) == "X3"] <- "Proposed Habitats"
-  colnames(df)[colnames(df) == "X7"] <- "Strategic Significance"
-  colnames(df) <- gsub("\\.", " ", colnames(df))
-  
-  #row nrow of the SECOND col with data in it, which is the last lines of the habitats, giving nrow for rest 
-  df[df == ""] <- NA #change any empty values with NA 
-  numberrows <- sum(!is.na(df[[2]])) #number of non NA vals
-  df <- df[1:numberrows, ] #chop dataframe beyond numberrows
-  df <- df[rowSums(is.na(df)) < ncol(df), ] #remove any straggling rows which are fully NA values
-  
-  
+    #sometimes, there are entire rows of NAs. for the baseline sheet, you can remove all rows where col 2 = NA, as thats manually entered by user
+    df <- df[!is.na(df[, 1]), ]
+    
+    #set colnames 
+    colnames(df) <- c("Existing Watercourse Type", "Existing Condition", "Proposed Watercourse Type", "Length (Km)", 
+                      "Target Condition", "Strategic Significance", "Units Enhanced")
+    
+    #make numeric and round
+    df[, c(4, 7)] <- lapply(df[, c(4, 7)], function(x) round(as.numeric(x), 3))
+   
   #first thing that needs to be checked, is if there are any NAs in any column 
   for (i in 1:ncol(df)) { #for each column in the dataframe
     
