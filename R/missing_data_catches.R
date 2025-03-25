@@ -304,6 +304,10 @@ check_C1 <- function(metric) {
     #sometimes, there are entire rows of NAs. for the baseline sheet, you can remove all rows where col 2 = NA, as thats manually entered by user
     df <- df[!is.na(df[, 1]), ]
     
+    #correct the ones which WILL have NAs, as autocorrected
+    df[[6]][is.na(df[[6]])] <- 0
+    df[[8]][is.na(df[[8]])] <- 0
+    
     #set colnames 
     colnames(df) <- c("Watercourse Type", "Length (Km)", "Condition", 
                       "Strategic Significance", "Existing Units", "Length Retained (Km)",
@@ -391,7 +395,7 @@ check_C3 <- function(metric) {
     if(!is.na(df$Condition[1])) {
     
     #sometimes, there are entire rows of NAs. for the baseline sheet, you can remove all rows where col 2 = NA, as thats manually entered by user
-    df <- df[!is.na(df[, 1]), ]
+    df <- df[!is.na(df[, 5]), ]
     
     #set colnames 
     colnames(df) <- c("Existing Watercourse Type", "Existing Condition", "Proposed Watercourse Type", "Length (Km)", 
