@@ -49,7 +49,7 @@ metric_check <- function(metric) {
   #if all messages are null, theres no problems
   if(all(sapply(errormessages, is.null))) {
     
-    message <- paste(message, "- All sheets filled out correctly. No issues detected.\n", sep = "")
+    message <- paste(message, "- All sheets filled out correctly. No issues detected.", sep = "")
     
   } 
   
@@ -66,7 +66,7 @@ metric_check <- function(metric) {
       
       errors <- errormessages[[i]]
     
-      message <- paste(message, "- WARNING: Issues detected on", problematicmetric, "sheet:", errors)
+      message <- paste(message, "- WARNING: Issues detected on ", problematicmetric, " sheet:", errors, sep = "")
       
     }
  }
