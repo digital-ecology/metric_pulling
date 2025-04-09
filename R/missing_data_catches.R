@@ -10,6 +10,8 @@ check_A1 <- function(metric) {
   #read the dataset
   df <- openxlsx::read.xlsx(metric, "A-1 On-Site Habitat Baseline", cols = c(5:6, 8:9, 11, 17:25), colNames = TRUE, startRow = 10)
   
+  df2 <- openxlsx::read.xlsx(metric, "A-1 On-Site Habitat Baseline", cols = 24, colNames = TRUE, startRow = 10)
+  
   #remove 'xml:space="preserve">' from column names
   colnames(df) <- gsub('xml:space="preserve">', '', colnames(df))
   
@@ -37,10 +39,18 @@ check_A1 <- function(metric) {
     for (i in 1:ncol(df)) { #for each column in the dataframe
       
       if (any(is.na(df[[i]]))) { #if ANY have NA, return a message - can assign this to a message object, to pass back to user
-        errormessages<- paste(errormessages, "Column '", names(df)[i], "' contains NA values.\n", sep = "")
-        
+        errormessages<- paste(errormessages, "Column '", names(df)[i], "' contains NA values. Please fill in. \n", sep = "")
+        }
+      
+      if (any(df[[i]] == "", na.rm = TRUE)) { #if the sheet doesnt read data in, can be replaced with ""
+        errormessages <- paste(errormessages, "Column '", names(df)[i], "' contains empty strings. This can be a result of importing a metric with errors in the macros, please check and retry. \n", sep = "")
       }
-    }
+      
+      }
+      
+    if (all(df[[6]] == 0, na.rm = TRUE)) {
+        errormessages <- paste(errormessages, "Column '", names(df)[6], "' indicates a total of 0 existing habitat units. There may be a 'Check Data' or 'Error in Areas' warning. Please check and fill in if necessary. \n", sep = "")
+      }
   }
   
   metriccheckresults<-list(sheetdata = df,
@@ -84,7 +94,10 @@ check_A2 <- function(metric) {
       
       if (any(is.na(df[[i]]))) { #if ANY have NA, return a message - can assign this to a message object, to pass back to user
         errormessages<- paste(errormessages, "Column '", names(df)[i], "' contains NA values.\n", sep = "")
-        
+      }
+      
+      if (any(df[[i]] == "", na.rm = TRUE)) {
+        errormessages <- paste(errormessages, "Column '", names(df)[i], "' contains empty strings. This can be a result of importing a metric with errors in the macros, please check and retry.\n", sep = "")
       }
     }
   }
@@ -121,7 +134,7 @@ check_A3 <- function(metric) {
     
     #set colnames 
     colnames(df) <- c("Existing Habitat", "Proposed Broad Habitat", "Proposed Habitat Type",
-                      "Area (Ha)", "Distinctiveness", "Condition", "Habitat Units Delivered")
+                      "Area (Ha)", "Distinctiveness", "Condition", "Habitat Units Delivered") #missing area if not filled in 
     
     #make numeric and round
     df[, c(4, 7)] <- lapply(df[, c(4, 7)], function(x) round(as.numeric(x), 3))
@@ -131,8 +144,12 @@ check_A3 <- function(metric) {
       
       if (any(is.na(df[[i]]))) { #if ANY have NA, return a message - can assign this to a message object, to pass back to user
         errormessages<- paste(errormessages, "Column '", names(df)[i], "' contains NA values.\n", sep = "")
-        
+        }
+      
+      if (any(df[[i]] == "", na.rm = TRUE)) {
+        errormessages <- paste(errormessages, "Column '", names(df)[i], "' contains empty strings. This can be a result of importing a metric with errors in the macros, please check and retry.\n", sep = "")
       }
+      
     }
     
   }
@@ -183,7 +200,10 @@ check_B1 <- function(metric) {
       
       if (any(is.na(df[[i]]))) { #if ANY have NA, return a message - can assign this to a message object, to pass back to user
         errormessages<- paste(errormessages, "Column '", names(df)[i], "' contains NA values.\n", sep = "")
-        
+        }
+      
+      if (any(df[[i]] == "", na.rm = TRUE)) {
+        errormessages <- paste(errormessages, "Column '", names(df)[i], "' contains empty strings. This can be a result of importing a metric with errors in the macros, please check and retry.\n", sep = "")
       }
     }
     
@@ -232,7 +252,10 @@ check_B2 <- function(metric) {
       
       if (any(is.na(df[[i]]))) { #if ANY have NA, return a message - can assign this to a message object, to pass back to user
         errormessages<- paste(errormessages, "Column '", names(df)[i], "' contains NA values.\n", sep = "")
-        
+        }
+      
+      if (any(df[[i]] == "", na.rm = TRUE)) {
+        errormessages <- paste(errormessages, "Column '", names(df)[i], "' contains empty strings. This can be a result of importing a metric with errors in the macros, please check and retry.\n", sep = "")
       }
     }
     
@@ -281,7 +304,10 @@ check_B3 <- function(metric) {
       
       if (any(is.na(df[[i]]))) { #if ANY have NA, return a message - can assign this to a message object, to pass back to user
         errormessages<- paste(errormessages, "Column '", names(df)[i], "' contains NA values.\n", sep = "")
-        
+        }
+      
+      if (any(df[[i]] == "", na.rm = TRUE)) {
+        errormessages <- paste(errormessages, "Column '", names(df)[i], "' contains empty strings. This can be a result of importing a metric with errors in the macros, please check and retry.\n", sep = "")
       }
     }
     
@@ -334,7 +360,10 @@ check_C1 <- function(metric) {
     
     if (any(is.na(df[[i]]))) { #if ANY have NA, return a message - can assign this to a message object, to pass back to user
       errormessages<- paste(errormessages, "Column '", names(df)[i], "' contains NA values.\n", sep = "")
-      
+      }
+    
+    if (any(df[[i]] == "", na.rm = TRUE)) {
+      errormessages <- paste(errormessages, "Column '", names(df)[i], "' contains empty strings. This can be a result of importing a metric with errors in the macros, please check and retry.\n", sep = "")
     }
   }
   
@@ -379,7 +408,10 @@ check_C2 <- function(metric) {
     
     if (any(is.na(df[[i]]))) { #if ANY have NA, return a message - can assign this to a message object, to pass back to user
       errormessages<- paste(errormessages, "Column '", names(df)[i], "' contains NA values.\n", sep = "")
-      
+      }
+    
+    if (any(df[[i]] == "", na.rm = TRUE)) {
+      errormessages <- paste(errormessages, "Column '", names(df)[i], "' contains empty strings. This can be a result of importing a metric with errors in the macros, please check and retry.\n", sep = "")
     }
   }
   
@@ -426,7 +458,10 @@ check_C3 <- function(metric) {
     
     if (any(is.na(df[[i]]))) { #if ANY have NA, return a message - can assign this to a message object, to pass back to user
       errormessages<- paste(errormessages, "Column '", names(df)[i], "' contains NA values.\n", sep = "")
-      
+      }
+    
+    if (any(df[[i]] == "", na.rm = TRUE)) {
+      errormessages <- paste(errormessages, "Column '", names(df)[i], "' contains empty strings. This can be a result of importing a metric with errors in the macros, please check and retry.\n", sep = "")
     }
   }
   
