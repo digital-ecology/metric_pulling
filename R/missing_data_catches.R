@@ -10,8 +10,6 @@ check_A1 <- function(metric) {
   #read the dataset
   df <- openxlsx::read.xlsx(metric, "A-1 On-Site Habitat Baseline", cols = c(5:6, 8:9, 11, 17:25), colNames = TRUE, startRow = 10)
   
-  df2 <- openxlsx::read.xlsx(metric, "A-1 On-Site Habitat Baseline", cols = 24, colNames = TRUE, startRow = 10)
-  
   #remove 'xml:space="preserve">' from column names
   colnames(df) <- gsub('xml:space="preserve">', '', colnames(df))
   
