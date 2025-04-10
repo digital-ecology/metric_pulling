@@ -630,8 +630,8 @@ checkonsitenet_dataset <- function(metric) {
   
   errormessages <- c()
   
-  if (df$X1[44] == "Input errors/rule breaks present in metric ▲"){
-    errormessages <- paste(errormessages, "\n - Input errors/rule breaks present in metric. Please check and fill in if necessary.", sep = "")
+  if ("Error ▲" %in% df$X5){
+    errormessages <- paste(errormessages, "\n - Input errors identified. Please ammend.", sep = "")
     }
   
   # # Define column and row ranges for each dataset
