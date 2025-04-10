@@ -626,45 +626,56 @@ checkwatersum_dataset <- function(metric) {
 #' @examples \dontrun{checked_dataset<-checkonsitenet_dataset(metric)}    
 checkonsitenet_dataset <- function(metric) {
   
-  # Define column and row ranges for each dataset
-  datasets_info <- list(
-    BaseHabUnits      = list(cols = 8, rows = 8),
-    BaseHedgeUnits    = list(cols = 8, rows = 9),
-    BaseWaterUnits    = list(cols = 8, rows = 10),
-    PIHabUnits    = list(cols = 8, rows = 12),
-    PIHedgeUnits  = list(cols = 8, rows = 13),
-    PIWaterUnits  = list(cols = 8, rows = 14),
-    NetHabUnits   = list(cols = 8, rows = 16),
-    NetHedgeUnits       = list(cols = 8, rows = 17),
-    NetWaterUnits     = list(cols = 8, rows = 18),
-    NetHabPercent     = list(cols = 10, rows = 16),
-    NetHedgePercent= list(cols = 10, rows = 17),
-    NetWaterPercent= list(cols = 10, rows = 18),
-    TradeSatisfied= list(cols = 6, rows = 55),
-    HabDeficit= list(cols = 8, rows = 61),
-    HedgeDeficit= list(cols = 8, rows = 62),
-    WaterDeficit= list(cols = 8, rows = 63)
-  )
+  df <- openxlsx::read.xlsx(metric, sheet = "Headline Results", colNames = FALSE, skipEmptyRows = TRUE)
   
   errormessages <- c()
   
-  # Read all datasets and check for missing values
-  for (dataset_name in names(datasets_info)) {
-    info <- datasets_info[[dataset_name]]
-    df <- openxlsx::read.xlsx(metric, sheet = "Headline Results", 
-                              cols = info$cols, rows = info$rows, 
-                              colNames = FALSE, skipEmptyRows = TRUE)
-    
-    # Replace empty values with NA
-    df[df == ""] <- NA 
-    
-    # Check for missing values
-    for (i in 1:ncol(df)) {
-      if (any(is.na(df[[i]]) | df[[i]] == "Check Data ⚠" | df[[i]] == "Error ▲")) {
-        errormessages <- paste(errormessages, dataset_name, "Column", names(df)[i], "contains NA/Check Data ⚠/Error ▲ values.\n")
-      }
+  if (df$X1[44] == "Input errors/rule breaks present in metric ▲"){
+    errormessages <- paste(errormessages, "\n - Input errors/rule breaks present in metric. Please check and fill in if necessary.", sep = "")
     }
-  }
   
-  return(errormessages)
+  # # Define column and row ranges for each dataset
+  # datasets_info <- list(
+  #   BaselineHabitatUnits      = list(cols = 8, rows = 8),
+  #   BaselineHedgerowUnits    = list(cols = 8, rows = 9),
+  #   BaselineWaterUnits    = list(cols = 8, rows = 10),
+  #   PostInterventionHabitatUnits    = list(cols = 8, rows = 12),
+  #   PostInterventionHedgerowUnits  = list(cols = 8, rows = 13),
+  #   PostInterventionWaterUnits  = list(cols = 8, rows = 14),
+  #   NetHabitatUnits   = list(cols = 8, rows = 16),
+  #   NetHedgerowUnits       = list(cols = 8, rows = 17),
+  #   NetWaterUnits     = list(cols = 8, rows = 18),
+  #   NetHabitatPercent     = list(cols = 10, rows = 16),
+  #   NetHedgerowPercent= list(cols = 10, rows = 17),
+  #   NetWaterPercent= list(cols = 10, rows = 18),
+  #   TradeSatisfied= list(cols = 6, rows = 55),
+  #   HabitatDeficit= list(cols = 8, rows = 61),
+  #   HedgerowDeficit= list(cols = 8, rows = 62),
+  #   WaterDeficit= list(cols = 8, rows = 63)
+  # )
+  # 
+  # 
+  # 
+  # # Read all datasets and check for missing values
+  # for (dataset_name in names(datasets_info)) {
+  #   info <- datasets_info[[dataset_name]]
+  #   df <- openxlsx::read.xlsx(metric, sheet = "Headline Results", 
+  #                             cols = info$cols, rows = info$rows, 
+  #                             colNames = FALSE, skipEmptyRows = TRUE)
+  #   
+  #   # Replace empty values with NA
+  #   #df[df == ""] <- NA 
+  #   
+  #   # Check for missing values
+  #   for (i in 1:ncol(df)) {
+  #     if (any(is.na(df[[i]]) | df[[i]] == "Check Data ⚠" | df[[i]] == "Error ▲")) {
+  #       errormessages <- paste(errormessages, dataset_name, "Column", names(df)[i], "contains NA/Check Data ⚠/Error ▲ values.\n")
+  #     }
+  #   }
+  # }
+  
+  metriccheckresults<-list(sheetdata = df,
+                           errormessages = errormessages)
+  
+  return(metriccheckresults)
 }

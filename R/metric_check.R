@@ -8,7 +8,7 @@
 #' @examples metric_check(system.file("extdata", "OnSiteBoth.xlsx", package = "metricpulling"))
 metric_check <- function(metric) {
   
-  # HRem <- checkonsitenet_dataset(metric)
+  HRem <- checkonsitenet_dataset(metric)
   # TAem <- checkhabsum_dataset(metric)
   # THem <- checkhedgesum_dataset(metric)
   # TWem <- checkwatersum_dataset(metric)
@@ -23,7 +23,7 @@ metric_check <- function(metric) {
   C3em <- check_C3(metric)
   
   errormessages <- list(
-    # "Headline Results" = HRem,
+    "Headline Results" = HRem[[2]],
     # "Trading Summary Area Habitats" = TAem,
     # "Trading Summary Hedgerows" = THem,
     # "Trading Summary WaterC's" = TWem,
@@ -72,7 +72,7 @@ metric_check <- function(metric) {
  }
   
   metricdata <- list(
-    # "Headline Results" = HRem,
+    `Headline Results` = as.data.frame(HRem[[1]]),
     # "Trading Summary Area Habitats" = TAem,
     # "Trading Summary Hedgerows" = THem,
     # "Trading Summary WaterC's" = TWem,
