@@ -3,13 +3,15 @@
 #' @param metric a filepath to a metric
 #'
 #' @return error messages, a string of error messages to be shown so user knows where data is incorrect 
-#' 
 #'
 #' @examples checked <- check_A1(metric = system.file("extdata", "OnSiteBoth.xlsx", package = "metricpulling"))
 check_A1 <- function(metric) {
   
   #read the dataset
   df <- openxlsx::read.xlsx(metric, "A-1 On-Site Habitat Baseline", cols = c(5:6, 8:9, 11, 17:25), colNames = TRUE, startRow = 10)
+  
+  #remove 'xml:space="preserve">' from column names
+  colnames(df) <- gsub('xml:space="preserve">', '', colnames(df))
   
   errormessages <- c()
   if(!is.na(df$Broad.Habitat[1])) {
@@ -28,17 +30,25 @@ check_A1 <- function(metric) {
                                  "Baseline Units Retained", "Baseline Units Enhanced",
                                  "Area Lost", "Baseline Units Lost")
     
-    #make all numbers numeric and round
+    #make all numbers numeric and round - HERE
     df[, c(3, 6:12)] <- lapply(df[, c(3, 6:12)], function(x) round(as.numeric(x), 3))
     
      #first thing that needs to be checked, is if there are any NAs in any column 
     for (i in 1:ncol(df)) { #for each column in the dataframe
       
       if (any(is.na(df[[i]]))) { #if ANY have NA, return a message - can assign this to a message object, to pass back to user
-        errormessages<- paste(errormessages, "Column '", names(df)[i], "' contains NA values.\n", sep = "")
-        
+        errormessages<- paste(errormessages, "\n - Column '", names(df)[i], "' contains NA values. Please check and fill in if necessary.", sep = "")
+        }
+      
+      if (any(df[[i]] == "", na.rm = TRUE)) { #if the sheet doesnt read data in, can be replaced with ""
+        errormessages <- paste(errormessages, "\n - Column '", names(df)[i], "' contains empty strings. This can be a result of importing a metric with errors in the macros, please check and retry.", sep = "")
       }
-    }
+      
+      }
+      
+    # if (all(df[[6]] == 0, na.rm = TRUE)) {
+    #     errormessages <- paste(errormessages, " \n - Column '", names(df)[6], "' indicates a total of 0 existing habitat units. There may be a 'Check Data' or 'Error in Areas' warning. Please check and fill in if necessary.", sep = "")
+    #   }
   }
   
   metriccheckresults<-list(sheetdata = df,
@@ -62,6 +72,9 @@ check_A2 <- function(metric) {
   #read the dataset
   df <- openxlsx::read.xlsx(metric, "A-2 On-Site Habitat Creation", cols = c(4:5,7:8,10, 25), colNames = TRUE, startRow = 10, skipEmptyRows = TRUE)
   
+  #remove 'xml:space="preserve">' from column names
+  colnames(df) <- gsub('xml:space="preserve">', '', colnames(df))
+  
   errormessages <- c()
   if(!is.na(df$Condition[1])) {
    
@@ -78,8 +91,11 @@ check_A2 <- function(metric) {
     for (i in 1:ncol(df)) { #for each column in the dataframe
       
       if (any(is.na(df[[i]]))) { #if ANY have NA, return a message - can assign this to a message object, to pass back to user
-        errormessages<- paste(errormessages, "Column '", names(df)[i], "' contains NA values.\n", sep = "")
-        
+        errormessages<- paste(errormessages, " \n - Column '", names(df)[i], "' contains NA values. Please check and fill in if necessary.", sep = "")
+      }
+      
+      if (any(df[[i]] == "", na.rm = TRUE)) {
+        errormessages <- paste(errormessages, " \n - Column '", names(df)[i], "' contains empty strings. This can be a result of importing a metric with errors in the macros, please check and retry.", sep = "")
       }
     }
   }
@@ -103,7 +119,14 @@ check_A3 <- function(metric) {
   
   df <- openxlsx::read.xlsx(metric, sheet = "A-3 On-Site Habitat Enhancement", 
                             cols = c(6,17:18,22:23,25,40), 
-                            colNames = TRUE, startRow = 11)
+                            colNames = TRUE, startRow = 10)
+  
+  #starting one row up, so make colnames row 1, then remove row 1
+  df <- df[-1, ]
+  
+  #remove 'xml:space="preserve">' from column names
+  colnames(df) <- gsub('xml:space="preserve">', '', colnames(df))
+  colnames(df)[3] <- "Proposed.habitat"
   
   errormessages <- c()
   if(!is.na(df$Proposed.habitat[1])) {
@@ -113,7 +136,7 @@ check_A3 <- function(metric) {
     
     #set colnames 
     colnames(df) <- c("Existing Habitat", "Proposed Broad Habitat", "Proposed Habitat Type",
-                      "Area (Ha)", "Distinctiveness", "Condition", "Habitat Units Delivered")
+                      "Area (Ha)", "Distinctiveness", "Condition", "Habitat Units Delivered") #missing area if not filled in 
     
     #make numeric and round
     df[, c(4, 7)] <- lapply(df[, c(4, 7)], function(x) round(as.numeric(x), 3))
@@ -122,9 +145,13 @@ check_A3 <- function(metric) {
     for (i in 1:ncol(df)) { #for each column in the dataframe
       
       if (any(is.na(df[[i]]))) { #if ANY have NA, return a message - can assign this to a message object, to pass back to user
-        errormessages<- paste(errormessages, "Column '", names(df)[i], "' contains NA values.\n", sep = "")
-        
+        errormessages<- paste(errormessages, " \n - Column '", names(df)[i], "' contains NA values. Please check and fill in if necessary.", sep = "")
+        }
+      
+      if (any(df[[i]] == "", na.rm = TRUE)) {
+        errormessages <- paste(errormessages, " \n - Column '", names(df)[i], "' contains empty strings. This can be a result of importing a metric with errors in the macros, please check and retry.", sep = "")
       }
+      
     }
     
   }
@@ -147,6 +174,9 @@ check_B1 <- function(metric) {
  
   #read the dataset
   df <- openxlsx::read.xlsx(metric, "B-1 On-Site Hedge Baseline", cols = c(3:5,8,14,16:21), colNames = TRUE, startRow = 9)
+  
+  #remove 'xml:space="preserve">' from column names
+  colnames(df) <- gsub('xml:space="preserve">', '', colnames(df))
   
   errormessages <- c()
   if(!is.na(df$Habitat.type[1])) {
@@ -171,8 +201,11 @@ check_B1 <- function(metric) {
     for (i in 1:ncol(df)) { #for each column in the dataframe
       
       if (any(is.na(df[[i]]))) { #if ANY have NA, return a message - can assign this to a message object, to pass back to user
-        errormessages<- paste(errormessages, "Column '", names(df)[i], "' contains NA values.\n", sep = "")
-        
+        errormessages<- paste(errormessages, " \n - Column '", names(df)[i], "' contains NA values. Please check and fill in if necessary.", sep = "")
+        }
+      
+      if (any(df[[i]] == "", na.rm = TRUE)) {
+        errormessages <- paste(errormessages, " \n - Column '", names(df)[i], "' contains empty strings. This can be a result of importing a metric with errors in the macros, please check and retry.", sep = "")
       }
     }
     
@@ -198,6 +231,9 @@ check_B2 <- function(metric) {
   #read the dataset
   df <- openxlsx::read.xlsx(metric, "B-2 On-Site Hedge Creation", cols = c(3,4,5,6,8,10,23), colNames = TRUE, startRow = 11)
   
+  #remove 'xml:space="preserve">' from column names
+  colnames(df) <- gsub('xml:space="preserve">', '', colnames(df))
+  
   errormessages <- c()
   
   if(!is.na(df$Habitat.type[1])) {
@@ -217,8 +253,11 @@ check_B2 <- function(metric) {
     for (i in 1:ncol(df)) { #for each column in the dataframe
       
       if (any(is.na(df[[i]]))) { #if ANY have NA, return a message - can assign this to a message object, to pass back to user
-        errormessages<- paste(errormessages, "Column '", names(df)[i], "' contains NA values.\n", sep = "")
-        
+        errormessages<- paste(errormessages, " \n - Column '", names(df)[i],"' contains NA values. Please check and fill in if necessary.", sep = "")
+        }
+      
+      if (any(df[[i]] == "", na.rm = TRUE)) {
+        errormessages <- paste(errormessages, " \n - Column '", names(df)[i], "' contains empty strings. This can be a result of importing a metric with errors in the macros, please check and retry.", sep = "")
       }
     }
     
@@ -244,6 +283,9 @@ check_B3 <- function(metric) {
   #read the dataset
   df <- openxlsx::read.xlsx(metric, "B-3 On-Site Hedge Enhancement", cols = c(3, 4, 13, 19, 21, 34), colNames = TRUE, startRow = 11)
   
+  #remove 'xml:space="preserve">' from column names
+  colnames(df) <- gsub('xml:space="preserve">', '', colnames(df))
+  
   errormessages <- c()
   
   if(!is.na(df$Condition[1])) {
@@ -253,7 +295,7 @@ check_B3 <- function(metric) {
     
     #set colnames 
     colnames(df) <- c("Baseline Habitat", "Length (Km)", "Proposed Habitat Type", "Condition", 
-                      "Strategic Significance", "Units Created")
+                      "Strategic Significance", "Units Enhanced")
     
     #make numeric and round
     df[, c(2, 6)] <- lapply(df[, c(2, 6)], function(x) round(as.numeric(x), 3))
@@ -263,8 +305,11 @@ check_B3 <- function(metric) {
     for (i in 1:ncol(df)) { #for each column in the dataframe
       
       if (any(is.na(df[[i]]))) { #if ANY have NA, return a message - can assign this to a message object, to pass back to user
-        errormessages<- paste(errormessages, "Column '", names(df)[i], "' contains NA values.\n", sep = "")
-        
+        errormessages<- paste(errormessages, " \n - Column '", names(df)[i], "' contains NA values. Please check and fill in if necessary.", sep = "")
+        }
+      
+      if (any(df[[i]] == "", na.rm = TRUE)) {
+        errormessages <- paste(errormessages, " \n - Column '", names(df)[i], "' contains empty strings. This can be a result of importing a metric with errors in the macros, please check and retry.", sep = "")
       }
     }
     
@@ -291,6 +336,9 @@ check_C1 <- function(metric) {
   #read the dataset
   df <- openxlsx::read.xlsx(metric, "C-1 On-Site WaterC' Baseline", cols = c(4,5,8,10,18,21,23,25,26), colNames = TRUE, startRow = 9)
   
+  #remove 'xml:space="preserve">' from column names
+  colnames(df) <- gsub('xml:space="preserve">', '', colnames(df))
+  
   errormessages <- c()
   if(!is.na(df$Watercourse.type[1])) {
     
@@ -313,8 +361,11 @@ check_C1 <- function(metric) {
   for (i in 1:ncol(df)) { #for each column in the dataframe
     
     if (any(is.na(df[[i]]))) { #if ANY have NA, return a message - can assign this to a message object, to pass back to user
-      errormessages<- paste(errormessages, "Column '", names(df)[i], "' contains NA values.\n", sep = "")
-      
+      errormessages<- paste(errormessages, " \n - Column '", names(df)[i], "' contains NA values. Please check and fill in if necessary.", sep = "")
+      }
+    
+    if (any(df[[i]] == "", na.rm = TRUE)) {
+      errormessages <- paste(errormessages, " \n - Column '", names(df)[i], "' contains empty strings. This can be a result of importing a metric with errors in the macros, please check and retry.", sep = "")
     }
   }
   
@@ -338,6 +389,9 @@ check_C2 <- function(metric) {
   #read the dataset
   df <- openxlsx::read.xlsx(metric, "C-2 On-Site WaterC' Creation", cols = c(3,4,7,9,26), colNames = TRUE, startRow = 11)
   
+  #remove 'xml:space="preserve">' from column names
+  colnames(df) <- gsub('xml:space="preserve">', '', colnames(df))
+  
   errormessages <- c()
   if(!is.na(df$Watercourse.type[1])) {
     
@@ -355,8 +409,11 @@ check_C2 <- function(metric) {
   for (i in 1:ncol(df)) { #for each column in the dataframe
     
     if (any(is.na(df[[i]]))) { #if ANY have NA, return a message - can assign this to a message object, to pass back to user
-      errormessages<- paste(errormessages, "Column '", names(df)[i], "' contains NA values.\n", sep = "")
-      
+      errormessages<- paste(errormessages, " \n - Column '", names(df)[i], "' contains NA values. Please check and fill in if necessary.", sep = "")
+      }
+    
+    if (any(df[[i]] == "", na.rm = TRUE)) {
+      errormessages <- paste(errormessages, " \n - Column '", names(df)[i], "' contains empty strings. This can be a result of importing a metric with errors in the macros, please check and retry.", sep = "")
     }
   }
   
@@ -381,6 +438,9 @@ check_C3 <- function(metric) {
   #read the dataset
   df <- openxlsx::read.xlsx(metric, "C-3 On-Site WaterC' Enhancement", cols = c(3,7,14,17,20,22,39), colNames = TRUE, startRow = 11)
   
+  #remove 'xml:space="preserve">' from column names
+  colnames(df) <- gsub('xml:space="preserve">', '', colnames(df))
+  
   errormessages <- c()
   
     if(!is.na(df$Condition[1])) {
@@ -399,8 +459,11 @@ check_C3 <- function(metric) {
   for (i in 1:ncol(df)) { #for each column in the dataframe
     
     if (any(is.na(df[[i]]))) { #if ANY have NA, return a message - can assign this to a message object, to pass back to user
-      errormessages<- paste(errormessages, "Column '", names(df)[i], "' contains NA values.\n", sep = "")
-      
+      errormessages<- paste(errormessages, " \n - Column '", names(df)[i], "' contains NA values. Please check and fill in if necessary.", sep = "")
+      }
+    
+    if (any(df[[i]] == "", na.rm = TRUE)) {
+      errormessages <- paste(errormessages, " \n - Column '", names(df)[i], "' contains empty strings. This can be a result of importing a metric with errors in the macros, please check and retry.", sep = "")
     }
   }
   
@@ -450,7 +513,7 @@ checkhabsum_dataset <- function(metric) {
     # Check for missing values
     for (i in 1:ncol(df)) {
       if (any(is.na(df[[i]]))) {
-        errormessages <- paste(errormessages, dataset_name, "Column '", names(df)[i], "' contains NA values.\n", sep = "")
+        errormessages <- paste(errormessages, dataset_name, "Column '", names(df)[i], "' contains NA values.", sep = "")
       }
     }
   }
@@ -497,7 +560,7 @@ checkhedgesum_dataset <- function(metric) {
     # Check for missing values
     for (i in 1:ncol(df)) {
       if (any(is.na(df[[i]]))) {
-        errormessages <- paste(errormessages, dataset_name, "Column '", names(df)[i], "' contains NA values.\n", sep = "")
+        errormessages <- paste(errormessages, dataset_name, "Column '", names(df)[i], "' contains NA values.", sep = "")
       }
     }
   }
@@ -545,7 +608,7 @@ checkwatersum_dataset <- function(metric) {
     # Check for missing values
     for (i in 1:ncol(df)) {
       if (any(is.na(df[[i]]))) {
-        errormessages <- paste(errormessages, dataset_name, "Column '", names(df)[i], "' contains NA values.\n", sep = "")
+        errormessages <- paste(errormessages, dataset_name, "Column '", names(df)[i], "' contains NA values.", sep = "")
       }
     }
   }
@@ -563,45 +626,56 @@ checkwatersum_dataset <- function(metric) {
 #' @examples \dontrun{checked_dataset<-checkonsitenet_dataset(metric)}    
 checkonsitenet_dataset <- function(metric) {
   
-  # Define column and row ranges for each dataset
-  datasets_info <- list(
-    BaseHabUnits      = list(cols = 8, rows = 8),
-    BaseHedgeUnits    = list(cols = 8, rows = 9),
-    BaseWaterUnits    = list(cols = 8, rows = 10),
-    PIHabUnits    = list(cols = 8, rows = 12),
-    PIHedgeUnits  = list(cols = 8, rows = 13),
-    PIWaterUnits  = list(cols = 8, rows = 14),
-    NetHabUnits   = list(cols = 8, rows = 16),
-    NetHedgeUnits       = list(cols = 8, rows = 17),
-    NetWaterUnits     = list(cols = 8, rows = 18),
-    NetHabPercent     = list(cols = 10, rows = 16),
-    NetHedgePercent= list(cols = 10, rows = 17),
-    NetWaterPercent= list(cols = 10, rows = 18),
-    TradeSatisfied= list(cols = 6, rows = 55),
-    HabDeficit= list(cols = 8, rows = 61),
-    HedgeDeficit= list(cols = 8, rows = 62),
-    WaterDeficit= list(cols = 8, rows = 63)
-  )
+  df <- openxlsx::read.xlsx(metric, sheet = "Headline Results", colNames = FALSE, skipEmptyRows = TRUE)
   
   errormessages <- c()
   
-  # Read all datasets and check for missing values
-  for (dataset_name in names(datasets_info)) {
-    info <- datasets_info[[dataset_name]]
-    df <- openxlsx::read.xlsx(metric, sheet = "Headline Results", 
-                              cols = info$cols, rows = info$rows, 
-                              colNames = FALSE, skipEmptyRows = TRUE)
-    
-    # Replace empty values with NA
-    df[df == ""] <- NA 
-    
-    # Check for missing values
-    for (i in 1:ncol(df)) {
-      if (any(is.na(df[[i]]) | df[[i]] == "Check Data ⚠" | df[[i]] == "Error ▲")) {
-        errormessages <- paste(errormessages, dataset_name, "Column", names(df)[i], "contains NA/Check Data ⚠/Error ▲ values.\n")
-      }
+  if ("Error ▲" %in% df$X5){
+    errormessages <- paste(errormessages, "\n - Input errors identified. Please ammend.", sep = "")
     }
-  }
   
-  return(errormessages)
+  # # Define column and row ranges for each dataset
+  # datasets_info <- list(
+  #   BaselineHabitatUnits      = list(cols = 8, rows = 8),
+  #   BaselineHedgerowUnits    = list(cols = 8, rows = 9),
+  #   BaselineWaterUnits    = list(cols = 8, rows = 10),
+  #   PostInterventionHabitatUnits    = list(cols = 8, rows = 12),
+  #   PostInterventionHedgerowUnits  = list(cols = 8, rows = 13),
+  #   PostInterventionWaterUnits  = list(cols = 8, rows = 14),
+  #   NetHabitatUnits   = list(cols = 8, rows = 16),
+  #   NetHedgerowUnits       = list(cols = 8, rows = 17),
+  #   NetWaterUnits     = list(cols = 8, rows = 18),
+  #   NetHabitatPercent     = list(cols = 10, rows = 16),
+  #   NetHedgerowPercent= list(cols = 10, rows = 17),
+  #   NetWaterPercent= list(cols = 10, rows = 18),
+  #   TradeSatisfied= list(cols = 6, rows = 55),
+  #   HabitatDeficit= list(cols = 8, rows = 61),
+  #   HedgerowDeficit= list(cols = 8, rows = 62),
+  #   WaterDeficit= list(cols = 8, rows = 63)
+  # )
+  # 
+  # 
+  # 
+  # # Read all datasets and check for missing values
+  # for (dataset_name in names(datasets_info)) {
+  #   info <- datasets_info[[dataset_name]]
+  #   df <- openxlsx::read.xlsx(metric, sheet = "Headline Results", 
+  #                             cols = info$cols, rows = info$rows, 
+  #                             colNames = FALSE, skipEmptyRows = TRUE)
+  #   
+  #   # Replace empty values with NA
+  #   #df[df == ""] <- NA 
+  #   
+  #   # Check for missing values
+  #   for (i in 1:ncol(df)) {
+  #     if (any(is.na(df[[i]]) | df[[i]] == "Check Data ⚠" | df[[i]] == "Error ▲")) {
+  #       errormessages <- paste(errormessages, dataset_name, "Column", names(df)[i], "contains NA/Check Data ⚠/Error ▲ values.\n")
+  #     }
+  #   }
+  # }
+  
+  metriccheckresults<-list(sheetdata = df,
+                           errormessages = errormessages)
+  
+  return(metriccheckresults)
 }

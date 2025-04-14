@@ -8,7 +8,7 @@
 #' @examples metric_check(system.file("extdata", "OnSiteBoth.xlsx", package = "metricpulling"))
 metric_check <- function(metric) {
   
-  # HRem <- checkonsitenet_dataset(metric)
+  HRem <- checkonsitenet_dataset(metric)
   # TAem <- checkhabsum_dataset(metric)
   # THem <- checkhedgesum_dataset(metric)
   # TWem <- checkwatersum_dataset(metric)
@@ -23,7 +23,7 @@ metric_check <- function(metric) {
   C3em <- check_C3(metric)
   
   errormessages <- list(
-    # "Headline Results" = HRem,
+    "Headline Results" = HRem[[2]],
     # "Trading Summary Area Habitats" = TAem,
     # "Trading Summary Hedgerows" = THem,
     # "Trading Summary WaterC's" = TWem,
@@ -49,7 +49,7 @@ metric_check <- function(metric) {
   #if all messages are null, theres no problems
   if(all(sapply(errormessages, is.null))) {
     
-    message <- paste(message, "- All sheets filled out correctly. No issues detected.\n", sep = "")
+    message <- paste(message, "\n\n - All sheets filled out correctly. No issues detected.", sep = "")
     
   } 
   
@@ -66,13 +66,13 @@ metric_check <- function(metric) {
       
       errors <- errormessages[[i]]
     
-      message <- paste(message, "- WARNING: Issues detected on", problematicmetric, "sheet:", errors)
+      message <- paste(message, "\n\n - WARNING: Issues detected on ", problematicmetric, " sheet:", errors, sep = "")
       
     }
  }
   
   metricdata <- list(
-    # "Headline Results" = HRem,
+    `Headline Results` = as.data.frame(HRem[[1]]),
     # "Trading Summary Area Habitats" = TAem,
     # "Trading Summary Hedgerows" = THem,
     # "Trading Summary WaterC's" = TWem,
