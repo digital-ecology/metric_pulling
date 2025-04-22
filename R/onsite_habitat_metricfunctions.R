@@ -31,6 +31,12 @@ pullonsitehabitatbaseline<-function(metric){
     baselinedistinctiveness<-openxlsx::read.xlsx(metric, sheet = baselinesheet, cols = 9, colNames = FALSE, startRow = 11)
     baselinedistinctiveness<- baselinedistinctiveness[baselinedistinctiveness$X1!= "", , drop = FALSE]
     baselinedistinctiveness<- baselinedistinctiveness[-nrow(baselinedistinctiveness), , drop = FALSE]
+    
+    #possibly drop again if m2 to hectares is entered, as will say 'Hectares' and crash code
+    if (tail(baselinedistinctiveness$X1, 1) == "Hectares") {
+      baselinedistinctiveness <- baselinedistinctiveness[-nrow(baselinedistinctiveness), , drop = FALSE]
+    }
+    
     baselinedistinctiveness$X1 <- ifelse(baselinedistinctiveness$X1 == "V.low", "Very Low", baselinedistinctiveness$X1)
     baselinedistinctiveness$X1 <- ifelse(baselinedistinctiveness$X1 == "V.Low", "Very Low", baselinedistinctiveness$X1)
     baselinedistinctiveness$X1 <- ifelse(baselinedistinctiveness$X1 == "V.high", "Very High", baselinedistinctiveness$X1)
