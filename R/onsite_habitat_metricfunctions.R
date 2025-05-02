@@ -22,8 +22,8 @@ pullonsitehabitatbaseline<-function(metric){
     colnames(baselinehabitattype) <- "habitattype"
     
     #Baseline Area
-    baselinearea<-openxlsx::read.xlsx(metric, sheet = baselinesheet, cols = 8, colNames = FALSE, startRow = 11)
-    baselinearea <- baselinearea[1:(nrow(baselinearea) - 3), , drop = FALSE] #remove last cols with writing in
+    baselinearea<-openxlsx::read.xlsx(metric, sheet = baselinesheet, cols = 8, colNames = FALSE, startRow = 11, rows = c(11:258))
+    #baselinearea <- baselinearea[1:(nrow(baselinearea) - 3), , drop = FALSE] #remove last cols with writing in
     baselinearea$X1<-as.numeric(baselinearea$X1)
     colnames(baselinearea) <- "baselinearea"
     
