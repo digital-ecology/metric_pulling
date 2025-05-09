@@ -1,13 +1,12 @@
-library(testthat)
-
-# Mock input for metric (this would be a path to an actual file in practice)
-metric_mock <- "data-raw/OnSiteBoth.xlsx"
+#library(testthat)
 
 # Test for pullonsitewaterbaseline function
 test_that("pullonsitewaterbaseline returns waterbaselinedata", {
   
+  metric <- readRDS(test_path("fixtures", "onsiteboth.rds"))
+  
   # Call the function with the mock metric
-  result <- pullonsitewaterbaseline(metric_mock)
+  result <- pullonsitewaterbaseline(metric)
   
   # Check if the result is a list
   expect_true(is.list(result), info = "The result should be a list.")
@@ -28,8 +27,10 @@ test_that("pullonsitewaterbaseline returns waterbaselinedata", {
 # Test for pullonsitewaterretain function
 test_that("pullonsitewaterretain returns waterretaindata", {
   
+  metric <- readRDS(test_path("fixtures", "onsiteboth.rds"))
+  
   # Call the function with the mock metric
-  result <- pullonsitewaterretain(metric_mock)
+  result <- pullonsitewaterretain(metric)
   
   # Check if the result is a list
   expect_true(is.list(result), info = "The result should be a list.")
@@ -46,8 +47,10 @@ test_that("pullonsitewaterretain returns waterretaindata", {
 # Test for pullonsitewaterloss function
 test_that("pullonsitewaterloss returns waterlostdata", {
   
+  metric <- readRDS(test_path("fixtures", "onsiteboth.rds"))
+  
   # Call the function with the mock metric
-  result <- pullonsitewaterloss(metric_mock)
+  result <- pullonsitewaterloss(metric)
   
   # Check if the result is a list
   expect_true(is.list(result), info = "The result should be a list.")
@@ -65,8 +68,10 @@ test_that("pullonsitewaterloss returns waterlostdata", {
 # Test for pullonsitewatercreation function
 test_that("pullonsitewatercreation returns watercreationdata", {
   
+  metric <- readRDS(test_path("fixtures", "onsiteboth.rds"))
+  
   # Call the function with the mock metric
-  result <- pullonsitewatercreation(metric_mock)
+  result <- pullonsitewatercreation(metric)
   
   # Check if the result is a list
   expect_true(is.list(result), info = "The result should be a list.")
@@ -87,8 +92,10 @@ test_that("pullonsitewatercreation returns watercreationdata", {
 # Test for pullonsitewaterenhancement function
 test_that("pullonsitewaterenhancement returns waterenhancementdata", {
   
+  metric <- readRDS(test_path("fixtures", "onsiteboth.rds"))
+  
   # Call the function with the mock metric
-  result <- pullonsitewaterenhancement(metric_mock)
+  result <- pullonsitewaterenhancement(metric)
   
   # Check if the result is a list
   expect_true(is.list(result), info = "The result should be a list.")
@@ -105,8 +112,3 @@ test_that("pullonsitewaterenhancement returns waterenhancementdata", {
   
   
 })
-
-
-
-
-

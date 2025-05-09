@@ -10,11 +10,13 @@ check_A1(metric)
 \item{metric}{a filepath to a metric}
 }
 \value{
-error messages, a string of error messages to be shown so user knows where data is incorrect
+error messages, a string of error messages to be shown so user knows
+where data is incorrect
 }
 \description{
 cleans onsitehab baseline metric data
 }
 \examples{
-checked <- check_A1(metric = system.file("extdata", "OnSiteBoth.xlsx", package = "metricpulling"))
+\dontrun{checked <- check_A1(metric = system.file("extdata",
+ "OnSiteBoth.xlsx", package = "metricpulling"))}
 }

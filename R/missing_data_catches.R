@@ -2,9 +2,11 @@
 #'
 #' @param metric a filepath to a metric
 #'
-#' @return error messages, a string of error messages to be shown so user knows where data is incorrect 
+#' @return error messages, a string of error messages to be shown so user knows 
+#' where data is incorrect 
 #'
-#' @examples checked <- check_A1(metric = system.file("extdata", "OnSiteBoth.xlsx", package = "metricpulling"))
+#' @examples \dontrun{checked <- check_A1(metric = system.file("extdata",
+#'  "OnSiteBoth.xlsx", package = "metricpulling"))}
 check_A1 <- function(metric) {
   
   #read the dataset
@@ -616,9 +618,9 @@ checkwatersum_dataset <- function(metric) {
   return(errormessages)
 }
 
-#' cleans onsitenet metric data 
+#' clean 'onsitenet' metric data 
 #'
-#' @param metric feas metric
+#' @param metric a DEFRA BNG metric
 #'
 #' @return df, a cleaned version of the input dataset - to be used as an argument in actual metric pulling function
 #' 
@@ -633,46 +635,6 @@ checkonsitenet_dataset <- function(metric) {
   if ("Error ▲" %in% df$X5){
     errormessages <- paste(errormessages, "\n - Input errors identified. Please ammend.", sep = "")
     }
-  
-  # # Define column and row ranges for each dataset
-  # datasets_info <- list(
-  #   BaselineHabitatUnits      = list(cols = 8, rows = 8),
-  #   BaselineHedgerowUnits    = list(cols = 8, rows = 9),
-  #   BaselineWaterUnits    = list(cols = 8, rows = 10),
-  #   PostInterventionHabitatUnits    = list(cols = 8, rows = 12),
-  #   PostInterventionHedgerowUnits  = list(cols = 8, rows = 13),
-  #   PostInterventionWaterUnits  = list(cols = 8, rows = 14),
-  #   NetHabitatUnits   = list(cols = 8, rows = 16),
-  #   NetHedgerowUnits       = list(cols = 8, rows = 17),
-  #   NetWaterUnits     = list(cols = 8, rows = 18),
-  #   NetHabitatPercent     = list(cols = 10, rows = 16),
-  #   NetHedgerowPercent= list(cols = 10, rows = 17),
-  #   NetWaterPercent= list(cols = 10, rows = 18),
-  #   TradeSatisfied= list(cols = 6, rows = 55),
-  #   HabitatDeficit= list(cols = 8, rows = 61),
-  #   HedgerowDeficit= list(cols = 8, rows = 62),
-  #   WaterDeficit= list(cols = 8, rows = 63)
-  # )
-  # 
-  # 
-  # 
-  # # Read all datasets and check for missing values
-  # for (dataset_name in names(datasets_info)) {
-  #   info <- datasets_info[[dataset_name]]
-  #   df <- openxlsx::read.xlsx(metric, sheet = "Headline Results", 
-  #                             cols = info$cols, rows = info$rows, 
-  #                             colNames = FALSE, skipEmptyRows = TRUE)
-  #   
-  #   # Replace empty values with NA
-  #   #df[df == ""] <- NA 
-  #   
-  #   # Check for missing values
-  #   for (i in 1:ncol(df)) {
-  #     if (any(is.na(df[[i]]) | df[[i]] == "Check Data ⚠" | df[[i]] == "Error ▲")) {
-  #       errormessages <- paste(errormessages, dataset_name, "Column", names(df)[i], "contains NA/Check Data ⚠/Error ▲ values.\n")
-  #     }
-  #   }
-  # }
   
   metriccheckresults<-list(sheetdata = df,
                            errormessages = errormessages)

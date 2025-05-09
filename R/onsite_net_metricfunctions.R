@@ -1,12 +1,15 @@
-#' pull data regarding the net unit gains and net percentage gains, as well as if loss present
+#' pull data regarding the net unit gains and net percentage gains, as well as 
+#' if loss present
 #'
 #' @param metric feas metric
 #'
-#' @return netdata, a list containing summarising data about the site, including potential net BNG units
-#' gained, BNGUnits, and the net bng percentage increase, BNGPercentage, and Hectares, the size of the site.
+#' @return netdata, a list containing summarising data about the site, including
+#'  potential net BNG units #' gained, BNGUnits, and the net bng percentage 
+#'  increase, BNGPercentage, and Hectares, the size of the site.
 #' @export
 #'
-#' @examples netdata <- pullonsitenetdata(metric = system.file("extdata", "OnSiteBoth.xlsx", package = "metricpulling"))
+#' @examples netdata <- pullonsitenetdata(metric = system.file("extdata",
+#' "OnSiteBoth.xlsx", package = "metricpulling"))
 pullonsitenetdata<-function(metric){
   resultssheet<-"Headline Results"
     

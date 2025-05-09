@@ -1,10 +1,9 @@
-library(testthat)
-library(openxlsx)
+# library(testthat)
+# library(openxlsx)
 
 test_that("pullonsitehabitatsumdata processes the metric file correctly", {
   
-  # Mock file path (you will need to use a valid path to an actual metric file for real tests)
-  metric <- "data-raw/OnSiteTradingSummary.xlsx"
+  metric <- readRDS(test_path("fixtures", "onsitetradingsummary.rds"))
   
   # Assuming the function is being tested with a mock metric file
   result <- pullonsitehabitatsumdata(metric)
@@ -33,13 +32,12 @@ test_that("pullonsitehabitatsumdata processes the metric file correctly", {
 })
 
 
-library(testthat)
-library(openxlsx)
+# library(testthat)
+# library(openxlsx)
 
 test_that("pullonsitehedgesumdata processes the hedgerow metric file correctly", {
   
-  # Mock file path (you will need to use a valid path to an actual metric file for real tests)
-  metric <- "data-raw/OnSiteTradingSummary.xlsx"
+  metric <- readRDS(test_path("fixtures", "onsitetradingsummary.rds"))
   
   # Run the function with the mock metric file
   result <- pullonsitehedgesumdata(metric)
@@ -70,8 +68,7 @@ test_that("pullonsitehedgesumdata processes the hedgerow metric file correctly",
 
 test_that("pullonsitewatersumdata processes the water metric file correctly", {
   
-  # Mock file path (you will need to use a valid path to an actual metric file for real tests)
-  metric <- "data-raw/OnSiteTradingSummary.xlsx"
+  metric <- readRDS(test_path("fixtures", "onsitetradingsummary.rds"))
   
   # Run the function with the mock metric file
   result <- pullonsitewatersumdata(metric)

@@ -1,11 +1,11 @@
-library(testthat)
-library(openxlsx)
-
-# Mock data for testing
-metric <- "data-raw/OnSiteHedgeEnhance.xlsx"  # Replace with actual path
+# library(testthat)
+# library(openxlsx)
 
 # Test pullonsitehedgebaseline function
 test_that("pullonsitehedgebaseline returns expected data structure", {
+  
+  metric <- readRDS(test_path("fixtures", "onsitehedgeenhance.rds"))
+  
   result <- pullonsitehedgebaseline(metric)
   
   # Check that the result is a list
@@ -23,6 +23,9 @@ test_that("pullonsitehedgebaseline returns expected data structure", {
 
 # Test pullonsitehedgeretain function
 test_that("pullonsitehedgeretain handles missing data correctly", {
+  
+  metric <- readRDS(test_path("fixtures", "onsitehedgeenhance.rds"))
+  
   result <- pullonsitehedgeretain(metric)
   
   # Check that the result is a list
@@ -33,11 +36,14 @@ test_that("pullonsitehedgeretain handles missing data correctly", {
   
   
   # Test for placeholder when no data is retained
-  expect_true(nrow(result$hedgeretaindata) >= 0)
+  #expect_true(nrow(result$hedgeretaindata) >= 0)
 })
 
 # Test pullonsitehedgeloss function
 test_that("pullonsitehedgeloss returns correct loss data", {
+  
+  metric <- readRDS(test_path("fixtures", "onsitehedgeenhance.rds"))
+  
   result <- pullonsitehedgeloss(metric)
   
   # Check that the result is a list
@@ -47,11 +53,14 @@ test_that("pullonsitehedgeloss returns correct loss data", {
   expect_s3_class(result$hedgelostdata, "data.frame")
   
   # Test for placeholder when no hedgerows lost
-  expect_true(nrow(result$hedgelostdata) >= 0)
+  #expect_true(nrow(result$hedgelostdata) >= 0)
 })
 
 # Test pullonsitehedgecreation function
 test_that("pullonsitehedgecreation correctly returns creation data", {
+  
+  metric <- readRDS(test_path("fixtures", "onsitehedgeenhance.rds"))
+  
   result <- pullonsitehedgecreation(metric)
   
   # Check that the result is a list

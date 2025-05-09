@@ -2,18 +2,18 @@
 % Please edit documentation in R/missing_data_catches.R
 \name{checkonsitenet_dataset}
 \alias{checkonsitenet_dataset}
-\title{cleans onsitenet metric data}
+\title{clean 'onsitenet' metric data}
 \usage{
 checkonsitenet_dataset(metric)
 }
 \arguments{
-\item{metric}{feas metric}
+\item{metric}{a DEFRA BNG metric}
 }
 \value{
 df, a cleaned version of the input dataset - to be used as an argument in actual metric pulling function
 }
 \description{
-cleans onsitenet metric data
+clean 'onsitenet' metric data
 }
 \examples{
 \dontrun{checked_dataset<-checkonsitenet_dataset(metric)}    
