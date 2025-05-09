@@ -1,0 +1,66 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+
+# Overview
+
+<!-- badges: start -->
+<!-- badges: end -->
+
+metricpulling reads data from a DEFRA Biodiversity Net Gain metric xlsx file and
+does the following actions:
+
+- runs a series of checks for errors or missing data
+- creates summaries of baseline and proposed data for all habitat modules (habitat, hedge, watercourse)
+- creates sumamries of net units for each habitat module
+- creates summaries of the trading rules
+
+These summaries can be used in creating reports on BNG projects.
+
+## Installation
+
+The package can be installed from Digital Ecology’s Codeberg repository:
+
+``` r
+remotes::install_git("https://codeberg.org/Digital-Ecology/metric_pulling.git")
+```
+
+## Examples
+
+To run the metric checks:
+
+```{r metric-check-example}
+library(metricpulling)
+
+metric <- system.file("extdata", "OnSiteBoth.xlsx", package = "metricpulling")
+
+metric_check(metric)
+
+```
+
+To return a data summary for baseline habitats:
+
+```{r habitat-summary-example}
+
+pullonsitehabitatbaseline(metric)
+
+```
+
+## Bugs
+
+If you encounter a bug, please file an issue with a minimal reproducible example on [Codeberg](https://codeberg.org/Digital-Ecology/metric_pulling/issues).
+
+## Code of Conduct
+
+This project is released subject to a [Contributor Code of Conduct](https://www.contributor-covenant.org/version/2/1/code_of_conduct/). By participating in the project you agree to bide by its terms.
