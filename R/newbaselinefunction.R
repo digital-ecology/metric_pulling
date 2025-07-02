@@ -1,5 +1,13 @@
 
-newbaselinefunction <- function(metric){
+#' New on site habitat baseline function for testing
+#'
+#' @param metric file path to metric
+#'
+#' @return list with dataframe of baseline data, total area nd total baselien units
+#' @export
+#'
+#' @examples \dontrun{baselinedata<-newonsitehabitatbaseline(metric)}
+newonsitehabitatbaseline <- function(metric){
   
   basedf <- openxlsx::read.xlsx(metric,
                                 sheet = "A-1 On-Site Habitat Baseline",
@@ -54,6 +62,14 @@ newbaselinefunction <- function(metric){
 # test2$habitatbaselinedata
 
 
+#' New on site habitats retained function for testing
+#'
+#' @param metric file path to metric
+#'
+#' @return list with dataframe of retained habitats, total retained area, total retained units
+#' @export
+#'
+#' @examples \dontrun{newonsitehabitatretain(metric)}
 newonsitehabitatretain <- function(metric){
   
   retaindf <- openxlsx::read.xlsx(metric,
@@ -92,7 +108,15 @@ newonsitehabitatretain <- function(metric){
 # res <- microbenchmark::microbenchmark(newonsitehabitatretain(metric2), pullonsitehabitatretain(metric2), times = 10)
 # print(res)
 
-newconsitehabitatloss <- function(metric){
+#' New on site habitat lost function for testing
+#'
+#' @param metric file path to metric
+#'
+#' @return list with dataframe of habitats lost, total area lost, and total units lost
+#' @export
+#'
+#' @examples \dontrun{newonsitehabitatloss(metric)}
+newonsitehabitatloss <- function(metric){
   
   lostdf <- openxlsx::read.xlsx(metric,
                                   sheet = "A-1 On-Site Habitat Baseline",
@@ -131,6 +155,14 @@ newconsitehabitatloss <- function(metric){
 # newconsitehabitatloss(metric)                                  
 # newconsitehabitatloss(metric2)                                  
 
+#' New on site habitat created function for testing
+#'
+#' @param metric fiel path to metric
+#'
+#' @return list with data frame of habitats created, total area of habitats created, and total units created
+#' @export
+#'
+#' @examples \dontrun{newonsitehabitatcreation(metric)}
 newonsitehabitatcreation <- function(metric){
   
   createdf <- openxlsx::read.xlsx(metric,
