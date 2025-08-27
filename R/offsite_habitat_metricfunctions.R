@@ -3,7 +3,7 @@
 #'
 #' @param metric BNG metric
 #'
-#' @return a list, containing dataframes pulled from the offfsite baseline sheet of the metric
+#' @return a list, containing dataframes pulled from the offsite baseline sheet of the metric
 #'
 #' @export
 #'

@@ -13,3 +13,7 @@ saveRDS(wb_ts, "tests/testthat/fixtures/onsitetradingsummary.rds")
 # habitats
 wb_osb <- loadWorkbook("inst/extdata/OnSiteBoth.xlsx")
 saveRDS(wb_osb, "tests/testthat/fixtures/onsiteboth.rds")
+
+# off-site
+wb_off <- openxlsx::loadWorkbook("inst/extdata/OffSiteExample.xlsx")
+saveRDS(wb_off, "tests/testthat/fixtures/offsiteexample.rds")

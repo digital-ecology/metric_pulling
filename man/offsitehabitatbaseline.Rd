@@ -10,7 +10,7 @@ offsitehabitatbaseline(metric)
 \item{metric}{BNG metric}
 }
 \value{
-a list, containing dataframes pulled from the offfsite baseline sheet of the metric
+a list, containing dataframes pulled from the offsite baseline sheet of the metric
 }
 \description{
 Offsite baseline habitat data for summary
