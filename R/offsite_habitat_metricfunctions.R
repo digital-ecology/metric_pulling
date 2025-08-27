@@ -7,7 +7,7 @@
 #'
 #' @export
 #'
-#' @examples \dontrun{baselinedata<-pullonsitehabitatbaseline(metric)}
+#' @examples \dontrun{baselinedata<-offsitehabitatbaseline(metric)}
 offsitehabitatbaseline<-function(metric){
   
   basedf <- openxlsx::read.xlsx(metric,
@@ -60,7 +60,7 @@ offsitehabitatbaseline<-function(metric){
 #' and a numeric for total BNG units retained
 #' @export
 #'
-#' @examples
+#' @examples \dontrun{retaineddata<-offsitehabitatretain(metric)}
 offsitehabitatretain <- function(metric){
   
   retaindf <- openxlsx::read.xlsx(metric,
@@ -102,7 +102,7 @@ offsitehabitatretain <- function(metric){
 #' lost and a numeric for total BNG units lost
 #' @export
 #'
-#' @examples
+#' @examples \dontrun{lossdata<-offsitehabitatloss(metric)}
 offsitehabitatloss <- function(metric){
   
   lostdf <- openxlsx::read.xlsx(metric,
@@ -148,7 +148,7 @@ offsitehabitatloss <- function(metric){
 #' created and a numeric for total BNG units created
 #' @export
 #'
-#' @examples
+#' @examples \dontrun{creationdata <- offsitehabitatcreation(metric)}
 offsitehabitatcreation <- function(metric){
   
   createdf <- openxlsx::read.xlsx(metric,
@@ -193,6 +193,15 @@ offsitehabitatcreation <- function(metric){
 }
 
 
+#' Off-site habitat enhancement summary data
+#'
+#' @param metric A BNG metric
+#'
+#' @returns A list with a summary data.frame, an numeric for total habitat area 
+#' enhanced and a numeric for total BNG units enhanced
+#' @export
+#'
+#' @examples \dontrun{enhancedata <- offsitehabitatenhance(metric)}
 offsitehabitatenhance <- function(metric){
   
   enhancedf <- openxlsx::read.xlsx(metric,
@@ -243,7 +252,7 @@ offsitehabitatenhance <- function(metric){
 #' @returns A data.frame of summary data for off-site biodiversity net gains
 #' @export
 #'
-#' @examples
+#' @examples \dontrun{netgainsummary <- offsitehabitatgainsummary(metric)}
 offsitehabitatgainsummary <- function(metric){
   
   gainsummary <- openxlsx::read.xlsx(metric,
