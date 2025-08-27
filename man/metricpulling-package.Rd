@@ -9,7 +9,7 @@
 Pulling data from the DEFRA Biodiversity Net Gain Metric.
 }
 \author{
-\strong{Maintainer}: Dan Carpenter \email{info@digital-ecology.co.uk}
+\strong{Maintainer}: Dan Carpenter \email{dan@dan-carpenter.co.uk}
 
 Authors:
 \itemize{

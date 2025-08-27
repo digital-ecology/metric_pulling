@@ -2,7 +2,7 @@ Package: metricpulling
 Title: Pulling data from DEFRA BNG Metric
 Version: 0.0.0.1
 Authors@R: c(
-    person("Dan", "Carpenter", email = "info@digital-ecology.co.uk", role = "cre"),
+    person("Dan", "Carpenter", email = "dan@dan-carpenter.co.uk", role = "cre"),
     person("Maddie", "Lucas", role = "aut"),
     person("Charlie", "Hewitt", role = "aut")
     )
@@ -20,4 +20,5 @@ Suggests:
 Config/testthat/edition: 3
 Imports: 
     openxlsx,
+    stats,
     utils
