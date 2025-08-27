@@ -1,6 +1,15 @@
 
 
-newonsitehedgebaseline <- function(metric){
+#' On-site hedge baseline data
+#'
+#' @param metric A BNG metric
+#'
+#' @return A list with a data.frame of summary data, and numerics for total length
+#' and total linear baseline units
+#' @export
+#'
+#' @examples \dontrun{}
+pullonsitehedgebaseline <- function(metric){
   
   hedgebase <- openxlsx::read.xlsx(metric,
                                    sheet = "B-1 On-Site Hedge Baseline",
@@ -45,7 +54,16 @@ newonsitehedgebaseline <- function(metric){
 # res <- microbenchmark::microbenchmark(newonsitehedgebaseline(metric), pullonsitehedgebaseline(metric), times = 10)
 # print(res)
 
-newonsitehedgeretain <- function(metric){
+#' On-site hedgerow habitat retained
+#'
+#' @param metric A BNG metric
+#'
+#' @return A list with a summary data.frame, and numerics for total length and
+#' units of hedgerow retained.
+#' @export
+#'
+#' @examples \dontrun{}
+pullonsitehedgeretain <- function(metric){
   
   hedgeretain <- openxlsx::read.xlsx(metric,
                                      sheet = "B-1 On-Site Hedge Baseline",
@@ -63,5 +81,65 @@ newonsitehedgeretain <- function(metric){
                             "lburetained")
   
   
+  
+}
+
+
+
+#' Hedge habitat lost data summary
+#'
+#' @param metric A BNG metric
+#'
+#' @return A list witha  data.frame summary of hedgerows lost, and numerics for 
+#' total lenght and linear biodiversity units lost.
+#' @export
+#'
+#' @examples \dontrun{}
+pullonsitehedgeloss <- function(metric){
+  
+  hedgeloss <- openxlsx::read.xlsx(metric,
+                                   sheet = "B-1 On-Site Hedge Baseline",
+                                   cols = c(3,4,18,20),
+                                   rows = 10:257,
+                                   startRow = 10,
+                                   colNames = FALSE,
+                                   skipEmptyRows = TRUE)
+  
+  hedgeloss <- na.omit(hedgeloss)
+  
+  colnames(hedgeloss) <- c("hedgenumber",
+                           "habitattype",
+                           "lengthlost",
+                           "unitslost")
+  
+  hedgeloss$lengthlost <- as.numeric(hedgeloss$lengthlost)
+  hedgeloss$unitslost <- as.numeric(hedgeloss$unitslost)
+  
+  totallengthlost <- round(sum(hedgeloss$lengthlost, na.rm = TRUE), 3) # may not need these two
+  totallbulost <- round(sum(hedgeloss$unitslost, na.rm = TRUE), 3)
+  
+  # add in catch for if no hedge lost
+  #if youre left with nothing, insert placeholder
+  # if (nrow(hedgelostdata) == 0) {
+  #   hedgelostdata <- data.frame(habitattype = "No Hedgerows Lost")
+  # }
+  # 
+  # } else {
+  # hedgelostdata <- data.frame(hedgehabitattype)
+  # }
+  
+  hedgelossdata<-list(hedgelostdata = hedgeloss,
+                          totallength = totallengthlost,
+                          totalunits = totallbulost)
+  
+  return(hedgelossdata)
+  
+}
+
+
+pullonsitehedgecreation <- function(metric){
+  
+  hedgecreate <- openxlsx::read.xlsx(metric,
+                                     sheet = "B-2 On-Site Hedge Creation")
   
 }
