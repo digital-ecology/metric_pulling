@@ -2,19 +2,19 @@
 % Please edit documentation in R/onsite_habitat_metricfunctions.R
 \name{pullonsitehabitatcreation}
 \alias{pullonsitehabitatcreation}
-\title{pull onsite habitats to be created}
+\title{On site habitat created function for testing}
 \usage{
 pullonsitehabitatcreation(metric)
 }
 \arguments{
-\item{metric}{feas metric}
+\item{metric}{file path to metric}
 }
 \value{
-a list, containing data about habitats to be created
+list with data.frame of habitats created, total area of habitats created, and total units created
 }
 \description{
-pull onsite habitats to be created
+On site habitat created function for testing
 }
 \examples{
-\dontrun{creationdata<-pullonsitehabitatcreation(metric)}
+\dontrun{pullonsitehabitatcreation(metric)}
 }

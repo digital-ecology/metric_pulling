@@ -2,19 +2,19 @@
 % Please edit documentation in R/onsite_habitat_metricfunctions.R
 \name{pullonsitehabitatloss}
 \alias{pullonsitehabitatloss}
-\title{pullhabitatloss}
+\title{On site habitat lost function}
 \usage{
 pullonsitehabitatloss(metric)
 }
 \arguments{
-\item{metric}{metric}
+\item{metric}{file path to metric}
 }
 \value{
-loss df
+list with data.frame of habitats lost, total area lost, and total units lost
 }
 \description{
-pullhabitatloss
+On site habitat lost function
 }
 \examples{
-\dontrun{habitatlossdata<-pullonsitehabitatloss(metric)}
+\dontrun{pullonsitehabitatloss(metric)}
 }
