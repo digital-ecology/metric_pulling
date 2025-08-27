@@ -2,19 +2,19 @@
 % Please edit documentation in R/onsite_habitat_metricfunctions.R
 \name{pullonsitehabitatbaseline}
 \alias{pullonsitehabitatbaseline}
-\title{pull onsite baseline data for summary}
+\title{On site habitat baseline}
 \usage{
 pullonsitehabitatbaseline(metric)
 }
 \arguments{
-\item{metric}{feas metric}
+\item{metric}{file path to metric}
 }
 \value{
-a list, containing dataframes pulled from the baseline sheet of the metric
+list with data.frame of baseline data, total area nd total baseline units
 }
 \description{
-pull onsite baseline data for summary
+On site habitat baseline
 }
 \examples{
-\dontrun{baselinedata<-pullonsitehabitatbaseline(metric)}
+{pullonsitehabitatbaseline(system.file("extdata", "OnSiteBoth.xlsx", package = "metricpulling"))}
 }

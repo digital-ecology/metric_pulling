@@ -2,19 +2,19 @@
 % Please edit documentation in R/onsite_habitat_metricfunctions.R
 \name{pullonsitehabitatretain}
 \alias{pullonsitehabitatretain}
-\title{pullhabitatretain}
+\title{On site habitats retained}
 \usage{
 pullonsitehabitatretain(metric)
 }
 \arguments{
-\item{metric}{metric}
+\item{metric}{file path to metric}
 }
 \value{
-retain df
+list with data.frame of retained habitats, total retained area, total retained units
 }
 \description{
-pullhabitatretain
+On site habitats retained
 }
 \examples{
-\dontrun{retaindata<-pullonsitehabitatretain(metric)}
+\dontrun{pullonsitehabitatretain(metric)}
 }

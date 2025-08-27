@@ -2,12 +2,12 @@ Package: metricpulling
 Title: Pulling data from DEFRA BNG Metric
 Version: 0.0.0.1
 Authors@R: c(
-    person("Dan", "Carpenter", email = "info@digital-ecology.co.uk", role = "cre"),
+    person("Dan", "Carpenter", email = "dan@dan-carpenter.co.uk", role = "cre"),
     person("Maddie", "Lucas", role = "aut"),
     person("Charlie", "Hewitt", role = "aut")
     )
 Description: Pulling data from the DEFRA Biodiversity Net Gain Metric.
-License: GPL (>= 3) + file LICENSE
+License: GPL (>=3)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
@@ -20,4 +20,5 @@ Suggests:
 Config/testthat/edition: 3
 Imports: 
     openxlsx,
+    stats,
     utils

@@ -18,11 +18,10 @@ test_that("pullonsitehabitatbaseline returns a list with correct structure", {
   expect_equal(ncol(result$habitatbaselinedata), 7)  # Expecting 7 columns in habitatbaselinedata
   
   # Check that totalarea and totalunits are data frames with one column
-  expect_s3_class(result$totalarea, "data.frame")
-  #expect_equal(ncol(result$totalarea), 1)
+  expect_type(result$totalarea, "double")
   
-  expect_s3_class(result$totalunits, "data.frame")
-  #expect_equal(ncol(result$totalunits), 1)
+  expect_type(result$totalunits, "double")
+  
 })
 
 # Test for pullonsitehabitatretain
@@ -40,13 +39,13 @@ test_that("pullonsitehabitatretain returns a list with correct structure", {
   
   # Check the structure of the habitatretaindata
   expect_s3_class(result$habitatretaindata, "data.frame")
+  expect_equal(ncol(result$habitatretaindata), 4)
 
   # Check that TotalRetainArea and TotalRetainUnits are data frames with one column
-  expect_s3_class(result$TotalRetainArea, "data.frame")
-  expect_equal(ncol(result$TotalRetainArea), 1)
+  expect_type(result$TotalRetainArea, "double")
   
-  expect_s3_class(result$TotalRetainUnits, "data.frame")
-  expect_equal(ncol(result$TotalRetainUnits), 1)
+  expect_type(result$TotalRetainUnits, "double")
+  
 })
 
 # Test for pullonsitehabitatloss
@@ -64,13 +63,13 @@ test_that("pullonsitehabitatloss returns a list with correct structure", {
   
   # Check the structure of the habitatlostdata
   expect_s3_class(result$habitatlostdata, "data.frame")
+  expect_equal(ncol(result$habitatlostdata), 4)
 
   # Check that TotallostArea and TotallostUnits are data frames with one column
-  expect_s3_class(result$TotallostArea, "data.frame")
-  expect_equal(ncol(result$TotallostArea), 1)
+  expect_type(result$TotallostArea, "double")
   
-  expect_s3_class(result$TotallostUnits, "data.frame")
-  expect_equal(ncol(result$TotallostUnits), 1)
+  expect_type(result$TotallostUnits, "double")
+  
 })
 
 # Test for pullonsitehabitatcreation
@@ -88,11 +87,11 @@ test_that("pullonsitehabitatcreation returns a list with correct structure", {
   
   # Check the structure of the habitatcreationdata
   expect_s3_class(result$habitatcreationdata, "data.frame")
+  expect_equal(ncol(result$habitatcreationdata), 8)
 
   # Check that TotalCreationArea and TotalCreationUnits are data frames with one column
-  expect_s3_class(result$TotalCreationArea, "data.frame")
-  expect_equal(ncol(result$TotalCreationArea), 1)
+  expect_type(result$TotalCreationArea, "double")
   
-  expect_s3_class(result$TotalCreationUnits, "data.frame")
-  expect_equal(ncol(result$TotalCreationUnits), 1)
+  expect_type(result$TotalCreationUnits, "double")
+  
 })
