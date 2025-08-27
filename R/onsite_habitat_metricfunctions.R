@@ -6,7 +6,7 @@
 #' @return list with data.frame of baseline data, total area nd total baseline units
 #' @export
 #'
-#' @examples \dontrun{baselinedata<-pullonsitehabitatbaseline(metric)}
+#' @examples {pullonsitehabitatbaseline(system.file("extdata", "OnSiteBoth.xlsx", package = "metricpulling"))}
 pullonsitehabitatbaseline <- function(metric){
   
   basedf <- openxlsx::read.xlsx(metric,

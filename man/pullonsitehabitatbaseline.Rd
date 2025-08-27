@@ -16,5 +16,5 @@ list with data.frame of baseline data, total area nd total baseline units
 On site habitat baseline
 }
 \examples{
-\dontrun{baselinedata<-pullonsitehabitatbaseline(metric)}
+{pullonsitehabitatbaseline(system.file("extdata", "OnSiteBoth.xlsx", package = "metricpulling"))}
 }
